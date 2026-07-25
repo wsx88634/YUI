@@ -1,17 +1,17 @@
-/* TripTree V7 - 東京旅遊範例 + 堅若磐石經典垂直時間軸排版 */
+/* TripTree V10 - 專為手機優化之精品時間軸行程清單 (Executive Mobile Itinerary UI) */
 :root {
-  --bg-main: #eef2f6;
+  --bg-main: #f8fafc;
   --bg-card-default: #ffffff;
   --accent-tree-line: #0f766e;
   --accent-primary: #0f766e;
   --accent-secondary: #0d9488;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-color: #e2e8f0;
   --radius-pill: 9999px;
-  --radius-card: 14px;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.1);
+  --radius-card: 16px;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
   --font-family: 'Outfit', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
 }
 
@@ -39,7 +39,7 @@ header {
   z-index: 100;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-bottom: 2px solid #cbd5e1;
+  border-bottom: 2px solid #e2e8f0;
   padding: 10px 16px;
   display: flex;
   align-items: center;
@@ -161,8 +161,8 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.75);
-  border-bottom: 1.5px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1.5px solid #e2e8f0;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -284,7 +284,7 @@ main {
 .connector-path-timeline {
   fill: none;
   stroke: #0d9488;
-  stroke-width: 3;
+  stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -348,7 +348,7 @@ main {
   border: 2px solid #64748b;
   border-radius: 14px;
   padding: 12px 16px;
-  width: 280px; /* 固化寬度，防止排版推擠錯位 */
+  width: 280px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -516,69 +516,165 @@ main {
   margin-top: 4px;
 }
 
-/* 📱 手機列表視圖 (Mobile Outline View 零重疊修正) */
+/* ==========================================================================
+   📱 2026 全新精品手機行程清單 UI (Executive Mobile Itinerary Stream)
+   ========================================================================== */
 .outline-view {
   padding: 16px;
-  max-width: 768px;
+  max-width: 600px;
   margin: 0 auto;
   width: 100%;
   overflow-y: auto;
 }
 
-.outline-tree {
+.mobile-itinerary-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
-.outline-group {
+.mobile-day-card {
   background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
 }
 
-.outline-group-header {
+.mobile-day-header {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  color: #ffffff;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f766e;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 8px;
+  box-shadow: inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.outline-items {
+.mobile-day-body {
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-left: 10px;
-  border-left: 3px solid #0d9488;
+  gap: 18px;
 }
 
-.outline-item-card {
-  background: #f8fafc;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-}
-
-.outline-subitems {
+.mobile-period-block {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 10px;
+}
+
+.mobile-period-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1.5px solid #f59e0b;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 800;
+  width: fit-content;
+}
+
+.mobile-spot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #0d9488;
+  margin-left: 8px;
+}
+
+.mobile-spot-item {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.mobile-spot-item:active {
+  transform: scale(0.99);
+}
+
+.mobile-spot-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-spot-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.mobile-hotel-box {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  color: #166534;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-note-box {
+  background: #f8fafc;
+  border-left: 3px solid #0284c7;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.84rem;
+  color: #334155;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.mobile-btn-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.mobile-action-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobile-subspot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
   padding-left: 14px;
-  border-left: 2px dotted #0d9488;
+  border-left: 2.5px dotted #0d9488;
 }
 
 /* Modal */

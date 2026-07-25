@@ -1,5 +1,5 @@
 /**
- * TripTree V9 - 手繪手感極致零穿透折線引擎 (Zero Pass-Through Vector Connector Engine)
+ * TripTree V10 - 2026 最新 Mobile 精品行程卡片 UI (Executive Mobile Itinerary Stream)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -164,7 +164,7 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV9 {
+class VerticalTimelineAppV10 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -219,7 +219,7 @@ class VerticalTimelineAppV9 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v9_projects');
+    const saved = localStorage.getItem('triptree_tl_v10_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -227,15 +227,15 @@ class VerticalTimelineAppV9 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v9_active_id');
+    const saved = localStorage.getItem('triptree_tl_v10_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_tokyo_demo";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v9_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v9_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v10_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v10_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -439,7 +439,6 @@ class VerticalTimelineAppV9 {
     });
   }
 
-  // --- 📐 絕對安全零穿透樹狀網格引線引擎 (Zero Pass-Through Grid Routing) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -451,12 +450,11 @@ class VerticalTimelineAppV9 {
     const mainTrunkX = 350;
     let currentY = 160;
 
-    // 完美欄位對齊標定 (X 軸)
-    const COL_DAY_X = 460;     // Day 卡片 (X:460 ~ 720)
-    const COL_PERIOD_X = 520;  // 時段膠囊 (X:520 ~ 630，安全縮排於 Day 內部左側)
-    const COL_SPOT_X = 760;    // 景點卡片 (X:760 ~ 1040)
-    const COL_SUB1_X = 1110;   // 一級子景點 (X:1110 ~ 1390)
-    const COL_SUB2_X = 1460;   // 二級子景點 (X:1460 ~ 1740)
+    const COL_DAY_X = 460;
+    const COL_PERIOD_X = 520;
+    const COL_SPOT_X = 760;
+    const COL_SUB1_X = 1110;
+    const COL_SUB2_X = 1460;
 
     nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root });
 
@@ -489,7 +487,6 @@ class VerticalTimelineAppV9 {
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // 1. 先渲染所有 DOM 元素
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -497,7 +494,6 @@ class VerticalTimelineAppV9 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    // 2. DOM 渲染完畢後，嚴格計算出線與進線點，絕不穿卡片！
     setTimeout(() => {
       nodePositions.forEach((pos, id) => {
         if (id !== root.id) {
@@ -513,10 +509,9 @@ class VerticalTimelineAppV9 {
               let startX = parentItem.pos.x + pEl.offsetWidth;
               let startY = parentItem.pos.y + (pEl.offsetHeight / 2);
 
-              // 關鍵修正：若 Parent 是 Day 且 Child 是 Period，線條從 Day 的左側 40px 引出向下，絕不穿透時段卡片！
               if (parentNode.category === 'day' && childItem.pos.category === 'period') {
-                startX = parentItem.pos.x + 30; // 從 Day 內部左邊落線
-                startY = parentItem.pos.y + pEl.offsetHeight; // 從 Day 底部向下落線
+                startX = parentItem.pos.x + 30;
+                startY = parentItem.pos.y + pEl.offsetHeight;
               } else if (parentNode.id === root.id) {
                 startX = mainTrunkX;
                 startY = childItem.pos.y + (cEl.offsetHeight / 2);
@@ -683,7 +678,6 @@ class VerticalTimelineAppV9 {
     this.svgConnectors.appendChild(line);
   }
 
-  // --- 📐 絕對安全零穿透向量折線引導引擎 ---
   drawCleanOrthogonalConnector(x1, y1, x2, y2, isDayToPeriod = false) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -693,10 +687,8 @@ class VerticalTimelineAppV9 {
     const lineEndX = x2 - arrowSize;
 
     if (isDayToPeriod) {
-      // Day 到 Period: 從 Day 底部/左側直下到 targetY，然後水平往右接到 targetX
       d = `M ${x1} ${y1} V ${y2} H ${lineEndX}`;
     } else {
-      // 普通卡片間：在 x1 與 x2 的緩衝間隙中點（midX）垂直降落，絕不上牆穿越！
       const midX = x1 + Math.max(20, (x2 - x1) / 2);
       d = `M ${x1} ${y1} H ${midX} V ${y2} H ${lineEndX}`;
     }
@@ -705,7 +697,6 @@ class VerticalTimelineAppV9 {
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
-    // 箭頭前端尖角點 100% 精準對齊 x2
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${lineEndX},${y2 - 6} ${lineEndX},${y2 + 6}`);
     arrow.setAttribute('fill', '#0d9488');
@@ -724,77 +715,150 @@ class VerticalTimelineAppV9 {
     return null;
   }
 
+  // --- 📱 2026 最新 Mobile 精品行程卡片 UI (Executive Mobile Stream) ---
   renderOutline() {
     this.outlineTree.innerHTML = '';
     const proj = this.getActiveProject();
     if (!proj || !proj.rootNode) return;
     const root = proj.rootNode;
 
-    const rootGroup = document.createElement('div');
-    rootGroup.className = 'outline-group';
-    rootGroup.innerHTML = `
-      <div class="outline-group-header">
-        <span>${this.escapeHtml(root.title)}</span>
-        ${!this.isReadOnly ? `<button class="btn btn-primary btn-mini" id="outlineAddDay">+ 新增行程</button>` : ''}
-      </div>
-      <div class="outline-items" id="outlineRootItems"></div>
-    `;
-    this.outlineTree.appendChild(rootGroup);
+    const container = document.createElement('div');
+    container.className = 'mobile-itinerary-container';
 
-    if (!this.isReadOnly) {
-      document.getElementById('outlineAddDay').addEventListener('click', () => this.openModalForAdd(root.id));
-    }
+    if (root.children && root.children.length > 0) {
+      root.children.forEach(dayNode => {
+        const dayCard = document.createElement('div');
+        dayCard.className = 'mobile-day-card';
 
-    const itemsContainer = rootGroup.querySelector('#outlineRootItems');
-    const renderOutlineNode = (node, container) => {
-      if (!node.children) return;
-      node.children.forEach(child => {
-        const itemCard = document.createElement('div');
-        itemCard.className = 'outline-item-card';
-        if (child.bgColor) itemCard.style.backgroundColor = child.bgColor;
-
-        let icon = '📍';
-        if (child.category === 'food') icon = '🍜';
-        if (child.category === 'hotel') icon = '🏨';
-
-        itemCard.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong style="font-size:1rem;">${icon} ${this.escapeHtml(child.title)}</strong>
-            ${child.cost ? `<span class="node-badge">${this.escapeHtml(child.cost)}</span>` : ''}
+        let dayHeaderHtml = `
+          <div class="mobile-day-header">
+            <span>📅 ${this.escapeHtml(dayNode.title)}</span>
+            ${!this.isReadOnly ? `<button class="btn btn-mini btn-add-child-outline" style="background:rgba(255,255,255,0.2); color:#fff; border:none;">+</button>` : ''}
           </div>
-          ${child.category === 'hotel' && child.hotelCheckIn ? `<div style="font-size:0.8rem; color:#0369a1;">🏨 ${this.escapeHtml(child.hotelCheckIn)} | ${this.escapeHtml(child.hotelCheckOut || '')} (${this.escapeHtml(child.hotelRoomType || '')})</div>` : ''}
-          ${child.note ? `<div style="font-size:0.85rem; color:#475569; font-weight:600;">${this.escapeHtml(child.note)}</div>` : ''}
-          <div style="display:flex; gap:10px; font-size:0.8rem; margin-top:4px;">
-            ${child.url ? `<a href="${this.escapeHtml(child.url)}" target="_blank" class="node-link">🔗 連結</a>` : ''}
-            ${child.mapsUrl ? `<a href="${this.escapeHtml(child.mapsUrl)}" target="_blank" class="node-link">🗺️ 地圖</a>` : ''}
-          </div>
-          ${!this.isReadOnly ? `
-            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px;">
-              <button class="btn btn-mini btn-add-child-outline">+ 子景點</button>
-              <button class="btn btn-mini btn-edit-outline">✏️</button>
-              <button class="btn btn-mini btn-del-outline">🗑️</button>
-            </div>
-          ` : ''}
-          <div class="outline-subitems"></div>
         `;
-        container.appendChild(itemCard);
 
-        if (!this.isReadOnly) {
-          itemCard.querySelector('.btn-add-child-outline').addEventListener('click', () => this.openModalForAdd(child.id));
-          itemCard.querySelector('.btn-edit-outline').addEventListener('click', () => this.openModalForEdit(child));
-          itemCard.querySelector('.btn-del-outline').addEventListener('click', () => {
-            if (confirm(`確定刪除「${child.title}」？`)) {
-              this.deleteNode(root, child.id);
-              this.saveProjects();
-              this.render();
+        let dayBodyHtml = `<div class="mobile-day-body">`;
+
+        if (dayNode.children && dayNode.children.length > 0) {
+          dayNode.children.forEach(periodNode => {
+            dayBodyHtml += `
+              <div class="mobile-period-block">
+                <div class="mobile-period-tag">🕒 ${this.escapeHtml(periodNode.title)}</div>
+                <div class="mobile-spot-list">
+            `;
+
+            if (periodNode.children && periodNode.children.length > 0) {
+              periodNode.children.forEach(spotNode => {
+                dayBodyHtml += this.renderMobileSpotItem(spotNode);
+              });
             }
+
+            dayBodyHtml += `</div></div>`;
           });
+        } else {
+          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:12px;">點擊 + 按鈕開始新增景點...</div>`;
         }
 
-        renderOutlineNode(child, itemCard.querySelector('.outline-subitems'));
+        dayBodyHtml += `</div>`;
+        dayCard.innerHTML = dayHeaderHtml + dayBodyHtml;
+        container.appendChild(dayCard);
+
+        const addDayChildBtn = dayCard.querySelector('.btn-add-child-outline');
+        if (addDayChildBtn) {
+          addDayChildBtn.addEventListener('click', () => this.openModalForAdd(dayNode.id));
+        }
+
+        this.bindMobileSpotEvents(dayCard, root);
       });
-    };
-    renderOutlineNode(root, itemsContainer);
+    }
+
+    this.outlineTree.appendChild(container);
+  }
+
+  renderMobileSpotItem(spotNode) {
+    let icon = '📍';
+    if (spotNode.category === 'food') icon = '🍜';
+    if (spotNode.category === 'hotel') icon = '🏨';
+    if (spotNode.category === 'transit') icon = '🚌';
+    if (spotNode.category === 'shop') icon = '🛍️';
+
+    let itemHtml = `
+      <div class="mobile-spot-item" style="${spotNode.bgColor ? `background-color:${spotNode.bgColor};` : ''}" data-id="${spotNode.id}">
+        <div class="mobile-spot-top">
+          <span class="mobile-spot-title">${icon} ${this.escapeHtml(spotNode.title)}</span>
+          ${spotNode.cost ? `<span class="node-badge">${this.escapeHtml(spotNode.cost)}</span>` : ''}
+        </div>
+    `;
+
+    if (spotNode.category === 'hotel' && (spotNode.hotelCheckIn || spotNode.hotelRoomType)) {
+      itemHtml += `
+        <div class="mobile-hotel-box">
+          ${spotNode.hotelCheckIn ? `<div>🏨 ${this.escapeHtml(spotNode.hotelCheckIn)} | ${this.escapeHtml(spotNode.hotelCheckOut || '')}</div>` : ''}
+          ${spotNode.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(spotNode.hotelRoomType)}</div>` : ''}
+        </div>
+      `;
+    }
+
+    if (spotNode.note) {
+      itemHtml += `<div class="mobile-note-box">${this.escapeHtml(spotNode.note)}</div>`;
+    }
+
+    if (spotNode.mapsUrl || spotNode.url || !this.isReadOnly) {
+      itemHtml += `<div class="mobile-btn-group">`;
+      if (spotNode.mapsUrl) itemHtml += `<a href="${this.escapeHtml(spotNode.mapsUrl)}" target="_blank" class="mobile-action-btn" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">🗺️ 開啟 Google 地圖</a>`;
+      if (spotNode.url) itemHtml += `<a href="${this.escapeHtml(spotNode.url)}" target="_blank" class="mobile-action-btn">🔗 官方網站</a>`;
+
+      if (!this.isReadOnly) {
+        itemHtml += `
+          <button class="mobile-action-btn btn-add-spot-sub" data-id="${spotNode.id}">+ 子景點</button>
+          <button class="mobile-action-btn btn-edit-spot" data-id="${spotNode.id}">✏️</button>
+          <button class="mobile-action-btn btn-del-spot" data-id="${spotNode.id}">🗑️</button>
+        `;
+      }
+      itemHtml += `</div>`;
+    }
+
+    if (spotNode.children && spotNode.children.length > 0) {
+      itemHtml += `<div class="mobile-subspot-list">`;
+      spotNode.children.forEach(sub => {
+        itemHtml += this.renderMobileSpotItem(sub);
+      });
+      itemHtml += `</div>`;
+    }
+
+    itemHtml += `</div>`;
+    return itemHtml;
+  }
+
+  bindMobileSpotEvents(cardEl, root) {
+    cardEl.querySelectorAll('.btn-add-spot-sub').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openModalForAdd(btn.getAttribute('data-id'));
+      });
+    });
+
+    cardEl.querySelectorAll('.btn-edit-spot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const node = this.findNode(root, id);
+        if (node) this.openModalForEdit(node);
+      });
+    });
+
+    cardEl.querySelectorAll('.btn-del-spot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const node = this.findNode(root, id);
+        if (node && confirm(`確定刪除「${node.title}」？`)) {
+          this.deleteNode(root, id);
+          this.saveProjects();
+          this.render();
+        }
+      });
+    });
   }
 
   openModalForAdd(parentId) {
@@ -949,5 +1013,5 @@ class VerticalTimelineAppV9 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV9 = new VerticalTimelineAppV9();
+  window.appTimelineV10 = new VerticalTimelineAppV10();
 });
