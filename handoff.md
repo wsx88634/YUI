@@ -16,6 +16,6 @@
 - 本專案位於 Google Drive 雲端同步資料夾，請確定雲端硬碟同步常駐執行。
 
 ## 🕐 最後更新
-- 時間：2026-07-25 17:52
+- 時間：2026-07-25 19:00
 - 更新者：Antigravity @ DESKTOP-U8HAOU6
-- Git push：✅ 已推 (`wsx88634/YUI`)
+- Git push：✅ 已推 (`wsx88634/YUI`) 且 GitHub Pages 已啟用 (`https://wsx88634.github.io/YUI/trip_mindmap/`)
