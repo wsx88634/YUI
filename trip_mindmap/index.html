@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V13 - 置中精美 Modal 視窗與行程標籤列優化</title>
+  <title>TripTree V14 - 國家與地區二級分類與完美向量連線</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=13.0.0">
+  <link rel="stylesheet" href="styles.css?v=14.0.0">
 </head>
 <body>
 
@@ -19,7 +19,6 @@
 
   <!-- Top Header -->
   <header>
-    <!-- Top Row: Logo & Action Buttons -->
     <div class="header-top-row">
       <div class="logo-group">
         <div class="logo-icon">🗺️</div>
@@ -52,7 +51,7 @@
       </div>
     </div>
 
-    <!-- 3. 獨立且可順暢滑動的行程標籤頁面列 (解決被蓋住問題) -->
+    <!-- 獨立且可順暢滑動的行程標籤頁面列 -->
     <div class="trip-tabs-container">
       <div class="trip-tabs-bar" id="tripTabsBar">
         <!-- Tabs populated via JS -->
@@ -108,18 +107,27 @@
             <option value="大阪">🇯🇵 大阪</option>
             <option value="京都">🇯🇵 京都</option>
             <option value="奈良">🇯🇵 奈良</option>
+            <option value="首爾">🇰🇷 首爾</option>
+            <option value="台北">🇹🇼 台北</option>
           </select>
           <button class="vault-gen-btn" id="btnGenVaultCard">+ 存入景點庫</button>
         </div>
       </div>
 
-      <!-- 地區分類篩選獨立面板 -->
+      <!-- 🌐 3. 國家與地區二級階層分類面板 -->
       <div class="vault-filter-bar">
-        <div class="vault-filter-header">
-          <span style="font-size:0.85rem; font-weight:800; color:#0f766e;">📍 地區分類篩選：</span>
+        <!-- 第一層：國家群組分類 (Country Chips) -->
+        <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">🌏 選擇國家 / 區域：</div>
+        <div class="country-tabs-row" id="countryTabsRow">
+          <!-- Country chips rendered via JS -->
+        </div>
+
+        <!-- 第二層：該國家內的地區分類 (Region Chips) -->
+        <div class="vault-filter-header" style="margin-top:4px;">
+          <span style="font-size:0.85rem; font-weight:800; color:#0f766e;" id="regionFilterLabel">📍 選擇各地區：</span>
           <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
         </div>
-        <div class="vault-region-tabs" id="vaultRegionTabs">
+        <div class="region-tabs-row" id="vaultRegionTabs">
           <!-- Region chips rendered via JS -->
         </div>
       </div>
@@ -131,7 +139,7 @@
     </div>
   </div>
 
-  <!-- ✨ 2. 置中精美 Modal: 創建全新行程資料夾 (整合名稱、日期、天數) -->
+  <!-- ✨ 置中 Modal: 創建全新行程資料夾 -->
   <div class="modal-overlay" id="newTripModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -163,7 +171,7 @@
     </div>
   </div>
 
-  <!-- ✨ 1. 置中精美 Modal: 選擇景點放置位置 (取代醜陋 Prompt 數字輸入) -->
+  <!-- ✨ 置中 Modal: 選擇景點放置位置 -->
   <div class="modal-overlay" id="placementModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -177,6 +185,52 @@
 
       <div class="placement-options-list" id="placementOptionsList">
         <!-- Placement options buttons rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ✨ 置中 Modal: 2. 新增地區標籤 Modal (取代 Prompt) -->
+  <div class="modal-overlay" id="addRegionModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>➕</span> 新增地區標籤</h3>
+        <button class="close-btn" id="btnCloseAddRegionModal">&times;</button>
+      </div>
+      <form id="addRegionForm">
+        <div class="form-group">
+          <label class="form-label">選擇國家 *</label>
+          <select id="addRegionCountrySelect" class="form-select">
+            <option value="日本">🇯🇵 日本</option>
+            <option value="韓國">🇰🇷 韓國</option>
+            <option value="台灣">🇹🇼 台灣</option>
+            <option value="泰國">🇹🇭 泰國</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newRegionNameInput">地區分類名稱 *</label>
+          <input type="text" id="newRegionNameInput" class="form-input" placeholder="例如：沖繩 / 札幌 / 釜山" required>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" class="btn" id="btnCancelAddRegion">取消</button>
+          <button type="submit" class="btn btn-primary">加入分類</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✨ 置中 Modal: 2. 確認刪除對話框 Modal (取代 Confirm) -->
+  <div class="modal-overlay" id="confirmDeleteModal">
+    <div class="modal-box" style="max-width:420px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color:#dc2626;"><span>⚠️</span> 確認刪除</h3>
+        <button class="close-btn" id="btnCloseConfirmDeleteModal">&times;</button>
+      </div>
+      <div style="font-size:0.95rem; color:#334155; font-weight:700;" id="confirmDeleteText">
+        您確定要刪除這個節點嗎？此動作無法復原。
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+        <button type="button" class="btn" id="btnCancelConfirmDelete">取消</button>
+        <button type="button" class="btn btn-danger" id="btnExecuteConfirmDelete">確定刪除</button>
       </div>
     </div>
   </div>
@@ -289,6 +343,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=13.0.0"></script>
+  <script src="app.js?v=14.0.0"></script>
 </body>
 </html>

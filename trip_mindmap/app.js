@@ -1,5 +1,5 @@
 /**
- * TripTree V13 - 置中精美 Modal 視窗與行程標籤列優化 (Executive Modal Engine)
+ * TripTree V14 - 國家與地區二級分類、完美無縫向量連線與全彈窗美化 (V14 Master Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -189,10 +189,20 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
+// 預設國家與地區二級階層 (Default Country Hierarchy)
+const DEFAULT_COUNTRY_HIERARCHY = {
+  "所有": ["所有"],
+  "日本": ["所有日本", "福岡", "東京", "大阪", "京都", "奈良"],
+  "韓國": ["所有韓國", "首爾", "釜山"],
+  "台灣": ["所有台灣", "台北", "台南"],
+  "泰國": ["所有泰國", "曼谷", "清邁"]
+};
+
 // 預設景點靈感庫 (Preset Spot Vault)
 const DEFAULT_SPOT_VAULT = [
   {
     id: "vault_fk_1",
+    country: "日本",
     region: "福岡",
     title: "🛒 Aeon Shoppers 福岡店 (天神商圈超市)",
     category: "shop",
@@ -204,6 +214,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_fk_2",
+    country: "日本",
     region: "福岡",
     title: "⛩️ 博多總鎮守 櫛田神社",
     category: "spot",
@@ -215,6 +226,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_osaka_1",
+    country: "日本",
     region: "大阪",
     title: "🏃‍♂️ 心齋橋 ➔ 道頓堀 固力果跑跑人看板",
     category: "spot",
@@ -225,6 +237,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_osaka_2",
+    country: "日本",
     region: "大阪",
     title: "🐙 本家大たこ 道頓堀章魚燒",
     category: "food",
@@ -235,6 +248,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_kyoto_1",
+    country: "日本",
     region: "京都",
     title: "⛩️ 伏見稻荷大社（千本鳥居）",
     category: "spot",
@@ -245,6 +259,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_kyoto_2",
+    country: "日本",
     region: "京都",
     title: "🏯 清水寺 ➔ 三年坂 / 二年坂 漫步",
     category: "spot",
@@ -255,6 +270,7 @@ const DEFAULT_SPOT_VAULT = [
   },
   {
     id: "vault_nara_1",
+    country: "日本",
     region: "奈良",
     title: "🦌 奈良公園（餵小鹿 🍪 仙貝）",
     category: "spot",
@@ -265,17 +281,20 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV13 {
+class VerticalTimelineAppV14 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
     this.vaultItems = this.loadVaultItems();
-    this.vaultRegions = this.loadVaultRegions();
+    this.countryHierarchy = this.loadCountryHierarchy();
+    
+    this.selectedCountry = "所有";
     this.selectedRegion = "所有";
     this.currentView = 'mindmap';
     this.zoomLevel = 1.0;
     this.draggedVaultItem = null;
+    this.pendingDeleteAction = null;
 
     this.isPanning = false;
     this.startX = 0;
@@ -312,25 +331,42 @@ class VerticalTimelineAppV13 {
     this.btnOpenVault = document.getElementById('btnOpenVault');
     this.btnCloseVault = document.getElementById('btnCloseVault');
     this.btnToggleFullVault = document.getElementById('btnToggleFullVault');
+    
+    // 🌐 國家與地區二級分類元素
+    this.countryTabsRow = document.getElementById('countryTabsRow');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
+    this.regionFilterLabel = document.getElementById('regionFilterLabel');
     this.vaultCardList = document.getElementById('vaultCardList');
+
     this.vaultQuickInput = document.getElementById('vaultQuickInput');
     this.vaultTargetRegion = document.getElementById('vaultTargetRegion');
     this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
     this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
 
-    // ✨ New Trip Modal
+    // ✨ Modals
     this.newTripModal = document.getElementById('newTripModal');
     this.newTripForm = document.getElementById('newTripForm');
     this.btnCloseNewTripModal = document.getElementById('btnCloseNewTripModal');
     this.btnCancelNewTrip = document.getElementById('btnCancelNewTrip');
     this.newTripStartDateInput = document.getElementById('newTripStartDate');
 
-    // ✨ Placement Modal
     this.placementModal = document.getElementById('placementModal');
     this.btnClosePlacementModal = document.getElementById('btnClosePlacementModal');
     this.placementSpotTargetName = document.getElementById('placementSpotTargetName');
     this.placementOptionsList = document.getElementById('placementOptionsList');
+
+    // ✨ Add Region Modal
+    this.addRegionModal = document.getElementById('addRegionModal');
+    this.addRegionForm = document.getElementById('addRegionForm');
+    this.btnCloseAddRegionModal = document.getElementById('btnCloseAddRegionModal');
+    this.btnCancelAddRegion = document.getElementById('btnCancelAddRegion');
+
+    // ✨ Confirm Delete Modal
+    this.confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    this.confirmDeleteText = document.getElementById('confirmDeleteText');
+    this.btnCloseConfirmDeleteModal = document.getElementById('btnCloseConfirmDeleteModal');
+    this.btnCancelConfirmDelete = document.getElementById('btnCancelConfirmDelete');
+    this.btnExecuteConfirmDelete = document.getElementById('btnExecuteConfirmDelete');
 
     this.modal = document.getElementById('nodeModal');
     this.nodeForm = document.getElementById('nodeForm');
@@ -349,7 +385,7 @@ class VerticalTimelineAppV13 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v13_projects');
+    const saved = localStorage.getItem('triptree_tl_v14_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -357,37 +393,37 @@ class VerticalTimelineAppV13 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v13_active_id');
+    const saved = localStorage.getItem('triptree_tl_v14_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   loadVaultItems() {
-    const saved = localStorage.getItem('triptree_spot_vault_items');
+    const saved = localStorage.getItem('triptree_spot_vault_items_v14');
     if (saved) {
       try { return JSON.parse(saved); } catch(e){}
     }
     return JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
   }
 
-  loadVaultRegions() {
-    const saved = localStorage.getItem('triptree_spot_vault_regions');
+  loadCountryHierarchy() {
+    const saved = localStorage.getItem('triptree_country_hierarchy');
     if (saved) {
       try { return JSON.parse(saved); } catch(e){}
     }
-    return ["所有", "福岡", "東京", "大阪", "京都", "奈良"];
+    return JSON.parse(JSON.stringify(DEFAULT_COUNTRY_HIERARCHY));
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v13_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v13_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v14_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v14_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
   saveVaultData() {
-    localStorage.setItem('triptree_spot_vault_items', JSON.stringify(this.vaultItems));
-    localStorage.setItem('triptree_spot_vault_regions', JSON.stringify(this.vaultRegions));
+    localStorage.setItem('triptree_spot_vault_items_v14', JSON.stringify(this.vaultItems));
+    localStorage.setItem('triptree_country_hierarchy', JSON.stringify(this.countryHierarchy));
   }
 
   getActiveProject() {
@@ -414,19 +450,43 @@ class VerticalTimelineAppV13 {
       this.btnToggleFullVault.textContent = isFull ? '📐 恢復側邊抽屜' : '📖 展開全螢幕';
     });
 
+    // ✨ 2. 開啟新增地區 Modal 視窗 (取代 Prompt)
     this.btnAddRegionTag.addEventListener('click', () => {
-      const name = prompt('請輸入新地區分類名稱 (例: 沖繩 / 北海道)：');
-      if (name && !this.vaultRegions.includes(name)) {
-        this.vaultRegions.push(name);
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = '🇯🇵 ' + name;
-        this.vaultTargetRegion.appendChild(opt);
+      this.addRegionModal.classList.add('active');
+    });
+    this.btnCloseAddRegionModal.addEventListener('click', () => this.addRegionModal.classList.remove('active'));
+    this.btnCancelAddRegion.addEventListener('click', () => this.addRegionModal.classList.remove('active'));
 
-        this.selectedRegion = name;
+    this.addRegionForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const country = document.getElementById('addRegionCountrySelect').value;
+      const regionName = document.getElementById('newRegionNameInput').value.trim();
+
+      if (regionName) {
+        if (!this.countryHierarchy[country]) this.countryHierarchy[country] = [`所有${country}`];
+        if (!this.countryHierarchy[country].includes(regionName)) {
+          this.countryHierarchy[country].push(regionName);
+        }
+
+        this.selectedCountry = country;
+        this.selectedRegion = regionName;
         this.saveVaultData();
+        this.addRegionModal.classList.remove('active');
+        document.getElementById('newRegionNameInput').value = '';
         this.renderVault();
+        this.showToast(`✨ 已成功在【${country}】加入地區【${regionName}】！`);
       }
+    });
+
+    // ✨ 2. 自訂刪除確認 Modal 綁定 (取代 Confirm)
+    this.btnCloseConfirmDeleteModal.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
+    this.btnCancelConfirmDelete.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
+    this.btnExecuteConfirmDelete.addEventListener('click', () => {
+      if (this.pendingDeleteAction) {
+        this.pendingDeleteAction();
+        this.pendingDeleteAction = null;
+      }
+      this.confirmDeleteModal.classList.remove('active');
     });
 
     this.btnGenVaultCard.addEventListener('click', () => {
@@ -438,6 +498,7 @@ class VerticalTimelineAppV13 {
 
       let newSpot = {
         id: 'vault_' + Date.now(),
+        country: '日本',
         region: region,
         title: isUrl ? (val.includes('instagram') ? '📸 IG 驚喜推薦景點' : '🔗 網路精選景點') : '📍 ' + val,
         category: 'spot',
@@ -455,10 +516,9 @@ class VerticalTimelineAppV13 {
       this.showToast(`✨ 成功將【${newSpot.title}】存入景點靈感庫！`);
     });
 
-    // ✨ 2. 新增行程 Modal 綁定 (置中精美視窗整合名稱、日期、天數)
+    // ✨ 新增行程 Modal 綁定
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      // 預設今日日期
       const today = new Date().toISOString().split('T')[0];
       this.newTripStartDateInput.value = today;
       document.getElementById('newTripTitle').value = '東京 5 天 4 夜自由行';
@@ -521,7 +581,6 @@ class VerticalTimelineAppV13 {
       this.showToast(`🎉 成功自動生成 ${daysCount} 天行程與早中晚分支！`);
     });
 
-    // ✨ 1. Placement Modal 關閉綁定
     this.btnClosePlacementModal.addEventListener('click', () => this.placementModal.classList.remove('active'));
 
     this.viewport.addEventListener('wheel', (e) => {
@@ -602,14 +661,17 @@ class VerticalTimelineAppV13 {
     
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      localStorage.clear();
-      this.projects = JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
-      this.activeProjectId = this.projects[0].id;
-      this.vaultItems = JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
-      this.saveProjects();
-      this.saveVaultData();
-      this.render();
-      this.showToast('✨ 已重置載入最新行程範例！');
+      this.triggerCustomConfirm('確定要重置為最新範例資料嗎？（您的改動將會清空）', () => {
+        localStorage.clear();
+        this.projects = JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
+        this.activeProjectId = this.projects[0].id;
+        this.vaultItems = JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
+        this.countryHierarchy = JSON.parse(JSON.stringify(DEFAULT_COUNTRY_HIERARCHY));
+        this.saveProjects();
+        this.saveVaultData();
+        this.render();
+        this.showToast('✨ 已重置載入最新行程範例！');
+      });
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -620,13 +682,45 @@ class VerticalTimelineAppV13 {
     });
   }
 
-  // --- 📦 渲染景點靈感庫 Drawer ---
+  // ✨ 2. 自訂 Modal 確認視窗觸發器 (取代原生 confirm)
+  triggerCustomConfirm(msgText, onConfirmCallback) {
+    this.confirmDeleteText.textContent = msgText;
+    this.pendingDeleteAction = onConfirmCallback;
+    this.confirmDeleteModal.classList.add('active');
+  }
+
+  // --- 🌐 3. 渲染國家與地區二級階層分類與景點庫 ---
   renderVault() {
+    // 1. 渲染國家標籤 (Country Chips)
+    this.countryTabsRow.innerHTML = '';
+    const countries = Object.keys(this.countryHierarchy);
+    countries.forEach(country => {
+      const chip = document.createElement('button');
+      chip.className = `country-chip ${country === this.selectedCountry ? 'active' : ''}`;
+      let flag = '🌏';
+      if (country === '日本') flag = '🇯🇵';
+      if (country === '韓國') flag = '🇰🇷';
+      if (country === '台灣') flag = '🇹🇼';
+      if (country === '泰國') flag = '🇹🇭';
+      chip.textContent = `${flag} ${country}`;
+      
+      chip.addEventListener('click', () => {
+        this.selectedCountry = country;
+        this.selectedRegion = "所有";
+        this.renderVault();
+      });
+      this.countryTabsRow.appendChild(chip);
+    });
+
+    // 2. 渲染對應國家的地區標籤 (Region Chips)
     this.vaultRegionTabs.innerHTML = '';
-    this.vaultRegions.forEach(reg => {
+    const regions = this.countryHierarchy[this.selectedCountry] || ["所有"];
+    this.regionFilterLabel.textContent = `📍 【${this.selectedCountry}】地區選單：`;
+
+    regions.forEach(reg => {
       const chip = document.createElement('button');
       chip.className = `region-chip ${reg === this.selectedRegion ? 'active' : ''}`;
-      chip.textContent = reg === '所有' ? '🌐 全部地區' : `📍 ${reg}`;
+      chip.textContent = reg.startsWith('所有') ? '🌐 全部地區' : `📍 ${reg}`;
       chip.addEventListener('click', () => {
         this.selectedRegion = reg;
         this.renderVault();
@@ -634,11 +728,20 @@ class VerticalTimelineAppV13 {
       this.vaultRegionTabs.appendChild(chip);
     });
 
+    // 3. 篩選景點卡片 (支援國家與地區雙重過濾)
     this.vaultCardList.innerHTML = '';
-    const filtered = this.selectedRegion === '所有' ? this.vaultItems : this.vaultItems.filter(item => item.region === this.selectedRegion);
+    let filtered = this.vaultItems;
+
+    if (this.selectedCountry !== '所有') {
+      filtered = filtered.filter(item => (item.country === this.selectedCountry || (!item.country && this.selectedCountry === '日本')));
+    }
+
+    if (this.selectedRegion !== '所有' && !this.selectedRegion.startsWith('所有')) {
+      filtered = filtered.filter(item => item.region === this.selectedRegion);
+    }
 
     if (filtered.length === 0) {
-      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; font-size:0.9rem;">此地區目前無景點小卡，可在上方輸入框新增！</div>`;
+      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:24px; font-size:0.9rem;">【${this.selectedCountry} - ${this.selectedRegion}】目前無景點小卡，可在上方輸入框新增！</div>`;
       return;
     }
 
@@ -669,7 +772,6 @@ class VerticalTimelineAppV13 {
         e.dataTransfer.setData('text/plain', JSON.stringify(item));
       });
 
-      // ✨ 1. 點擊「放至指定日期」彈出全自訂高質感置中 Modal (取代醜陋 Prompt)
       card.querySelector('.vault-copy-btn').addEventListener('click', () => {
         this.openPlacementModal(item);
       });
@@ -678,7 +780,6 @@ class VerticalTimelineAppV13 {
     });
   }
 
-  // ✨ 1. 全自訂高質感置中 Modal 選單 (取代 Prompt 數字輸入)
   openPlacementModal(item) {
     if (this.isReadOnly) return;
     const proj = this.getActiveProject();
@@ -792,7 +893,6 @@ class VerticalTimelineAppV13 {
     }
   }
 
-  // ✨ 3. 行程標籤頁面列優化 (平滑橫向滑動，絕不蓋住其他元素)
   renderTabs() {
     this.tripTabsBar.innerHTML = '';
     this.projects.forEach(proj => {
@@ -805,12 +905,12 @@ class VerticalTimelineAppV13 {
       tab.addEventListener('click', (e) => {
         if (e.target.classList.contains('tab-close')) {
           e.stopPropagation();
-          if (confirm(`確定刪除行程「${proj.title}」？`)) {
+          this.triggerCustomConfirm(`確定要刪除行程「${proj.title}」？`, () => {
             this.projects = this.projects.filter(p => p.id !== proj.id);
             if (this.activeProjectId === proj.id) this.activeProjectId = this.projects[0].id;
             this.saveProjects();
             this.render();
-          }
+          });
           return;
         }
         this.activeProjectId = proj.id;
@@ -821,6 +921,7 @@ class VerticalTimelineAppV13 {
     });
   }
 
+  // --- 📐 1. 完美無縫向量連線引擎 (徹底修復箭頭分離與連線斷掉跑版問題) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -869,6 +970,7 @@ class VerticalTimelineAppV13 {
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
+    // 1. 建立所有 DOM 節點
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -876,6 +978,7 @@ class VerticalTimelineAppV13 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
+    // 2. 量測精準幾何座標並繪製完美的無縫向量連線
     requestAnimationFrame(() => {
       setTimeout(() => {
         this.svgConnectors.innerHTML = '';
@@ -892,26 +995,32 @@ class VerticalTimelineAppV13 {
                 const pEl = parentItem.element;
                 const cEl = childItem.element;
 
-                let startX = parentItem.pos.x + (pEl.offsetWidth || 260);
-                let startY = parentItem.pos.y + ((pEl.offsetHeight || 60) / 2);
+                // 量測真正的物理寬度與高度
+                const parentW = pEl.offsetWidth || 260;
+                const parentH = pEl.offsetHeight || 50;
+                const childH = cEl.offsetHeight || 50;
+
+                let startX = parentItem.pos.x + parentW;
+                let startY = parentItem.pos.y + (parentH / 2);
 
                 if (parentNode.category === 'day' && childItem.pos.category === 'period') {
                   startX = parentItem.pos.x + 30;
-                  startY = parentItem.pos.y + (pEl.offsetHeight || 40);
+                  startY = parentItem.pos.y + parentH;
                 } else if (parentNode.id === root.id) {
                   startX = mainTrunkX;
-                  startY = childItem.pos.y + ((cEl.offsetHeight || 60) / 2);
+                  startY = childItem.pos.y + (childH / 2);
                 }
 
+                // 目標點：節點卡片的正左邊緣 (No offset misalignment!)
                 const targetX = childItem.pos.x;
-                const targetY = childItem.pos.y + ((cEl.offsetHeight || 60) / 2);
+                const targetY = childItem.pos.y + (childH / 2);
 
                 this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentNode.category === 'day');
               }
             }
           }
         });
-      }, 20);
+      }, 25);
     });
 
     setTimeout(() => {
@@ -1059,11 +1168,11 @@ class VerticalTimelineAppV13 {
         deleteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const proj = this.getActiveProject();
-          if (confirm(`確定刪除「${node.title}」？`)) {
+          this.triggerCustomConfirm(`確定刪除「${node.title}」？`, () => {
             this.deleteNode(proj.rootNode, node.id);
             this.saveProjects();
             this.render();
-          }
+          });
         });
       }
     }
@@ -1079,25 +1188,28 @@ class VerticalTimelineAppV13 {
     this.svgConnectors.appendChild(line);
   }
 
+  // 📐 1. 完美無縫咬合向量折線繪製函式 (No Gap! No Arrow Misalignment!)
   drawCleanOrthogonalConnector(x1, y1, x2, y2, isDayToPeriod = false) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-    let d = '';
     const arrowSize = 8;
     const lineEndX = x2 - arrowSize;
 
+    let d = '';
     if (isDayToPeriod) {
       d = `M ${x1} ${y1} V ${y2} H ${lineEndX}`;
     } else {
-      const midX = x1 + Math.max(20, (x2 - x1) / 2);
-      d = `M ${x1} ${y1} H ${midX} V ${y2} H ${lineEndX}`;
+      // 保證從父節點右側向右走 Channel (預設 35px)，再轉折
+      const channelX = Math.min(x1 + 35, lineEndX - 20);
+      d = `M ${x1} ${y1} H ${channelX} V ${y2} H ${lineEndX}`;
     }
 
     path.setAttribute('d', d);
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
+    // 終點實心箭頭點 (剛好與 lineEndX 咬合，終點尖端在 x2)
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${lineEndX},${y2 - 6} ${lineEndX},${y2 + 6}`);
     arrow.setAttribute('fill', '#0d9488');
@@ -1256,10 +1368,12 @@ class VerticalTimelineAppV13 {
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         const node = this.findNode(root, id);
-        if (node && confirm(`確定刪除「${node.title}」？`)) {
-          this.deleteNode(root, id);
-          this.saveProjects();
-          this.render();
+        if (node) {
+          this.triggerCustomConfirm(`確定刪除「${node.title}」？`, () => {
+            this.deleteNode(root, id);
+            this.saveProjects();
+            this.render();
+          });
         }
       });
     });
@@ -1417,5 +1531,5 @@ class VerticalTimelineAppV13 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV13 = new VerticalTimelineAppV13();
+  window.appTimelineV14 = new VerticalTimelineAppV14();
 });
