@@ -1,5 +1,5 @@
 /**
- * TripTree V11 - 景點資料庫與一鍵複製行程系統 (Personal Spot Vault & Instant Duplicate Engine)
+ * TripTree V12 - 景點靈感庫為主軸旗艦引擎 (Vault-Centric Engine & Drag/Drop Placement)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -15,7 +15,7 @@ const TOKYO_DEMO_PROJECTS = [
       children: [
         {
           id: "fk-day-1",
-          title: "Day 1: 博多車站 ➔ 櫛田神社 ➔ 中洲屋台",
+          title: "Day 1: 10/20 博多車站 ➔ 櫛田神社 ➔ 中洲屋台",
           category: "day",
           expanded: true,
           bgColor: "#ffffff",
@@ -265,7 +265,7 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV11 {
+class VerticalTimelineAppV12 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -275,6 +275,7 @@ class VerticalTimelineAppV11 {
     this.selectedRegion = "所有";
     this.currentView = 'mindmap';
     this.zoomLevel = 1.0;
+    this.draggedVaultItem = null;
 
     this.isPanning = false;
     this.startX = 0;
@@ -310,6 +311,7 @@ class VerticalTimelineAppV11 {
     this.vaultDrawer = document.getElementById('vaultDrawer');
     this.btnOpenVault = document.getElementById('btnOpenVault');
     this.btnCloseVault = document.getElementById('btnCloseVault');
+    this.btnToggleFullVault = document.getElementById('btnToggleFullVault');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
     this.vaultCardList = document.getElementById('vaultCardList');
     this.vaultQuickInput = document.getElementById('vaultQuickInput');
@@ -334,7 +336,7 @@ class VerticalTimelineAppV11 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v11_projects');
+    const saved = localStorage.getItem('triptree_tl_v12_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -342,7 +344,7 @@ class VerticalTimelineAppV11 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v11_active_id');
+    const saved = localStorage.getItem('triptree_tl_v12_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
@@ -365,8 +367,8 @@ class VerticalTimelineAppV11 {
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v11_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v11_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v12_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v12_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -389,13 +391,21 @@ class VerticalTimelineAppV11 {
       this.vaultDrawer.classList.add('open');
       this.renderVault();
     });
-    this.btnCloseVault.addEventListener('click', () => this.vaultDrawer.classList.remove('open'));
+    this.btnCloseVault.addEventListener('click', () => {
+      this.vaultDrawer.classList.remove('open', 'expanded-full');
+    });
+
+    // 📖 全螢幕切換
+    this.btnToggleFullVault.addEventListener('click', () => {
+      this.vaultDrawer.classList.toggle('expanded-full');
+      const isFull = this.vaultDrawer.classList.contains('expanded-full');
+      this.btnToggleFullVault.textContent = isFull ? '📐 恢復側邊抽屜' : '📖 展開全螢幕';
+    });
 
     this.btnAddRegionTag.addEventListener('click', () => {
       const name = prompt('請輸入新地區分類名稱 (例: 沖繩 / 北海道)：');
       if (name && !this.vaultRegions.includes(name)) {
         this.vaultRegions.push(name);
-        // 也加到 select 元素
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = '🇯🇵 ' + name;
@@ -460,28 +470,59 @@ class VerticalTimelineAppV11 {
     document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
     document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
 
+    // --- 1. 新增行程對話框 (輸入名稱、日期與天數，自動生成早中晚分支) ---
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      const title = prompt('請輸入新行程名稱：', '福岡 3 天 2 夜輕旅行');
-      if (title) {
-        const newProjId = 'proj_tl_' + Date.now();
-        const newProj = {
-          id: newProjId,
-          title: title,
-          rootNode: {
-            id: 'root_tl_' + Date.now(),
-            title: title,
-            category: 'root',
-            expanded: true,
-            bgColor: '#ffffff',
-            children: []
-          }
-        };
-        this.projects.push(newProj);
-        this.activeProjectId = newProjId;
-        this.saveProjects();
-        this.render();
+      const title = prompt('請輸入行程名稱 (例: 東京 5 天 4 夜自由行)：', '東京 5 天 4 夜自由行');
+      if (!title) return;
+
+      const dateStr = prompt('請輸入出發日期 (例: 2026-10-20)：', '2026-10-20');
+      const daysCountStr = prompt('請輸入旅行總天數 (例: 5)：', '5');
+      const daysCount = Math.max(1, parseInt(daysCountStr) || 3);
+
+      const startDate = dateStr ? new Date(dateStr) : new Date();
+
+      const newDaysChildren = [];
+      for (let i = 0; i < daysCount; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const m = currentDate.getMonth() + 1;
+        const d = currentDate.getDate();
+        const dayTitle = `Day ${i + 1}: ${m}/${d}`;
+
+        newDaysChildren.push({
+          id: `day_${Date.now()}_${i}`,
+          title: dayTitle,
+          category: 'day',
+          expanded: true,
+          bgColor: '#ffffff',
+          children: [
+            { id: `p_${Date.now()}_${i}_am`, title: '上午', category: 'period', expanded: true, bgColor: '#fef3c7', children: [] },
+            { id: `p_${Date.now()}_${i}_pm`, title: '下午', category: 'period', expanded: true, bgColor: '#fef3c7', children: [] },
+            { id: `p_${Date.now()}_${i}_night`, title: '晚上', category: 'period', expanded: true, bgColor: '#fef3c7', children: [] }
+          ]
+        });
       }
+
+      const newProjId = 'proj_tl_' + Date.now();
+      const newProj = {
+        id: newProjId,
+        title: title,
+        rootNode: {
+          id: 'root_tl_' + Date.now(),
+          title: title,
+          category: 'root',
+          expanded: true,
+          bgColor: '#ffffff',
+          children: newDaysChildren
+        }
+      };
+
+      this.projects.push(newProj);
+      this.activeProjectId = newProjId;
+      this.saveProjects();
+      this.render();
+      this.showToast(`🎉 成功自動生成 ${daysCount} 天行程與早中晚分支！`);
     });
 
     this.nodeCategorySelect.addEventListener('change', (e) => {
@@ -555,7 +596,6 @@ class VerticalTimelineAppV11 {
 
   // --- 📦 渲染景點靈感庫 Drawer ---
   renderVault() {
-    // 1. 渲染地區 Chip 標籤
     this.vaultRegionTabs.innerHTML = '';
     this.vaultRegions.forEach(reg => {
       const chip = document.createElement('button');
@@ -568,7 +608,6 @@ class VerticalTimelineAppV11 {
       this.vaultRegionTabs.appendChild(chip);
     });
 
-    // 2. 篩選景點卡片
     this.vaultCardList.innerHTML = '';
     const filtered = this.selectedRegion === '所有' ? this.vaultItems : this.vaultItems.filter(item => item.region === this.selectedRegion);
 
@@ -580,6 +619,7 @@ class VerticalTimelineAppV11 {
     filtered.forEach(item => {
       const card = document.createElement('div');
       card.className = 'vault-item-card';
+      card.setAttribute('draggable', 'true');
       if (item.bgColor) card.style.backgroundColor = item.bgColor;
 
       card.innerHTML = `
@@ -594,49 +634,61 @@ class VerticalTimelineAppV11 {
             ${item.mapsUrl ? `<a href="${this.escapeHtml(item.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
             ${item.url ? `<a href="${this.escapeHtml(item.url)}" target="_blank" class="node-link" style="font-size:0.78rem;">🔗 連結</a>` : ''}
           </div>
-          <button class="vault-copy-btn" data-id="${item.id}">📋 複製到當前行程</button>
+          <button class="vault-copy-btn" data-id="${item.id}">📍 放至指定日期</button>
         </div>
       `;
 
+      // 🖐️ 2. 支援 Drag 拖拉到心智圖上
+      card.addEventListener('dragstart', (e) => {
+        this.draggedVaultItem = item;
+        e.dataTransfer.setData('text/plain', JSON.stringify(item));
+      });
+
+      // 📱 3. 支援手機與點擊指定日期放置
       card.querySelector('.vault-copy-btn').addEventListener('click', () => {
-        this.copyVaultItemToCurrentProject(item);
+        this.openPlacementMenu(item);
       });
 
       this.vaultCardList.appendChild(card);
     });
   }
 
-  // 一鍵將靈感庫小卡複製複製到當前行程指定天數
-  copyVaultItemToCurrentProject(item) {
+  // 📱 手機與點擊指定日期放置選單
+  openPlacementMenu(item) {
     if (this.isReadOnly) return;
     const proj = this.getActiveProject();
     if (!proj || !proj.rootNode) return;
 
     const days = proj.rootNode.children ? proj.rootNode.children.filter(c => c.category === 'day') : [];
-    
-    let targetDay = days[0];
-    if (days.length > 1) {
-      const dayTitles = days.map((d, idx) => `${idx + 1}. ${d.title}`).join('\n');
-      const choice = prompt(`請選擇要將【${item.title}】加入哪一天：\n\n${dayTitles}\n\n(請輸入數字 1~${days.length})`, '1');
-      if (choice && parseInt(choice) >= 1 && parseInt(choice) <= days.length) {
-        targetDay = days[parseInt(choice) - 1];
-      }
-    }
-
-    if (!targetDay) {
-      alert('請先在行程中創建至少一天 Day 1 行程！');
+    if (days.length === 0) {
+      alert('請先在行程中創建至少一天行程！');
       return;
     }
 
-    if (!targetDay.children) targetDay.children = [];
-    let period = targetDay.children.find(c => c.category === 'period');
-    if (!period) {
-      period = { id: 'p_' + Date.now(), title: '下午 / 景點行程', category: 'period', expanded: true, children: [] };
-      targetDay.children.push(period);
-    }
-    if (!period.children) period.children = [];
+    let menuOptions = [];
+    days.forEach((day, dIdx) => {
+      const periods = day.children ? day.children.filter(c => c.category === 'period') : [];
+      if (periods.length > 0) {
+        periods.forEach(p => {
+          menuOptions.push({ label: `${day.title} ➔ ${p.title}`, dayNode: day, periodNode: p });
+        });
+      } else {
+        menuOptions.push({ label: `${day.title}`, dayNode: day, periodNode: null });
+      }
+    });
 
-    const newSpotCard = {
+    const optionText = menuOptions.map((opt, i) => `${i + 1}. ${opt.label}`).join('\n');
+    const choice = prompt(`請選擇要把【${item.title}】放置在哪個位置：\n\n${optionText}\n\n(請輸入數字 1~${menuOptions.length})`, '1');
+
+    if (choice && parseInt(choice) >= 1 && parseInt(choice) <= menuOptions.length) {
+      const selectedOpt = menuOptions[parseInt(choice) - 1];
+      this.insertVaultItemIntoNode(item, selectedOpt.periodNode || selectedOpt.dayNode);
+    }
+  }
+
+  insertVaultItemIntoNode(item, targetNode) {
+    if (!targetNode.children) targetNode.children = [];
+    targetNode.children.push({
       id: 'spot_' + Date.now(),
       title: item.title,
       category: item.category || 'spot',
@@ -647,12 +699,11 @@ class VerticalTimelineAppV11 {
       note: item.note || '',
       expanded: true,
       children: []
-    };
+    });
 
-    period.children.push(newSpotCard);
     this.saveProjects();
     this.render();
-    this.showToast(`🎉 成功將【${item.title}】複製到 ${targetDay.title}！`);
+    this.showToast(`🎉 成功將【${item.title}】加入 ${targetNode.title}！`);
   }
 
   shareCompanionLink() {
@@ -728,6 +779,7 @@ class VerticalTimelineAppV11 {
     });
   }
 
+  // --- 📐 6. 完美雙階段座標計算引擎 (修復新增卡片後連線跑版的問題) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -776,6 +828,7 @@ class VerticalTimelineAppV11 {
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
+    // 1. 渲染所有 DOM 節點卡片
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -783,38 +836,44 @@ class VerticalTimelineAppV11 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    setTimeout(() => {
-      nodePositions.forEach((pos, id) => {
-        if (id !== root.id) {
-          const parentNode = this.findParentNode(root, id);
-          if (parentNode) {
-            const parentItem = renderedNodesMap.get(parentNode.id);
-            const childItem = renderedNodesMap.get(id);
+    // 2. 兩階段繪製連線（待 DOM layout 100% 安定後才量測連線，徹底防止跑版）
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        this.svgConnectors.innerHTML = '';
+        this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-            if (parentItem && childItem) {
-              const pEl = parentItem.element;
-              const cEl = childItem.element;
+        nodePositions.forEach((pos, id) => {
+          if (id !== root.id) {
+            const parentNode = this.findParentNode(root, id);
+            if (parentNode) {
+              const parentItem = renderedNodesMap.get(parentNode.id);
+              const childItem = renderedNodesMap.get(id);
 
-              let startX = parentItem.pos.x + pEl.offsetWidth;
-              let startY = parentItem.pos.y + (pEl.offsetHeight / 2);
+              if (parentItem && childItem) {
+                const pEl = parentItem.element;
+                const cEl = childItem.element;
 
-              if (parentNode.category === 'day' && childItem.pos.category === 'period') {
-                startX = parentItem.pos.x + 30;
-                startY = parentItem.pos.y + pEl.offsetHeight;
-              } else if (parentNode.id === root.id) {
-                startX = mainTrunkX;
-                startY = childItem.pos.y + (cEl.offsetHeight / 2);
+                let startX = parentItem.pos.x + (pEl.offsetWidth || 260);
+                let startY = parentItem.pos.y + ((pEl.offsetHeight || 60) / 2);
+
+                if (parentNode.category === 'day' && childItem.pos.category === 'period') {
+                  startX = parentItem.pos.x + 30;
+                  startY = parentItem.pos.y + (pEl.offsetHeight || 40);
+                } else if (parentNode.id === root.id) {
+                  startX = mainTrunkX;
+                  startY = childItem.pos.y + ((cEl.offsetHeight || 60) / 2);
+                }
+
+                const targetX = childItem.pos.x;
+                const targetY = childItem.pos.y + ((cEl.offsetHeight || 60) / 2);
+
+                this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentNode.category === 'day');
               }
-
-              const targetX = childItem.pos.x;
-              const targetY = childItem.pos.y + (cEl.offsetHeight / 2);
-
-              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentNode.category === 'day');
             }
           }
-        }
-      });
-    }, 10);
+        });
+      }, 20);
+    });
 
     setTimeout(() => {
       this.viewport.scrollLeft = mainTrunkX - 200;
@@ -827,6 +886,21 @@ class VerticalTimelineAppV11 {
     group.className = 'tree-node-group';
     group.style.left = `${x}px`;
     group.style.top = `${y}px`;
+
+    // 🖐️ 支援放卡 drop 事件
+    group.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      group.classList.add('drag-over-target');
+    });
+    group.addEventListener('dragleave', () => group.classList.remove('drag-over-target'));
+    group.addEventListener('drop', (e) => {
+      e.preventDefault();
+      group.classList.remove('drag-over-target');
+      if (this.draggedVaultItem) {
+        this.insertVaultItemIntoNode(this.draggedVaultItem, node);
+        this.draggedVaultItem = null;
+      }
+    });
 
     const isRoot = node.category === 'root';
     const isDay = node.category === 'day';
@@ -1305,5 +1379,5 @@ class VerticalTimelineAppV11 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV11 = new VerticalTimelineAppV11();
+  window.appTimelineV12 = new VerticalTimelineAppV12();
 });

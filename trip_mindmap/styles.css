@@ -1,4 +1,4 @@
-/* TripTree V11 - 景點資料庫 / 靈感庫抽屜 (Personal Spot Vault & Ai Generator UI) */
+/* TripTree V12 - 景點庫為主軸 (Vault-Centric Engine & Drag/Drop Placement) */
 :root {
   --bg-main: #f8fafc;
   --bg-card-default: #ffffff;
@@ -299,6 +299,13 @@ main {
 .tree-node-group {
   position: absolute;
   z-index: 2;
+  transition: outline 0.15s ease;
+}
+
+.tree-node-group.drag-over-target {
+  outline: 3.5px dashed #0d9488;
+  outline-offset: 4px;
+  border-radius: 14px;
 }
 
 .root-header-box {
@@ -683,31 +690,37 @@ main {
 }
 
 /* ==========================================================================
-   📦 景點靈感庫 / 資料庫側邊抽屜 (Personal Spot Vault & Generator Panel)
+   📦 景點靈感庫 V12 - 支援全螢幕展開與地區分類修正 (Vault Drawer & Fullview)
    ========================================================================== */
 .vault-drawer {
   position: fixed;
   top: 0;
-  right: -420px;
-  width: 400px;
+  right: -450px;
+  width: 440px;
   height: 100vh;
   background: #ffffff;
   border-left: 2.5px solid #e2e8f0;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.18);
   z-index: 500;
   display: flex;
   flex-direction: column;
-  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vault-drawer.open {
   right: 0;
 }
 
+.vault-drawer.expanded-full {
+  width: 100vw;
+  right: 0;
+  border-left: none;
+}
+
 .vault-header {
   background: #f59e0b;
   color: #ffffff;
-  padding: 16px 20px;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -720,6 +733,23 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.vault-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vault-icon-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .vault-close-btn {
@@ -736,7 +766,7 @@ main {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 /* AI 快速產生卡片輸入區 */
@@ -751,7 +781,7 @@ main {
 }
 
 .vault-ai-title {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 800;
   color: #b45309;
   display: flex;
@@ -780,24 +810,38 @@ main {
   align-self: flex-end;
 }
 
-/* 地區分類標籤 */
-.vault-region-tabs {
+/* 獨立美化的地區分類篩選列 (修正覆蓋問題) */
+.vault-filter-bar {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.vault-region-tabs::-webkit-scrollbar { display: none; }
+.vault-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vault-region-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-height: 120px;
+  overflow-y: auto;
+}
 
 .region-chip {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
   color: #475569;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -811,9 +855,9 @@ main {
 
 .btn-add-region {
   background: #ffffff;
-  border: 1px dashed #0f766e;
+  border: 1.5px dashed #0f766e;
   color: #0f766e;
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
   font-size: 0.8rem;
   font-weight: 700;
@@ -821,7 +865,7 @@ main {
   white-space: nowrap;
 }
 
-/* 景點小卡列表 */
+/* 景點小卡列表 (支援拖拉 Drag) */
 .vault-card-list {
   display: flex;
   flex-direction: column;
@@ -832,12 +876,18 @@ main {
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
   border-radius: 12px;
-  padding: 12px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   box-shadow: var(--shadow-sm);
   position: relative;
+  cursor: grab;
+  user-select: none;
+}
+
+.vault-item-card:active {
+  cursor: grabbing;
 }
 
 .vault-item-card:hover {
@@ -853,7 +903,7 @@ main {
 }
 
 .vault-card-title {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: #1e293b;
 }
@@ -863,17 +913,19 @@ main {
   align-items: center;
   justify-content: space-between;
   margin-top: 4px;
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px dashed #e2e8f0;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .vault-copy-btn {
   background: #0d9488;
   color: #ffffff;
   border: none;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;

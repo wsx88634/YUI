@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V11 - 景點資料庫與一鍵複製行程 (Spot Vault System)</title>
+  <title>TripTree V12 - 以景點靈感庫為主軸 (Vault-Centric Engine)</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11.0.0">
+  <link rel="stylesheet" href="styles.css?v=12.0.0">
 </head>
 <body>
 
@@ -86,14 +86,17 @@
   <div class="vault-drawer" id="vaultDrawer">
     <div class="vault-header">
       <div class="vault-title"><span>📦</span> 個人景點靈感庫</div>
-      <button class="vault-close-btn" id="btnCloseVault">&times;</button>
+      <div class="vault-header-actions">
+        <button class="vault-icon-btn" id="btnToggleFullVault" title="全螢幕檢視 / 側邊抽屜">📖 展能全螢幕</button>
+        <button class="vault-close-btn" id="btnCloseVault">&times;</button>
+      </div>
     </div>
     <div class="vault-body">
       <!-- AI / 網址貼上快捷建卡盒 -->
       <div class="vault-ai-box">
         <div class="vault-ai-title"><span>✨</span> 貼上網址 / IG / 景點名稱自動建卡</div>
         <input type="text" id="vaultQuickInput" class="vault-input" placeholder="貼上 IG 網址 / Google 地圖連結 / 景點名稱...">
-        <div style="display:flex; gap:6px;">
+        <div style="display:flex; gap:6px; align-items:center;">
           <select id="vaultTargetRegion" class="form-select" style="font-size:0.8rem; padding:4px 8px;">
             <option value="福岡">🇯🇵 福岡</option>
             <option value="東京">🇯🇵 東京</option>
@@ -105,13 +108,15 @@
         </div>
       </div>
 
-      <!-- 地區分類標籤 -->
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:0.85rem; font-weight:800; color:#475569;">地區分類篩選：</span>
-        <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
-      </div>
-      <div class="vault-region-tabs" id="vaultRegionTabs">
-        <!-- Region chips rendered via JS -->
+      <!-- 地區分類篩選獨立面板 (解決遮擋) -->
+      <div class="vault-filter-bar">
+        <div class="vault-filter-header">
+          <span style="font-size:0.85rem; font-weight:800; color:#0f766e;">📍 地區分類篩選：</span>
+          <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
+        </div>
+        <div class="vault-region-tabs" id="vaultRegionTabs">
+          <!-- Region chips rendered via JS -->
+        </div>
       </div>
 
       <!-- 景點卡片清單 -->
@@ -229,6 +234,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=11.0.0"></script>
+  <script src="app.js?v=12.0.0"></script>
 </body>
 </html>
