@@ -1,5 +1,5 @@
 /**
- * TripTree V8 - 樹狀層級乾淨折線引擎 (Clean Tree Hierarchy Orthogonal Routing Engine)
+ * TripTree V9 - 手繪手感極致零穿透折線引擎 (Zero Pass-Through Vector Connector Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -164,7 +164,7 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV8 {
+class VerticalTimelineAppV9 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -219,7 +219,7 @@ class VerticalTimelineAppV8 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v8_projects');
+    const saved = localStorage.getItem('triptree_tl_v9_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -227,15 +227,15 @@ class VerticalTimelineAppV8 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v8_active_id');
+    const saved = localStorage.getItem('triptree_tl_v9_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_tokyo_demo";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v8_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v8_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v9_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v9_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -439,7 +439,7 @@ class VerticalTimelineAppV8 {
     });
   }
 
-  // --- 📐 樹狀層級乾淨幾何連線演算法 (Clean Tree Column Alignment) ---
+  // --- 📐 絕對安全零穿透樹狀網格引線引擎 (Zero Pass-Through Grid Routing) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -448,15 +448,15 @@ class VerticalTimelineAppV8 {
     const root = proj.rootNode;
 
     const nodePositions = new Map();
-    const mainTrunkX = 350; // 貫穿主幹線 X
+    const mainTrunkX = 350;
     let currentY = 160;
 
-    // 定義各欄位的標定 X 座標 (徹底拉開，留足 70px 折線專屬緩衝帶)
-    const COL_DAY_X = 450;     // Day 卡片 (寬 260px, 右邊界 710px)
-    const COL_PERIOD_X = 780;  // 時段膠囊 (寬 110px, 右邊界 890px)
-    const COL_SPOT_X = 960;    // 景點卡片 (寬 280px, 右邊界 1240px)
-    const COL_SUB1_X = 1310;   // 一級子景點 (寬 280px, 右邊界 1590px)
-    const COL_SUB2_X = 1660;   // 二級子景點 (寬 280px)
+    // 完美欄位對齊標定 (X 軸)
+    const COL_DAY_X = 460;     // Day 卡片 (X:460 ~ 720)
+    const COL_PERIOD_X = 520;  // 時段膠囊 (X:520 ~ 630，安全縮排於 Day 內部左側)
+    const COL_SPOT_X = 760;    // 景點卡片 (X:760 ~ 1040)
+    const COL_SUB1_X = 1110;   // 一級子景點 (X:1110 ~ 1390)
+    const COL_SUB2_X = 1460;   // 二級子景點 (X:1460 ~ 1740)
 
     nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root });
 
@@ -489,7 +489,7 @@ class VerticalTimelineAppV8 {
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // 1. 先渲染所有卡片 DOM
+    // 1. 先渲染所有 DOM 元素
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -497,7 +497,7 @@ class VerticalTimelineAppV8 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    // 2. 測量實體寬高並精準導引折線 (絕不穿透卡片)
+    // 2. DOM 渲染完畢後，嚴格計算出線與進線點，絕不穿卡片！
     setTimeout(() => {
       nodePositions.forEach((pos, id) => {
         if (id !== root.id) {
@@ -513,7 +513,11 @@ class VerticalTimelineAppV8 {
               let startX = parentItem.pos.x + pEl.offsetWidth;
               let startY = parentItem.pos.y + (pEl.offsetHeight / 2);
 
-              if (parentNode.id === root.id) {
+              // 關鍵修正：若 Parent 是 Day 且 Child 是 Period，線條從 Day 的左側 40px 引出向下，絕不穿透時段卡片！
+              if (parentNode.category === 'day' && childItem.pos.category === 'period') {
+                startX = parentItem.pos.x + 30; // 從 Day 內部左邊落線
+                startY = parentItem.pos.y + pEl.offsetHeight; // 從 Day 底部向下落線
+              } else if (parentNode.id === root.id) {
                 startX = mainTrunkX;
                 startY = childItem.pos.y + (cEl.offsetHeight / 2);
               }
@@ -521,8 +525,7 @@ class VerticalTimelineAppV8 {
               const targetX = childItem.pos.x;
               const targetY = childItem.pos.y + (cEl.offsetHeight / 2);
 
-              // 依據階梯引出折線：折線垂直線落於 parentX+width 到 targetX 的正中央，保證不擦過任何卡片！
-              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY);
+              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentNode.category === 'day');
             }
           }
         }
@@ -680,22 +683,29 @@ class VerticalTimelineAppV8 {
     this.svgConnectors.appendChild(line);
   }
 
-  // --- 📐 絕不穿透卡片的階梯緩衝區專屬折線引擎 ---
-  drawCleanOrthogonalConnector(x1, y1, x2, y2) {
+  // --- 📐 絕對安全零穿透向量折線引導引擎 ---
+  drawCleanOrthogonalConnector(x1, y1, x2, y2, isDayToPeriod = false) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-    // 垂直轉折點放在緩衝帶正中央 (x1 與 x2 的正中間)
-    const midX = x1 + (x2 - x1) / 2;
+    let d = '';
     const arrowSize = 8;
     const lineEndX = x2 - arrowSize;
 
-    const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${lineEndX}`;
+    if (isDayToPeriod) {
+      // Day 到 Period: 從 Day 底部/左側直下到 targetY，然後水平往右接到 targetX
+      d = `M ${x1} ${y1} V ${y2} H ${lineEndX}`;
+    } else {
+      // 普通卡片間：在 x1 與 x2 的緩衝間隙中點（midX）垂直降落，絕不上牆穿越！
+      const midX = x1 + Math.max(20, (x2 - x1) / 2);
+      d = `M ${x1} ${y1} H ${midX} V ${y2} H ${lineEndX}`;
+    }
+
     path.setAttribute('d', d);
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
-    // 箭頭前端尖角點精準咬合於 x2
+    // 箭頭前端尖角點 100% 精準對齊 x2
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${lineEndX},${y2 - 6} ${lineEndX},${y2 + 6}`);
     arrow.setAttribute('fill', '#0d9488');
@@ -939,5 +949,5 @@ class VerticalTimelineAppV8 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV8 = new VerticalTimelineAppV8();
+  window.appTimelineV9 = new VerticalTimelineAppV9();
 });
