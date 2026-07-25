@@ -363,7 +363,6 @@ class VerticalTimelineAppV17 {
 
     this.confirmDeleteModal = document.getElementById('confirmDeleteModal');
     this.confirmDeleteText = document.getElementById('confirmDeleteText');
-    this.btnCloseConfirmDeleteModal = document.getElementById('btnCloseConfirmDeleteModal');
     this.btnCancelConfirmDelete = document.getElementById('btnCancelConfirmDelete');
     this.btnExecuteConfirmDelete = document.getElementById('btnExecuteConfirmDelete');
 
@@ -537,7 +536,6 @@ class VerticalTimelineAppV17 {
       }
     });
 
-    this.btnCloseConfirmDeleteModal.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
     this.btnCancelConfirmDelete.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
     this.btnExecuteConfirmDelete.addEventListener('click', () => {
       if (this.pendingDeleteAction) {
