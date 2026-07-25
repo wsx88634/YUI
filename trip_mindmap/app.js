@@ -785,7 +785,10 @@ class VerticalTimelineAppV17 {
       card.innerHTML = `
         <div class="vault-card-header">
           <span class="vault-card-title">${this.escapeHtml(item.title)}</span>
-          <span class="node-badge" style="font-size:0.75rem;">📍 ${this.escapeHtml(item.region || '景點')}</span>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span class="node-badge" style="font-size:0.75rem;">📍 ${this.escapeHtml(item.region || '景點')}</span>
+            <button class="vault-delete-btn" data-id="${item.id}" title="刪除此景點小卡">🗑️</button>
+          </div>
         </div>
         ${item.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
         ${item.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35;">${this.escapeHtml(item.note)}</div>` : ''}
@@ -805,6 +808,16 @@ class VerticalTimelineAppV17 {
 
       card.querySelector('.vault-copy-btn').addEventListener('click', () => {
         this.openPlacementModal(item);
+      });
+
+      card.querySelector('.vault-delete-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (confirm(`確定要從靈感庫中刪除【${item.title}】嗎？`)) {
+          this.vaultItems = this.vaultItems.filter(v => v.id !== item.id);
+          this.saveVaultData();
+          this.renderVault();
+          this.showToast(`🗑️ 已成功刪除【${item.title}】`);
+        }
       });
 
       this.vaultCardList.appendChild(card);
