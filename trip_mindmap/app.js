@@ -1,5 +1,5 @@
 /**
- * TripTree V7.1 - 完美精準折線箭頭演算法 (無縫咬合連線引擎)
+ * TripTree V8 - 樹狀層級乾淨折線引擎 (Clean Tree Hierarchy Orthogonal Routing Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -164,7 +164,7 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV71 {
+class VerticalTimelineAppV8 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -219,7 +219,7 @@ class VerticalTimelineAppV71 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v71_projects');
+    const saved = localStorage.getItem('triptree_tl_v8_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -227,15 +227,15 @@ class VerticalTimelineAppV71 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v71_active_id');
+    const saved = localStorage.getItem('triptree_tl_v8_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_tokyo_demo";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v71_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v71_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v8_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v8_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -439,6 +439,7 @@ class VerticalTimelineAppV71 {
     });
   }
 
+  // --- 📐 樹狀層級乾淨幾何連線演算法 (Clean Tree Column Alignment) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -447,43 +448,48 @@ class VerticalTimelineAppV71 {
     const root = proj.rootNode;
 
     const nodePositions = new Map();
-    const mainTrunkX = 400;
+    const mainTrunkX = 350; // 貫穿主幹線 X
     let currentY = 160;
 
-    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, node: root });
+    // 定義各欄位的標定 X 座標 (徹底拉開，留足 70px 折線專屬緩衝帶)
+    const COL_DAY_X = 450;     // Day 卡片 (寬 260px, 右邊界 710px)
+    const COL_PERIOD_X = 780;  // 時段膠囊 (寬 110px, 右邊界 890px)
+    const COL_SPOT_X = 960;    // 景點卡片 (寬 280px, 右邊界 1240px)
+    const COL_SUB1_X = 1310;   // 一級子景點 (寬 280px, 右邊界 1590px)
+    const COL_SUB2_X = 1660;   // 二級子景點 (寬 280px)
 
-    // 大間距水平延伸 (縮排 320px，留下充裕的折線緩衝區域)
-    const processTree = (node, parentX, level) => {
+    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root });
+
+    const processTree = (node, level) => {
       if (!node.children || node.children.length === 0 || node.expanded === false) return;
 
       node.children.forEach(child => {
-        let childX = parentX + 330; // 擴大欄位縮排為 330px，確保無縫對接
-
-        if (child.category === 'day') {
-          childX = mainTrunkX + 160;
-        } else if (child.category === 'period') {
-          childX = parentX + 220;
-        }
+        let childX = COL_SUB1_X;
+        if (child.category === 'day') childX = COL_DAY_X;
+        else if (child.category === 'period') childX = COL_PERIOD_X;
+        else if (level === 2) childX = COL_SPOT_X;
+        else if (level === 3) childX = COL_SUB1_X;
+        else if (level >= 4) childX = COL_SUB2_X;
 
         const childY = currentY;
-        nodePositions.set(child.id, { x: childX, y: childY, node: child });
+        nodePositions.set(child.id, { x: childX, y: childY, category: child.category, node: child });
 
         let deltaY = 145;
-        if (child.note && child.note.length > 20) deltaY = 170;
+        if (child.note && child.note.length > 20) deltaY = 175;
         if (child.category === 'day') deltaY = 85;
 
         currentY += deltaY;
 
-        processTree(child, childX, level + 1);
+        processTree(child, level + 1);
       });
     };
 
-    processTree(root, mainTrunkX, 0);
+    processTree(root, 0);
 
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // 1. 先渲染所有實體 DOM 卡片
+    // 1. 先渲染所有卡片 DOM
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -491,7 +497,7 @@ class VerticalTimelineAppV71 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    // 2. DOM 渲染完畢後，精準測量卡片實體邊界，繪製 100% 咬合無縫折線箭頭
+    // 2. 測量實體寬高並精準導引折線 (絕不穿透卡片)
     setTimeout(() => {
       nodePositions.forEach((pos, id) => {
         if (id !== root.id) {
@@ -504,7 +510,7 @@ class VerticalTimelineAppV71 {
               const pEl = parentItem.element;
               const cEl = childItem.element;
 
-              let startX = parentPosToX(parentItem.pos, pEl);
+              let startX = parentItem.pos.x + pEl.offsetWidth;
               let startY = parentItem.pos.y + (pEl.offsetHeight / 2);
 
               if (parentNode.id === root.id) {
@@ -515,21 +521,16 @@ class VerticalTimelineAppV71 {
               const targetX = childItem.pos.x;
               const targetY = childItem.pos.y + (cEl.offsetHeight / 2);
 
-              this.drawStepArrowLine(startX, startY, targetX, targetY);
+              // 依據階梯引出折線：折線垂直線落於 parentX+width 到 targetX 的正中央，保證不擦過任何卡片！
+              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY);
             }
           }
         }
       });
     }, 10);
 
-    function parentPosToX(pos, el) {
-      if (pos.node.category === 'day') return pos.x + el.offsetWidth;
-      if (pos.node.category === 'period') return pos.x + el.offsetWidth;
-      return pos.x + el.offsetWidth;
-    }
-
     setTimeout(() => {
-      this.viewport.scrollLeft = mainTrunkX - 250;
+      this.viewport.scrollLeft = mainTrunkX - 200;
       this.viewport.scrollTop = 0;
     }, 50);
   }
@@ -679,13 +680,13 @@ class VerticalTimelineAppV71 {
     this.svgConnectors.appendChild(line);
   }
 
-  // --- 🎯 完美 100% 咬合與動態中點平滑折線箭頭引擎 ---
-  drawStepArrowLine(x1, y1, x2, y2) {
+  // --- 📐 絕不穿透卡片的階梯緩衝區專屬折線引擎 ---
+  drawCleanOrthogonalConnector(x1, y1, x2, y2) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-    // 動態正中央折線點 (彈性計算，保證完美對齊絕不懸空)
-    const midX = x1 + Math.max(15, (x2 - x1) / 2);
+    // 垂直轉折點放在緩衝帶正中央 (x1 與 x2 的正中間)
+    const midX = x1 + (x2 - x1) / 2;
     const arrowSize = 8;
     const lineEndX = x2 - arrowSize;
 
@@ -694,7 +695,7 @@ class VerticalTimelineAppV71 {
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
-    // 箭頭前端尖角點 100% 精準對齊 x2
+    // 箭頭前端尖角點精準咬合於 x2
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${lineEndX},${y2 - 6} ${lineEndX},${y2 + 6}`);
     arrow.setAttribute('fill', '#0d9488');
@@ -938,5 +939,5 @@ class VerticalTimelineAppV71 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV71 = new VerticalTimelineAppV71();
+  window.appTimelineV8 = new VerticalTimelineAppV8();
 });
