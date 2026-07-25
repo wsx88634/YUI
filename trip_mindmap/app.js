@@ -1,5 +1,5 @@
 /**
- * TripTree V15 - 純化靈感庫導入主軸、動態防卡片重疊與橫向標籤滑動修復 (V15 Master Engine)
+ * TripTree V16 - 實體 DOM 物理高度動態重排引擎 (Physical Height Layout Engine - 徹底解決重疊)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -279,7 +279,7 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV15 {
+class VerticalTimelineAppV16 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -324,7 +324,6 @@ class VerticalTimelineAppV15 {
     this.btnZoomOut = document.getElementById('btnZoomOut');
     this.zoomDisplay = document.getElementById('zoomDisplay');
 
-    // 📦 Vault Drawer Elements
     this.vaultDrawer = document.getElementById('vaultDrawer');
     this.btnOpenVault = document.getElementById('btnOpenVault');
     this.btnCloseVault = document.getElementById('btnCloseVault');
@@ -340,14 +339,12 @@ class VerticalTimelineAppV15 {
     this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
     this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
 
-    // ✨ 3. 手動新增至靈感庫 Modal 元素
     this.btnOpenManualVaultModal = document.getElementById('btnOpenManualVaultModal');
     this.manualVaultModal = document.getElementById('manualVaultModal');
     this.manualVaultForm = document.getElementById('manualVaultForm');
     this.btnCloseManualVaultModal = document.getElementById('btnCloseManualVaultModal');
     this.btnCancelManualVault = document.getElementById('btnCancelManualVault');
 
-    // ✨ Modals
     this.newTripModal = document.getElementById('newTripModal');
     this.newTripForm = document.getElementById('newTripForm');
     this.btnCloseNewTripModal = document.getElementById('btnCloseNewTripModal');
@@ -387,7 +384,7 @@ class VerticalTimelineAppV15 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v15_projects');
+    const saved = localStorage.getItem('triptree_tl_v16_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -395,13 +392,13 @@ class VerticalTimelineAppV15 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v15_active_id');
+    const saved = localStorage.getItem('triptree_tl_v16_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   loadVaultItems() {
-    const saved = localStorage.getItem('triptree_spot_vault_items_v15');
+    const saved = localStorage.getItem('triptree_spot_vault_items_v16');
     if (saved) {
       try { return JSON.parse(saved); } catch(e){}
     }
@@ -418,13 +415,13 @@ class VerticalTimelineAppV15 {
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v15_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v15_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v16_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v16_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
   saveVaultData() {
-    localStorage.setItem('triptree_spot_vault_items_v15', JSON.stringify(this.vaultItems));
+    localStorage.setItem('triptree_spot_vault_items_v16', JSON.stringify(this.vaultItems));
     localStorage.setItem('triptree_country_hierarchy', JSON.stringify(this.countryHierarchy));
   }
 
@@ -437,7 +434,6 @@ class VerticalTimelineAppV15 {
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
 
-    // 📦 Vault Drawer
     this.btnOpenVault.addEventListener('click', () => {
       this.vaultDrawer.classList.add('open');
       this.renderVault();
@@ -452,7 +448,6 @@ class VerticalTimelineAppV15 {
       this.btnToggleFullVault.textContent = isFull ? '📐 恢復側邊抽屜' : '📖 展開全螢幕';
     });
 
-    // ✨ 3. 手動新增至靈感庫 Modal 綁定
     this.btnOpenManualVaultModal.addEventListener('click', () => {
       this.manualVaultForm.reset();
       this.manualVaultModal.classList.add('active');
@@ -957,7 +952,10 @@ class VerticalTimelineAppV15 {
     });
   }
 
-  // --- 📐 1. 動態智慧垂直排版引擎 (徹底解決卡片垂直重疊壓住問題) ---
+  // ==========================================================================
+  // 📐 V16 終極實體 DOM 物理高度量測佈局引擎 (Physical Height Layout Engine)
+  // 徹底告別卡片重疊！以實測卡片長度 + 30px 安全邊界精準重排！
+  // ==========================================================================
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -967,7 +965,6 @@ class VerticalTimelineAppV15 {
 
     const nodePositions = new Map();
     const mainTrunkX = 350;
-    let currentY = 160;
 
     const COL_DAY_X = 460;
     const COL_PERIOD_X = 520;
@@ -975,11 +972,12 @@ class VerticalTimelineAppV15 {
     const COL_SUB1_X = 1110;
     const COL_SUB2_X = 1460;
 
-    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root });
+    // 1. 初步拓撲樹狀劃分與列數歸類 (Tree Topology Partitioning)
+    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root, level: 0 });
 
-    const processTree = (node, level) => {
+    const flatNodeList = [];
+    const traverseTree = (node, level) => {
       if (!node.children || node.children.length === 0 || node.expanded === false) return;
-
       node.children.forEach(child => {
         let childX = COL_SUB1_X;
         if (child.category === 'day') childX = COL_DAY_X;
@@ -988,76 +986,84 @@ class VerticalTimelineAppV15 {
         else if (level === 3) childX = COL_SUB1_X;
         else if (level >= 4) childX = COL_SUB2_X;
 
-        const childY = currentY;
-        nodePositions.set(child.id, { x: childX, y: childY, category: child.category, node: child });
-
-        // 1. 依卡片內容計算動態垂直安全距離 (Dynamic Vertical Gap Calculation)
-        let deltaY = 165;
-        if (child.note) deltaY += 35;
-        if (child.imageUrl) deltaY += 90;
-        if (child.category === 'hotel') deltaY += 45;
-        if (child.category === 'day') deltaY = 85;
-
-        currentY += deltaY;
-
-        processTree(child, level + 1);
+        flatNodeList.push({ childNode: child, parentId: node.id, x: childX, level: level });
+        traverseTree(child, level + 1);
       });
     };
 
-    processTree(root, 0);
+    traverseTree(root, 0);
 
-    const maxY = Math.max(currentY + 150, 1400);
-    this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
-
-    // 1. 建立所有 DOM 節點
+    // 2. 第一階段：掛載 DOM 節點卡片到畫布中 (Mount DOM Cards)
     const renderedNodesMap = new Map();
-    nodePositions.forEach((pos, id) => {
-      const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
+    
+    // 先掛載 root 節點
+    const rootCard = this.createNodeCard(root, mainTrunkX - 160, 40);
+    this.nodesLayer.appendChild(rootCard);
+    renderedNodesMap.set(root.id, { element: rootCard, x: mainTrunkX - 160, y: 40, node: root });
+
+    // 暫時掛載所有子卡片
+    flatNodeList.forEach(item => {
+      const cardEl = this.createNodeCard(item.childNode, item.x, 0);
       this.nodesLayer.appendChild(cardEl);
-      renderedNodesMap.set(id, { element: cardEl, pos: pos });
+      renderedNodesMap.set(item.childNode.id, { element: cardEl, x: item.x, y: 0, node: item.childNode, parentId: item.parentId, level: item.level });
     });
 
-    // 2. 兩階段量測實體 DOM 寬高，繪製絕不重疊與無縫咬合連線
+    // 3. 第二階段：在 requestAnimationFrame 中讀取真正的實體 DOM 高度 (Physical Measurement & Dynamic Top Assignment)
     requestAnimationFrame(() => {
       setTimeout(() => {
+        let currentY = 160;
+        const SAFETY_MARGIN = 32; // 每張卡片之間絕不重疊的黃金離隙 Gap (32px)
+
+        // 依據扁平化遍歷順序，實測前一張卡片真實 offsetHeight 重排
+        flatNodeList.forEach(item => {
+          const itemData = renderedNodesMap.get(item.childNode.id);
+          if (itemData) {
+            itemData.y = currentY;
+            itemData.element.style.top = `${currentY}px`;
+
+            // 精確讀取物理長度，絕對不打折
+            const realHeight = itemData.element.offsetHeight || 60;
+            
+            // 下一張卡片的起點 Y 軸 = 當前 Y 軸 + 實測卡片高度 + 安全距離
+            currentY += realHeight + SAFETY_MARGIN;
+          }
+        });
+
+        // 4. 第三階段：依據精確重新排列後的實體 Y 軸座標，繪製完美的無縫向量連線 (Draw Vector Connectors)
+        const maxY = Math.max(currentY + 180, 1400);
         this.svgConnectors.innerHTML = '';
         this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-        nodePositions.forEach((pos, id) => {
+        renderedNodesMap.forEach((childItem, id) => {
           if (id !== root.id) {
-            const parentNode = this.findParentNode(root, id);
-            if (parentNode) {
-              const parentItem = renderedNodesMap.get(parentNode.id);
-              const childItem = renderedNodesMap.get(id);
+            const parentItem = renderedNodesMap.get(childItem.parentId);
+            if (parentItem) {
+              const pEl = parentItem.element;
+              const cEl = childItem.element;
 
-              if (parentItem && childItem) {
-                const pEl = parentItem.element;
-                const cEl = childItem.element;
+              const parentW = pEl.offsetWidth || 260;
+              const parentH = pEl.offsetHeight || 50;
+              const childH = cEl.offsetHeight || 50;
 
-                const parentW = pEl.offsetWidth || 260;
-                const parentH = pEl.offsetHeight || 50;
-                const childH = cEl.offsetHeight || 50;
+              let startX = parentItem.x + parentW;
+              let startY = parentItem.y + (parentH / 2);
 
-                let startX = parentItem.pos.x + parentW;
-                let startY = parentItem.pos.y + (parentH / 2);
-
-                if (parentNode.category === 'day' && childItem.pos.category === 'period') {
-                  startX = parentItem.pos.x + 30;
-                  startY = parentItem.pos.y + parentH;
-                } else if (parentNode.id === root.id) {
-                  startX = mainTrunkX;
-                  startY = childItem.pos.y + (childH / 2);
-                }
-
-                const targetX = childItem.pos.x;
-                const targetY = childItem.pos.y + (childH / 2);
-
-                this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentNode.category === 'day');
+              if (parentItem.node.category === 'day' && childItem.node.category === 'period') {
+                startX = parentItem.x + 30;
+                startY = parentItem.y + parentH;
+              } else if (parentItem.node.id === root.id) {
+                startX = mainTrunkX;
+                startY = childItem.y + (childH / 2);
               }
+
+              const targetX = childItem.x;
+              const targetY = childItem.y + (childH / 2);
+
+              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentItem.node.category === 'day');
             }
           }
         });
-      }, 30);
+      }, 35);
     });
 
     setTimeout(() => {
@@ -1125,7 +1131,6 @@ class VerticalTimelineAppV15 {
       if (node.category === 'transit') icon = '🚌';
       if (node.category === 'shop') icon = '🛍️';
 
-      // 4. 純化心智圖：移除景點卡片上的 + 按鈕 (btn-add-child 移除)
       cardHtml = `
         <div class="node-card" style="background-color:${cardBgColor};">
           <div class="node-header">
@@ -1550,5 +1555,5 @@ class VerticalTimelineAppV15 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV15 = new VerticalTimelineAppV15();
+  window.appTimelineV16 = new VerticalTimelineAppV16();
 });
