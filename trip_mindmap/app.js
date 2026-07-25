@@ -967,18 +967,12 @@ class VerticalTimelineAppV17 {
     if (!proj || !proj.rootNode) return;
     const root = proj.rootNode;
 
-    const COL_DAY_X = 460;
-    const COL_PERIOD_X = 520;
-    const COL_SPOT_X = 760;
-    const COL_SUB1_X = 1110;
-    const COL_SUB2_X = 1460;
-
     // 1. 扁平化並掛載所有卡片到 DOM (Top=0)，以便讀取真實物理高度
     const renderedNodesMap = new Map();
     const flatNodeList = [];
     
     // 掛載 Root
-    const rootX = 190;
+    const rootX = 60;
     const rootCard = this.createNodeCard(root, rootX, 0);
     this.nodesLayer.appendChild(rootCard);
     renderedNodesMap.set(root.id, { element: rootCard, x: rootX, y: 0, node: root, parentId: null, level: 0 });
@@ -986,16 +980,12 @@ class VerticalTimelineAppV17 {
     const mountTree = (node, level) => {
       if (!node.children || node.children.length === 0 || node.expanded === false) return;
       node.children.forEach(child => {
-        let childX = COL_SUB1_X;
-        if (child.category === 'day') childX = COL_DAY_X;
-        else if (child.category === 'period') childX = COL_PERIOD_X;
-        else if (level === 2) childX = COL_SPOT_X;
-        else if (level === 3) childX = COL_SUB1_X;
-        else if (level >= 4) childX = COL_SUB2_X;
+        // 先給一個預設的暫時 X，等讀取完實體寬度後在 Pass 2 正式推擠排版
+        let tempX = rootX + (level * 200); 
 
-        const cardEl = this.createNodeCard(child, childX, 0);
+        const cardEl = this.createNodeCard(child, tempX, 0);
         this.nodesLayer.appendChild(cardEl);
-        renderedNodesMap.set(child.id, { element: cardEl, x: childX, y: 0, node: child, parentId: node.id, level: level });
+        renderedNodesMap.set(child.id, { element: cardEl, x: tempX, y: 0, node: child, parentId: node.id, level: level });
         
         flatNodeList.push({ id: child.id, node: child, parentId: node.id });
         mountTree(child, level + 1);
@@ -1016,30 +1006,35 @@ class VerticalTimelineAppV17 {
           rootData.element.style.top = '40px';
         }
 
-        // DFS 計算真實排版 (保留水平對齊的優美階層)
+        // DFS 計算真實排版 (動態水平 X 軸 + 動態垂直 Y 軸)
         const calculateTreePositions = (node) => {
           if (!node.children || node.children.length === 0 || node.expanded === false) return;
+          const parentData = renderedNodesMap.get(node.id);
           
           node.children.forEach(child => {
             const childData = renderedNodesMap.get(child.id);
-            if (childData) {
-              // 第一個子節點 (或每個子節點剛開始) 對齊 currentY
+            if (childData && parentData) {
+              
+              // === 1. 計算完美的動態水平 X 座標 ===
+              const parentRealWidth = parentData.element.offsetWidth || 150;
+              let horizontalGap = 50; 
+              if (node.category === 'root') horizontalGap = 80;
+              
+              const newX = parentData.x + parentRealWidth + horizontalGap;
+              childData.x = newX;
+              childData.element.style.left = `${newX}px`;
+
+              // === 2. 計算完美的動態垂直 Y 座標 ===
               childData.y = currentY;
               childData.element.style.top = `${currentY}px`;
               
-              // 取得卡片真實高度
               const realHeight = childData.element.offsetHeight || 60;
               
-              // 如果它沒有子節點，那麼 currentY 就要往下推，讓出空間給下一個兄弟節點
               if (!child.children || child.children.length === 0 || child.expanded === false) {
                 currentY += realHeight + SAFETY_MARGIN;
               } else {
-                // 如果它有子節點，則深入排版子節點
-                // 子節點的排版會自己去推動 currentY
                 calculateTreePositions(child);
                 
-                // 為了防止父節點(例如"上午")本身很高，但其子節點數量少總高度很低，
-                // 導致下一個兄弟節點往上縮。必須確保 currentY 至少大於 (父節點Y + 父節點高度 + 間距)
                 const minNextY = childData.y + realHeight + SAFETY_MARGIN;
                 if (currentY < minNextY) {
                   currentY = minNextY;
@@ -1070,18 +1065,10 @@ class VerticalTimelineAppV17 {
               let startX = parentItem.x + parentW;
               let startY = parentItem.y + (parentH / 2);
 
-              if (parentItem.node.category === 'day' && childItem.node.category === 'period') {
-                startX = parentItem.x + 30;
-                startY = parentItem.y + parentH;
-              } else if (parentItem.node.id === root.id) {
-                startX = 350;
-                startY = childItem.y + (childH / 2);
-              }
-
               const targetX = childItem.x;
               const targetY = childItem.y + (childH / 2);
 
-              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, parentItem.node.category === 'day');
+              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, false);
             }
           }
         });
