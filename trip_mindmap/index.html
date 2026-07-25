@@ -3,16 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V4 - 垂直時間軸旅遊心智圖</title>
+  <title>TripTree V5 - 垂直時間軸旅遊心智圖 (含旅伴唯讀分享)</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <!-- 強制 Mobile 瀏覽器 Cache Busting 版本號 -->
-  <link rel="stylesheet" href="styles.css?v=4.0.1">
+  <link rel="stylesheet" href="styles.css?v=5.0.0">
 </head>
 <body>
+
+  <!-- Read-Only Banner for Companion Mode -->
+  <div id="readonlyBanner" class="readonly-banner" style="display: none;">
+    <span>👀 旅伴唯讀預覽模式（無法修改行程，僅提供查看與地圖導覽）</span>
+  </div>
 
   <!-- Top Header -->
   <header>
@@ -28,6 +31,11 @@
     <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
 
     <div class="nav-actions">
+      <!-- Share Readonly Link to Companion -->
+      <button class="btn btn-share-companion" id="btnShareCompanion" title="複製唯讀網址分享給旅伴看">
+        <span>🔗</span> <span class="btn-text">分享旅伴 (唯讀)</span>
+      </button>
+
       <button class="btn" id="btnRefresh" title="手機強制刷新" onclick="localStorage.clear(); location.reload(true);">
         <span>🔄</span> <span class="btn-text">刷新</span>
       </button>
@@ -71,7 +79,7 @@
 
   <!-- Floating Manual Zoom Control Panel -->
   <div class="zoom-controls-widget" id="zoomWidget">
-    <button class="zoom-btn" id="btnZoomOut" title="縮小 (Ctrl + 滾輪向下)">−</button>
+    <button class="zoom-btn" id="btnZoomOut" title="縮小 (Ctrl + 滾輪向下)">− </button>
     <div class="zoom-display" id="zoomDisplay" title="點擊重置為 100%">100%</div>
     <button class="zoom-btn" id="btnZoomIn" title="放大 (Ctrl + 滾輪向上)">+</button>
   </div>
@@ -110,14 +118,14 @@
         <div class="form-group">
           <label class="form-label">卡片背景顏色 (自由配色)</label>
           <div class="color-picker-grid" id="colorPickerGrid">
-            <div class="color-swatch active" data-color="#ffffff" style="background:#ffffff; border:1px solid #ccc;" title="純白"></div>
-            <div class="color-swatch" data-color="#fef3c7" style="background:#fef3c7;" title="奶油黃"></div>
-            <div class="color-swatch" data-color="#fef08a" style="background:#fef08a;" title="明亮黃"></div>
-            <div class="color-swatch" data-color="#bbf7d0" style="background:#bbf7d0;" title="薄荷綠"></div>
-            <div class="color-swatch" data-color="#dcfce7" style="background:#dcfce7;" title="淺綠"></div>
-            <div class="color-swatch" data-color="#ffedd5" style="background:#ffedd5;" title="蜜桃橘"></div>
-            <div class="color-swatch" data-color="#e0e7ff" style="background:#e0e7ff;" title="淺紫藍"></div>
-            <div class="color-swatch" data-color="#fecdd3" style="background:#fecdd3;" title="粉紅"></div>
+            <div class="color-swatch active" data-color="#ffffff" style="background:#ffffff; border:1px solid #ccc;"></div>
+            <div class="color-swatch" data-color="#fef3c7" style="background:#fef3c7;"></div>
+            <div class="color-swatch" data-color="#fef08a" style="background:#fef08a;"></div>
+            <div class="color-swatch" data-color="#bbf7d0" style="background:#bbf7d0;"></div>
+            <div class="color-swatch" data-color="#dcfce7" style="background:#dcfce7;"></div>
+            <div class="color-swatch" data-color="#ffedd5" style="background:#ffedd5;"></div>
+            <div class="color-swatch" data-color="#e0e7ff" style="background:#e0e7ff;"></div>
+            <div class="color-swatch" data-color="#fecdd3" style="background:#fecdd3;"></div>
             <input type="color" id="nodeColorCustom" value="#ffffff" style="width:32px; height:32px; border:none; background:transparent; cursor:pointer;">
           </div>
           <input type="hidden" id="nodeColor" value="#ffffff">
@@ -130,7 +138,7 @@
 
         <div id="hotelFieldsBox" class="hotel-fields-box" style="display: none;">
           <div class="form-group">
-            <label class="form-label" for="hotelCheckIn">入住時間 / 退房時間</label>
+            <label class="form-label">入住時間 / 退房時間</label>
             <div style="display:flex; gap:8px;">
               <input type="text" id="hotelCheckIn" class="form-input" placeholder="入住 (如 21:30)">
               <input type="text" id="hotelCheckOut" class="form-input" placeholder="退房 (如 11:00)">
@@ -177,7 +185,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- 強制 Mobile 瀏覽器 Cache Busting 版本號 -->
-  <script src="app.js?v=4.0.1"></script>
+  <script src="app.js?v=5.0.0"></script>
 </body>
 </html>

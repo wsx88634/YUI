@@ -1,10 +1,6 @@
 /**
- * TripTree V4.0.1 - 手機強效 Cache Busting 垂直時間軸心智圖
+ * TripTree V5 - 垂直時間軸心智圖 + 旅伴唯讀分享模式
  */
-
-(function clearLegacyMobileCache() {
-  localStorage.clear(); // 強制全清手機舊版快取，確保立即看見 V4 大間距與放大縮小控盤
-})();
 
 const DEFAULT_TIMELINE_PROJECTS = [
   {
@@ -146,8 +142,9 @@ const DEFAULT_TIMELINE_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV4 {
+class VerticalTimelineAppV5 {
   constructor() {
+    this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
     this.currentView = 'mindmap';
@@ -162,6 +159,11 @@ class VerticalTimelineAppV4 {
     this.initElements();
     this.bindEvents();
     this.render();
+  }
+
+  checkReadOnlyMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('mode') === 'readonly' || urlParams.get('view') === 'readonly';
   }
 
   initElements() {
@@ -187,10 +189,15 @@ class VerticalTimelineAppV4 {
     this.colorPickerGrid = document.getElementById('colorPickerGrid');
     this.nodeColorInput = document.getElementById('nodeColor');
     this.nodeColorCustom = document.getElementById('nodeColorCustom');
+
+    if (this.isReadOnly) {
+      document.body.classList.add('readonly-mode');
+      document.getElementById('readonlyBanner').style.display = 'flex';
+    }
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v41_projects');
+    const saved = localStorage.getItem('triptree_tl_v5_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -198,14 +205,15 @@ class VerticalTimelineAppV4 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v41_active_id');
+    const saved = localStorage.getItem('triptree_tl_v5_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
   }
 
   saveProjects() {
-    localStorage.setItem('triptree_tl_v41_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v41_active_id', this.activeProjectId);
+    if (this.isReadOnly) return;
+    localStorage.setItem('triptree_tl_v5_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v5_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -226,7 +234,14 @@ class VerticalTimelineAppV4 {
       }
     }, { passive: false });
 
+    // Share Companion Read-Only Link
+    const btnShareCompanion = document.getElementById('btnShareCompanion');
+    if (btnShareCompanion) {
+      btnShareCompanion.addEventListener('click', () => this.shareCompanionLink());
+    }
+
     this.tripTitleInput.addEventListener('input', (e) => {
+      if (this.isReadOnly) return;
       const proj = this.getActiveProject();
       if (proj) {
         proj.title = e.target.value;
@@ -240,6 +255,7 @@ class VerticalTimelineAppV4 {
     document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
 
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
+      if (this.isReadOnly) return;
       const title = prompt('請輸入新行程名稱：', '新行程 10/19~10/25');
       if (title) {
         const newProjId = 'proj_tl_' + Date.now();
@@ -302,6 +318,7 @@ class VerticalTimelineAppV4 {
     });
 
     document.getElementById('fabAdd').addEventListener('click', () => {
+      if (this.isReadOnly) return;
       const proj = this.getActiveProject();
       if (proj && proj.rootNode) this.openModalForAdd(proj.rootNode.id);
     });
@@ -311,6 +328,7 @@ class VerticalTimelineAppV4 {
     document.getElementById('fileImportInput').addEventListener('change', (e) => this.importJSON(e));
     
     document.getElementById('btnResetDemo').addEventListener('click', () => {
+      if (this.isReadOnly) return;
       localStorage.clear();
       this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
       this.activeProjectId = this.projects[0].id;
@@ -325,6 +343,19 @@ class VerticalTimelineAppV4 {
       e.preventDefault();
       this.handleFormSubmit();
     });
+  }
+
+  shareCompanionLink() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const readonlyUrl = `${baseUrl}?mode=readonly`;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(readonlyUrl).then(() => {
+        alert(`🎉 旅伴唯讀網址已成功複製！\n\n網址：\n${readonlyUrl}\n\n您可直接貼給旅伴，他們點開後只能檢視瀏覽與點擊地圖，無法修改您的行程！`);
+      });
+    } else {
+      prompt('請複製以下「旅伴唯讀網址」給您的同行夥伴：', readonlyUrl);
+    }
   }
 
   setZoom(level) {
@@ -366,7 +397,7 @@ class VerticalTimelineAppV4 {
       tab.className = `folder-tab ${proj.id === this.activeProjectId ? 'active' : ''}`;
       tab.innerHTML = `
         <span>📁 ${this.escapeHtml(proj.title)}</span>
-        ${this.projects.length > 1 ? `<span class="tab-close">✕</span>` : ''}
+        ${(!this.isReadOnly && this.projects.length > 1) ? `<span class="tab-close">✕</span>` : ''}
       `;
       tab.addEventListener('click', (e) => {
         if (e.target.classList.contains('tab-close')) {
@@ -471,20 +502,24 @@ class VerticalTimelineAppV4 {
       cardHtml = `
         <div class="day-hex-card" style="background-color:${cardBgColor};">
           <span>📅 ${this.escapeHtml(node.title)}</span>
-          <div class="node-actions" style="margin-left:10px;">
-            <button class="btn-mini btn-add-child">+</button>
-            <button class="btn-mini btn-edit-node">✏️</button>
-          </div>
+          ${!this.isReadOnly ? `
+            <div class="node-actions" style="margin-left:10px;">
+              <button class="btn-mini btn-add-child">+</button>
+              <button class="btn-mini btn-edit-node">✏️</button>
+            </div>
+          ` : ''}
         </div>
       `;
     } else if (isPeriod) {
       cardHtml = `
         <div class="period-pill-card" style="background-color:${cardBgColor};">
           <span>🕒 ${this.escapeHtml(node.title)}</span>
-          <div class="node-actions" style="margin-left:8px;">
-            <button class="btn-mini btn-add-child">+</button>
-            <button class="btn-mini btn-edit-node">✏️</button>
-          </div>
+          ${!this.isReadOnly ? `
+            <div class="node-actions" style="margin-left:8px;">
+              <button class="btn-mini btn-add-child">+</button>
+              <button class="btn-mini btn-edit-node">✏️</button>
+            </div>
+          ` : ''}
         </div>
       `;
     } else {
@@ -521,13 +556,15 @@ class VerticalTimelineAppV4 {
         cardHtml += `</div>`;
       }
 
-      cardHtml += `
-        <div class="node-actions">
-          <button class="btn-mini btn-add-child">+</button>
-          <button class="btn-mini btn-edit-node">✏️</button>
-          <button class="btn-mini btn-delete-node">🗑️</button>
-        </div>
-      `;
+      if (!this.isReadOnly) {
+        cardHtml += `
+          <div class="node-actions">
+            <button class="btn-mini btn-add-child">+</button>
+            <button class="btn-mini btn-edit-node">✏️</button>
+            <button class="btn-mini btn-delete-node">🗑️</button>
+          </div>
+        `;
+      }
 
       if (node.children && node.children.length > 0) {
         const isExpanded = node.expanded !== false;
@@ -549,33 +586,35 @@ class VerticalTimelineAppV4 {
       });
     }
 
-    const addBtn = group.querySelector('.btn-add-child');
-    if (addBtn) {
-      addBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.openModalForAdd(node.id);
-      });
-    }
+    if (!this.isReadOnly) {
+      const addBtn = group.querySelector('.btn-add-child');
+      if (addBtn) {
+        addBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.openModalForAdd(node.id);
+        });
+      }
 
-    const editBtn = group.querySelector('.btn-edit-node');
-    if (editBtn) {
-      editBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.openModalForEdit(node);
-      });
-    }
+      const editBtn = group.querySelector('.btn-edit-node');
+      if (editBtn) {
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.openModalForEdit(node);
+        });
+      }
 
-    const deleteBtn = group.querySelector('.btn-delete-node');
-    if (deleteBtn) {
-      deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const proj = this.getActiveProject();
-        if (confirm(`確定刪除「${node.title}」？`)) {
-          this.deleteNode(proj.rootNode, node.id);
-          this.saveProjects();
-          this.render();
-        }
-      });
+      const deleteBtn = group.querySelector('.btn-delete-node');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const proj = this.getActiveProject();
+          if (confirm(`確定刪除「${node.title}」？`)) {
+            this.deleteNode(proj.rootNode, node.id);
+            this.saveProjects();
+            this.render();
+          }
+        });
+      }
     }
 
     return group;
@@ -627,13 +666,15 @@ class VerticalTimelineAppV4 {
     rootGroup.innerHTML = `
       <div class="outline-group-header">
         <span>${this.escapeHtml(root.title)}</span>
-        <button class="btn btn-primary btn-mini" id="outlineAddDay">+ 新增行程</button>
+        ${!this.isReadOnly ? `<button class="btn btn-primary btn-mini" id="outlineAddDay">+ 新增行程</button>` : ''}
       </div>
       <div class="outline-items" id="outlineRootItems"></div>
     `;
     this.outlineTree.appendChild(rootGroup);
 
-    document.getElementById('outlineAddDay').addEventListener('click', () => this.openModalForAdd(root.id));
+    if (!this.isReadOnly) {
+      document.getElementById('outlineAddDay').addEventListener('click', () => this.openModalForAdd(root.id));
+    }
 
     const itemsContainer = rootGroup.querySelector('#outlineRootItems');
     const renderOutlineNode = (node, container) => {
@@ -658,24 +699,28 @@ class VerticalTimelineAppV4 {
             ${child.url ? `<a href="${this.escapeHtml(child.url)}" target="_blank" class="node-link">🔗 連結</a>` : ''}
             ${child.mapsUrl ? `<a href="${this.escapeHtml(child.mapsUrl)}" target="_blank" class="node-link">🗺️ 地圖</a>` : ''}
           </div>
-          <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px;">
-            <button class="btn btn-mini btn-add-child-outline">+ 子景點</button>
-            <button class="btn btn-mini btn-edit-outline">✏️</button>
-            <button class="btn btn-mini btn-del-outline">🗑️</button>
-          </div>
+          ${!this.isReadOnly ? `
+            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px;">
+              <button class="btn btn-mini btn-add-child-outline">+ 子景點</button>
+              <button class="btn btn-mini btn-edit-outline">✏️</button>
+              <button class="btn btn-mini btn-del-outline">🗑️</button>
+            </div>
+          ` : ''}
           <div class="outline-subitems" style="margin-top:8px; padding-left:12px;"></div>
         `;
         container.appendChild(itemCard);
 
-        itemCard.querySelector('.btn-add-child-outline').addEventListener('click', () => this.openModalForAdd(child.id));
-        itemCard.querySelector('.btn-edit-outline').addEventListener('click', () => this.openModalForEdit(child));
-        itemCard.querySelector('.btn-del-outline').addEventListener('click', () => {
-          if (confirm(`確定刪除「${child.title}」？`)) {
-            this.deleteNode(root, child.id);
-            this.saveProjects();
-            this.render();
-          }
-        });
+        if (!this.isReadOnly) {
+          itemCard.querySelector('.btn-add-child-outline').addEventListener('click', () => this.openModalForAdd(child.id));
+          itemCard.querySelector('.btn-edit-outline').addEventListener('click', () => this.openModalForEdit(child));
+          itemCard.querySelector('.btn-del-outline').addEventListener('click', () => {
+            if (confirm(`確定刪除「${child.title}」？`)) {
+              this.deleteNode(root, child.id);
+              this.saveProjects();
+              this.render();
+            }
+          });
+        }
 
         renderOutlineNode(child, itemCard.querySelector('.outline-subitems'));
       });
@@ -684,6 +729,7 @@ class VerticalTimelineAppV4 {
   }
 
   openModalForAdd(parentId) {
+    if (this.isReadOnly) return;
     this.modalTitle.textContent = '新增景點 / 節點';
     this.nodeForm.reset();
     document.getElementById('nodeId').value = '';
@@ -695,6 +741,7 @@ class VerticalTimelineAppV4 {
   }
 
   openModalForEdit(node) {
+    if (this.isReadOnly) return;
     this.modalTitle.textContent = '編輯景點資訊';
     document.getElementById('nodeId').value = node.id;
     document.getElementById('nodeParentId').value = '';
@@ -720,6 +767,7 @@ class VerticalTimelineAppV4 {
   closeModal() { this.modal.classList.remove('active'); }
 
   handleFormSubmit() {
+    if (this.isReadOnly) return;
     const id = document.getElementById('nodeId').value;
     const parentId = document.getElementById('nodeParentId').value;
     const proj = this.getActiveProject();
@@ -766,7 +814,7 @@ class VerticalTimelineAppV4 {
   }
 
   deleteNode(parent, targetId) {
-    if (!parent.children) return false;
+    if (this.isReadOnly || !parent.children) return false;
     const index = parent.children.findIndex(c => c.id === targetId);
     if (index !== -1) {
       parent.children.splice(index, 1);
@@ -791,6 +839,7 @@ class VerticalTimelineAppV4 {
   }
 
   importJSON(e) {
+    if (this.isReadOnly) return;
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -831,5 +880,5 @@ class VerticalTimelineAppV4 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV4 = new VerticalTimelineAppV4();
+  window.appTimelineV5 = new VerticalTimelineAppV5();
 });

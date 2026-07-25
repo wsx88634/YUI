@@ -1,4 +1,4 @@
-/* TripTree V4 - Vertical Timeline Mindmap (寬敞間距 + 手動縮放面板) */
+/* TripTree V5 - Readonly Companion Shareable Mode */
 :root {
   --bg-main: #e8f5e9;
   --bg-card-default: #ffffff;
@@ -37,7 +37,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   border-bottom: 2px solid #cbd5e1;
   padding: 10px 16px;
@@ -78,7 +78,7 @@ header {
   gap: 6px;
   overflow-x: auto;
   padding: 4px 0;
-  max-width: 45vw;
+  max-width: 40vw;
   scrollbar-width: none;
 }
 
@@ -97,7 +97,6 @@ header {
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.2s ease;
 }
 
 .folder-tab.active {
@@ -142,6 +141,17 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.btn-share-companion {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+}
+
+.btn-share-companion:hover {
+  background: #0369a1;
 }
 
 .btn-primary {
@@ -197,6 +207,36 @@ header {
   max-width: 400px;
 }
 
+/* Read-Only Companion Banner */
+.readonly-banner {
+  background: #0284c7;
+  color: #ffffff;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Hide edit elements when in Readonly mode */
+body.readonly-mode .btn-add-tab,
+body.readonly-mode .fab-btn,
+body.readonly-mode .node-actions,
+body.readonly-mode .btn-share-companion,
+body.readonly-mode #btnResetDemo,
+body.readonly-mode #btnImport,
+body.readonly-mode .tab-close {
+  display: none !important;
+}
+
+body.readonly-mode .trip-title-edit {
+  pointer-events: none;
+  border: none;
+}
+
 /* Main Viewport & Canvas */
 main {
   flex: 1;
@@ -221,7 +261,6 @@ main {
   cursor: grabbing;
 }
 
-/* Scalable Mindmap Canvas Container */
 .mindmap-canvas {
   position: absolute;
   top: 0;
@@ -257,7 +296,6 @@ main {
   stroke-linejoin: round;
 }
 
-/* Node Cards Layout (與主線和鄰居保有利落大間距) */
 .tree-node-group {
   position: absolute;
   z-index: 2;
@@ -433,7 +471,6 @@ main {
   z-index: 10;
 }
 
-/* Floating Zoom Control Panel (畫面右下角手動縮放控制元件) */
 .zoom-controls-widget {
   position: fixed;
   bottom: 24px;
@@ -462,7 +499,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
 }
 
 .zoom-btn:hover {
@@ -479,7 +515,6 @@ main {
   cursor: pointer;
 }
 
-/* Color Picker Presets */
 .color-picker-grid {
   display: flex;
   gap: 8px;
@@ -496,12 +531,6 @@ main {
   border: 2px solid transparent;
 }
 
-.color-swatch:hover, .color-swatch.active {
-  transform: scale(1.15);
-  border-color: #0f766e;
-}
-
-/* Mobile Timeline View */
 .outline-view {
   padding: 20px;
   max-width: 768px;
@@ -551,7 +580,6 @@ main {
   gap: 6px;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -587,7 +615,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: var(--shadow-md);
 }
 
 .modal-header {
