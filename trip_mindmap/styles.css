@@ -1,4 +1,4 @@
-/* Modern Luxury Travel Mindmap Styles */
+/* TripTree V2 - Modern Top-Down Left-Extending Travel Mindmap Styles */
 :root {
   --bg-dark: #0f172a;
   --bg-card: #1e293b;
@@ -12,9 +12,9 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-glow: rgba(99, 102, 241, 0.3);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-glow: rgba(99, 102, 241, 0.35);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -45,14 +45,15 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-color);
-  padding: 12px 20px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .logo-group {
@@ -79,6 +80,76 @@ header {
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Left Top Folder / Trip Tabs Bar */
+.trip-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0;
+  max-width: 50vw;
+  scrollbar-width: none;
+}
+
+.trip-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.folder-tab {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.folder-tab:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+}
+
+.folder-tab.active {
+  background: var(--accent-gradient);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.tab-close {
+  opacity: 0.6;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  padding: 2px 4px;
+}
+
+.tab-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.btn-add-tab {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed var(--border-color);
+  color: var(--text-muted);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-add-tab:hover {
+  background: var(--accent-primary);
+  color: #fff;
 }
 
 .nav-actions {
@@ -114,22 +185,12 @@ header {
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
-.btn-primary:hover {
-  opacity: 0.95;
-  transform: translateY(-1px);
-}
-
-.btn-icon-only {
-  padding: 8px;
-  border-radius: var(--radius-md);
-}
-
-/* View Controls Bar */
+/* Toolbar Bar */
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 8px 16px;
   background: rgba(30, 41, 59, 0.5);
   border-bottom: 1px solid var(--border-color);
   gap: 10px;
@@ -170,7 +231,7 @@ header {
   border: 1px dashed transparent;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  max-width: 300px;
+  max-width: 320px;
 }
 
 .trip-title-edit:hover, .trip-title-edit:focus {
@@ -188,14 +249,14 @@ main {
   flex-direction: column;
 }
 
-/* Mindmap Container */
+/* Top-Down Canvas Viewport */
 .mindmap-viewport {
   width: 100%;
   height: 100%;
   flex: 1;
   overflow: auto;
   position: relative;
-  background-radial: radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 1) 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 1) 100%);
   cursor: grab;
   user-select: none;
 }
@@ -208,12 +269,12 @@ main {
   position: absolute;
   top: 0;
   left: 0;
-  min-width: 2000px;
-  min-height: 2000px;
+  min-width: 3000px;
+  min-height: 3000px;
   padding: 200px;
 }
 
-/* SVG Connecting Lines Layer */
+/* SVG Connector Lines Layer */
 .svg-connectors {
   position: absolute;
   top: 0;
@@ -226,18 +287,12 @@ main {
 
 .connector-path {
   fill: none;
-  stroke: rgba(99, 102, 241, 0.4);
+  stroke: rgba(99, 102, 241, 0.45);
   stroke-width: 2.5;
-  stroke-dasharray: 0;
   transition: stroke 0.3s ease;
 }
 
-.connector-path.highlight {
-  stroke: var(--accent-secondary);
-  stroke-width: 3.5;
-}
-
-/* Tree Nodes System */
+/* Top-Down & Left Extending Tree Nodes */
 .tree-node-group {
   position: absolute;
   z-index: 2;
@@ -248,16 +303,15 @@ main {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
-  min-width: 160px;
-  max-width: 260px;
+  padding: 12px 14px;
+  width: 220px;
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: 6px;
   position: relative;
-  transition: all 0.25 ease;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
 }
 
 .node-card:hover {
@@ -270,7 +324,7 @@ main {
   background: var(--accent-gradient);
   border: none;
   padding: 16px 24px;
-  min-width: 220px;
+  width: 260px;
   border-radius: var(--radius-lg);
 }
 
@@ -281,8 +335,7 @@ main {
 }
 
 .node-card.category-node {
-  background: rgba(30, 41, 59, 0.9);
-  border-left: 4px solid var(--accent-secondary);
+  border-top: 4px solid var(--accent-secondary);
 }
 
 .node-header {
@@ -304,7 +357,7 @@ main {
   font-size: 0.7rem;
   padding: 2px 6px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: var(--text-muted);
   font-weight: 500;
   white-space: nowrap;
@@ -312,11 +365,10 @@ main {
 
 .node-meta {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   font-size: 0.8rem;
   color: var(--text-muted);
-  flex-wrap: wrap;
 }
 
 .node-link {
@@ -326,16 +378,27 @@ main {
   align-items: center;
   gap: 4px;
   font-size: 0.8rem;
-  word-break: break-all;
 }
 
 .node-link:hover {
   text-decoration: underline;
 }
 
+.hotel-badge-box {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: #67e8f9;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .node-thumb {
   width: 100%;
-  height: 90px;
+  height: 95px;
   border-radius: var(--radius-sm);
   object-fit: cover;
   margin-top: 4px;
@@ -347,9 +410,7 @@ main {
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-  margin-top: 2px;
+  opacity: 0.7;
 }
 
 .node-card:hover .node-actions {
@@ -357,7 +418,7 @@ main {
 }
 
 .btn-mini {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   color: var(--text-muted);
   width: 24px;
@@ -368,7 +429,6 @@ main {
   justify-content: center;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .btn-mini:hover {
@@ -376,12 +436,12 @@ main {
   color: #fff;
 }
 
-/* Expand / Collapse Toggle Button on Nodes */
-.toggle-btn {
+/* Top-Down Collapse Button (Bottom of Card) */
+.toggle-btn-bottom {
   position: absolute;
-  right: -12px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -395,6 +455,29 @@ main {
   cursor: pointer;
   z-index: 10;
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* Color Picker Presets */
+.color-picker-grid {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s ease;
+}
+
+.color-swatch:hover, .color-swatch.active {
+  transform: scale(1.15);
+  border-color: #fff;
 }
 
 /* Mobile Timeline View */
@@ -476,20 +559,13 @@ main {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transform: translateY(20px);
-  transition: transform 0.25s ease;
-}
-
-.modal-overlay.active .modal-box {
-  transform: translateY(0);
 }
 
 .modal-header {
@@ -533,18 +609,21 @@ main {
   font-size: 0.9rem;
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px var(--border-glow);
-}
-
 .form-textarea {
   resize: vertical;
   min-height: 80px;
 }
 
-/* Floating Action Button for Mobile */
+.hotel-fields-box {
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px dashed rgba(6, 182, 212, 0.4);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .fab-btn {
   position: fixed;
   bottom: 24px;
@@ -562,14 +641,8 @@ main {
   justify-content: center;
   cursor: pointer;
   z-index: 90;
-  transition: transform 0.2s ease;
 }
 
-.fab-btn:active {
-  transform: scale(0.92);
-}
-
-/* Toast Notifications */
 .toast-container {
   position: fixed;
   bottom: 90px;
@@ -579,7 +652,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  pointer-events: none;
 }
 
 .toast {
@@ -590,29 +662,9 @@ main {
   border-radius: var(--radius-full);
   font-size: 0.875rem;
   font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  animation: fadeInOut 3s forwards;
 }
 
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(10px); }
-  15% { opacity: 1; transform: translateY(0); }
-  85% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
-}
-
-/* Mobile Responsive Rules */
 @media (max-width: 640px) {
-  header {
-    padding: 10px 14px;
-  }
-  .logo-title {
-    font-size: 1.1rem;
-  }
-  .btn-text {
-    display: none;
-  }
-  .toolbar {
-    padding: 8px 14px;
-  }
+  .trip-tabs-bar { max-width: 100%; }
+  .btn-text { display: none; }
 }

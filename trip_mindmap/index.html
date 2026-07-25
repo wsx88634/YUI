@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree - 樹狀心智圖旅遊規劃工具</title>
-  <meta name="description" content="專為手機與桌面最佳化的樹狀心智圖旅遊規劃小工具，輕鬆儲存景點網址與詳細資訊。">
+  <title>TripTree V2 - 樹狀心智圖旅遊規劃工具</title>
+  <meta name="description" content="專為手機與桌面最佳化的樹狀心智圖旅遊規劃小工具，支援多行程資料夾、由上而下樹狀圖、自訂卡片配色與住宿專屬資訊。">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +19,13 @@
       <div class="logo-icon">🗺️</div>
       <div class="logo-title">TripTree</div>
     </div>
+
+    <!-- Left Top Multi-Trip Folder / Project Tabs -->
+    <div class="trip-tabs-bar" id="tripTabsBar">
+      <!-- Tabs populated via JS -->
+    </div>
+    <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
+
     <div class="nav-actions">
       <button class="btn" id="btnExport" title="匯出 JSON">
         <span>📤</span> <span class="btn-text">匯出</span>
@@ -26,7 +33,7 @@
       <button class="btn" id="btnImport" title="匯入 JSON">
         <span>📥</span> <span class="btn-text">匯入</span>
       </button>
-      <button class="btn btn-primary" id="btnResetDemo" title="重置為範例行程">
+      <button class="btn btn-primary" id="btnResetDemo" title="重置示範資料">
         <span>✨</span> <span class="btn-text">範例行程</span>
       </button>
     </div>
@@ -37,7 +44,7 @@
     <input type="text" id="tripTitleInput" class="trip-title-edit" value="✈️ 東京 5天4夜自由行心智圖" placeholder="點擊編輯行程名稱...">
     
     <div class="view-switcher">
-      <button class="tab-btn active" id="tabMindmap">🌳 心智圖視圖</button>
+      <button class="tab-btn active" id="tabMindmap">🌳 由上而下心智圖</button>
       <button class="tab-btn" id="tabOutline">📱 手機列表視圖</button>
     </div>
   </div>
@@ -88,9 +95,41 @@
           </select>
         </div>
 
+        <!-- Custom Card Background Color Picker -->
+        <div class="form-group">
+          <label class="form-label">卡片背景顏色 (自訂配色)</label>
+          <div class="color-picker-grid" id="colorPickerGrid">
+            <div class="color-swatch active" data-color="#1e293b" style="background:#1e293b;" title="深藍預設"></div>
+            <div class="color-swatch" data-color="#3b0764" style="background:#3b0764;" title="極光紫"></div>
+            <div class="color-swatch" data-color="#064e3b" style="background:#064e3b;" title="翡翠綠"></div>
+            <div class="color-swatch" data-color="#7c2d12" style="background:#7c2d12;" title="暮光橙"></div>
+            <div class="color-swatch" data-color="#831843" style="background:#831843;" title="櫻花粉"></div>
+            <div class="color-swatch" data-color="#0c4a6e" style="background:#0c4a6e;" title="海洋藍"></div>
+            <div class="color-swatch" data-color="#451a03" style="background:#451a03;" title="琥珀棕"></div>
+            <div class="color-swatch" data-color="#18181b" style="background:#18181b;" title="石墨灰"></div>
+            <input type="color" id="nodeColorCustom" value="#1e293b" style="width:32px; height:32px; border:none; background:transparent; cursor:pointer;" title="自由挑選顏色">
+          </div>
+          <input type="hidden" id="nodeColor" value="#1e293b">
+        </div>
+
         <div class="form-group">
           <label class="form-label" for="nodeTitle">景點 / 節點名稱 *</label>
           <input type="text" id="nodeTitle" class="form-input" placeholder="例如：SHIBUYA SKY 展望台" required>
+        </div>
+
+        <!-- Hotel Special Fields Container -->
+        <div id="hotelFieldsBox" class="hotel-fields-box" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="hotelCheckIn">入住時間 / 退房時間</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="hotelCheckIn" class="form-input" placeholder="入住 (如 15:00)">
+              <input type="text" id="hotelCheckOut" class="form-input" placeholder="退房 (如 11:00)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hotelRoomType">房型 / 訂房確認號</label>
+            <input type="text" id="hotelRoomType" class="form-input" placeholder="例如：高級雙人房 #BK12345">
+          </div>
         </div>
 
         <div class="form-group">
