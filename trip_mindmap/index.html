@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree - 垂直時間軸旅遊心智圖</title>
-  <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具，支援手繪風格時間軸、寬敞排版、手動放大縮小與住宿資訊。">
+  <title>TripTree V4 - 垂直時間軸旅遊心智圖</title>
+  <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <!-- 強制 Mobile 瀏覽器 Cache Busting 版本號 -->
+  <link rel="stylesheet" href="styles.css?v=4.0.1">
 </head>
 <body>
 
@@ -27,13 +28,16 @@
     <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
 
     <div class="nav-actions">
+      <button class="btn" id="btnRefresh" title="手機強制刷新" onclick="localStorage.clear(); location.reload(true);">
+        <span>🔄</span> <span class="btn-text">刷新</span>
+      </button>
       <button class="btn" id="btnExport" title="匯出 JSON">
         <span>📤</span> <span class="btn-text">匯出</span>
       </button>
       <button class="btn" id="btnImport" title="匯入 JSON">
         <span>📥</span> <span class="btn-text">匯入</span>
       </button>
-      <button class="btn btn-primary" id="btnResetDemo" title="載入圖片範例">
+      <button class="btn btn-primary" id="btnResetDemo" title="重置載入圖片範例">
         <span>✨</span> <span class="btn-text">圖片範例</span>
       </button>
     </div>
@@ -65,7 +69,7 @@
     </div>
   </main>
 
-  <!-- Floating Manual Zoom Control Panel (畫面手動放大縮小控制盤) -->
+  <!-- Floating Manual Zoom Control Panel -->
   <div class="zoom-controls-widget" id="zoomWidget">
     <button class="zoom-btn" id="btnZoomOut" title="縮小 (Ctrl + 滾輪向下)">−</button>
     <div class="zoom-display" id="zoomDisplay" title="點擊重置為 100%">100%</div>
@@ -103,7 +107,6 @@
           </select>
         </div>
 
-        <!-- Custom Card Background Color Picker -->
         <div class="form-group">
           <label class="form-label">卡片背景顏色 (自由配色)</label>
           <div class="color-picker-grid" id="colorPickerGrid">
@@ -115,7 +118,7 @@
             <div class="color-swatch" data-color="#ffedd5" style="background:#ffedd5;" title="蜜桃橘"></div>
             <div class="color-swatch" data-color="#e0e7ff" style="background:#e0e7ff;" title="淺紫藍"></div>
             <div class="color-swatch" data-color="#fecdd3" style="background:#fecdd3;" title="粉紅"></div>
-            <input type="color" id="nodeColorCustom" value="#ffffff" style="width:32px; height:32px; border:none; background:transparent; cursor:pointer;" title="自由選擇色彩">
+            <input type="color" id="nodeColorCustom" value="#ffffff" style="width:32px; height:32px; border:none; background:transparent; cursor:pointer;">
           </div>
           <input type="hidden" id="nodeColor" value="#ffffff">
         </div>
@@ -125,7 +128,6 @@
           <input type="text" id="nodeTitle" class="form-input" placeholder="例如：15:35起飛 ➔ 19:30抵達關西機場" required>
         </div>
 
-        <!-- Hotel Special Fields Container -->
         <div id="hotelFieldsBox" class="hotel-fields-box" style="display: none;">
           <div class="form-group">
             <label class="form-label" for="hotelCheckIn">入住時間 / 退房時間</label>
@@ -162,7 +164,7 @@
 
         <div class="form-group">
           <label class="form-label" for="nodeNote">筆記 / 說明備註</label>
-          <textarea id="nodeNote" class="form-textarea" placeholder="填寫出關時間、搭車指引、美食推薦等資訊..."></textarea>
+          <textarea id="nodeNote" class="form-textarea" placeholder="填寫出關時間、搭車指引等資訊..."></textarea>
         </div>
 
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
@@ -173,10 +175,9 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Application Script -->
-  <script src="app.js"></script>
+  <!-- 強制 Mobile 瀏覽器 Cache Busting 版本號 -->
+  <script src="app.js?v=4.0.1"></script>
 </body>
 </html>

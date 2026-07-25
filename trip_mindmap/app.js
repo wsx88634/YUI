@@ -1,11 +1,9 @@
 /**
- * TripTree V4 - 寬敞排版垂直時間軸 + 手動畫面放大縮小控制
+ * TripTree V4.0.1 - 手機強效 Cache Busting 垂直時間軸心智圖
  */
 
-(function clearLegacyCache() {
-  localStorage.removeItem('triptree_data');
-  localStorage.removeItem('triptree_v2_projects');
-  localStorage.removeItem('triptree_tl_projects');
+(function clearLegacyMobileCache() {
+  localStorage.clear(); // 強制全清手機舊版快取，確保立即看見 V4 大間距與放大縮小控盤
 })();
 
 const DEFAULT_TIMELINE_PROJECTS = [
@@ -192,7 +190,7 @@ class VerticalTimelineAppV4 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v4_projects');
+    const saved = localStorage.getItem('triptree_tl_v41_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -200,14 +198,14 @@ class VerticalTimelineAppV4 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v4_active_id');
+    const saved = localStorage.getItem('triptree_tl_v41_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
   }
 
   saveProjects() {
-    localStorage.setItem('triptree_tl_v4_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v4_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v41_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v41_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -216,12 +214,10 @@ class VerticalTimelineAppV4 {
   }
 
   bindEvents() {
-    // Zoom Controls
     this.btnZoomIn.addEventListener('click', () => this.setZoom(this.zoomLevel + 0.15));
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
 
-    // Ctrl + Wheel Zoom
     this.viewport.addEventListener('wheel', (e) => {
       if (e.ctrlKey) {
         e.preventDefault();
@@ -391,7 +387,6 @@ class VerticalTimelineAppV4 {
     });
   }
 
-  // --- Generous Spacing Vertical Timeline Layout (寬敞利落不擠在一塊) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -401,29 +396,22 @@ class VerticalTimelineAppV4 {
 
     const nodePositions = new Map();
     const mainTrunkX = 450;
-    let currentY = 180; // 頂部與主幹留出空間
+    let currentY = 180;
 
     nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, node: root });
 
-    // 大間距引出計算
     const layoutChildren = (parent, parentX, parentY, indentLevel) => {
       if (!parent.children || parent.children.length === 0 || parent.expanded === false) return;
 
       parent.children.forEach(child => {
-        let childX = parentX + 240; // 預設廣闊的 X 軸水平縮排距離
+        let childX = parentX + 240;
         let childY = currentY;
 
-        if (child.category === 'day') {
-          childX = mainTrunkX + 160;
-        } else if (child.category === 'period') {
-          childX = parentX + 160;
-        } else if (indentLevel >= 2) {
-          childX = parentX + 250;
-        }
+        if (child.category === 'day') childX = mainTrunkX + 160;
+        else if (child.category === 'period') childX = parentX + 160;
+        else if (indentLevel >= 2) childX = parentX + 250;
 
         nodePositions.set(child.id, { x: childX, y: childY, node: child });
-
-        // 垂直 Y 軸高度加大到 145px (利落寬廣，絕不重疊擁擠)
         currentY += 145;
 
         layoutChildren(child, childX, childY, indentLevel + 1);
@@ -435,7 +423,6 @@ class VerticalTimelineAppV4 {
     const maxY = Math.max(currentY + 120, 1200);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // Draw Connectors
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
