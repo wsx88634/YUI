@@ -148,11 +148,12 @@
   <div class="modal-overlay" id="manualVaultModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 class="modal-title"><span>✍️</span> 手動新增至景點靈感庫</h3>
+        <h3 class="modal-title" id="mvModalTitle"><span>✍️</span> 手動新增至景點靈感庫</h3>
         <button class="close-btn" id="btnCloseManualVaultModal">&times;</button>
       </div>
 
       <form id="manualVaultForm">
+        <input type="hidden" id="mvEditingId" value="">
         <div style="display:flex; gap:8px;">
           <div class="form-group" style="flex:1;">
             <label class="form-label">選擇國家 *</label>
@@ -207,7 +208,7 @@
 
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
           <button type="button" class="btn" id="btnCancelManualVault">取消</button>
-          <button type="submit" class="btn btn-primary">✨ 存入靈感庫</button>
+          <button type="submit" class="btn btn-primary" id="mvSubmitBtn">✨ 存入靈感庫</button>
         </div>
       </form>
     </div>
@@ -417,6 +418,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=20.0.0"></script>
+  <script src="app.js?v=21.0.0"></script>
 </body>
 </html>

@@ -449,6 +449,9 @@ class VerticalTimelineAppV17 {
     });
 
     this.btnOpenManualVaultModal.addEventListener('click', () => {
+      document.getElementById('mvEditingId').value = '';
+      document.getElementById('mvModalTitle').innerHTML = '<span>✍️</span> 手動新增至景點靈感庫';
+      document.getElementById('mvSubmitBtn').innerHTML = '✨ 存入靈感庫';
       this.manualVaultForm.reset();
       this.manualVaultModal.classList.add('active');
     });
@@ -457,36 +460,54 @@ class VerticalTimelineAppV17 {
 
     this.manualVaultForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const editingId = document.getElementById('mvEditingId').value;
       const country = document.getElementById('mvCountry').value;
       const region = document.getElementById('mvRegion').value.trim();
       const title = document.getElementById('mvTitle').value.trim();
-
-      const newSpot = {
-        id: 'vault_' + Date.now(),
-        country: country,
-        region: region,
-        title: title,
-        category: document.getElementById('mvCategory').value,
-        cost: document.getElementById('mvCost').value.trim(),
-        mapsUrl: document.getElementById('mvMapsUrl').value.trim(),
-        url: document.getElementById('mvUrl').value.trim(),
-        note: document.getElementById('mvNote').value.trim(),
-        bgColor: '#e0e7ff'
-      };
 
       if (!this.countryHierarchy[country]) this.countryHierarchy[country] = [`所有${country}`];
       if (!this.countryHierarchy[country].includes(region)) {
         this.countryHierarchy[country].push(region);
       }
 
-      this.vaultItems.unshift(newSpot);
+      if (editingId) {
+        // 修改既存靈感景點
+        const target = this.vaultItems.find(v => v.id === editingId);
+        if (target) {
+          target.country = country;
+          target.region = region;
+          target.title = title;
+          target.category = document.getElementById('mvCategory').value;
+          target.cost = document.getElementById('mvCost').value.trim();
+          target.mapsUrl = document.getElementById('mvMapsUrl').value.trim();
+          target.url = document.getElementById('mvUrl').value.trim();
+          target.note = document.getElementById('mvNote').value.trim();
+        }
+        this.showToast(`💾 已成功修改【${title}】！`);
+      } else {
+        // 新建靈感景點
+        const newSpot = {
+          id: 'vault_' + Date.now(),
+          country: country,
+          region: region,
+          title: title,
+          category: document.getElementById('mvCategory').value,
+          cost: document.getElementById('mvCost').value.trim(),
+          mapsUrl: document.getElementById('mvMapsUrl').value.trim(),
+          url: document.getElementById('mvUrl').value.trim(),
+          note: document.getElementById('mvNote').value.trim(),
+          bgColor: '#e0e7ff'
+        };
+        this.vaultItems.unshift(newSpot);
+        this.showToast(`✨ 已成功新增【${title}】至靈感庫！`);
+      }
+
       this.selectedCountry = country;
       this.selectedRegion = region;
 
       this.saveVaultData();
       this.manualVaultModal.classList.remove('active');
       this.renderVault();
-      this.showToast(`✨ 已成功新增【${title}】至靈感庫！`);
     });
 
     this.btnAddRegionTag.addEventListener('click', () => {
@@ -785,9 +806,12 @@ class VerticalTimelineAppV17 {
       card.innerHTML = `
         <div class="vault-card-header">
           <span class="vault-card-title">${this.escapeHtml(item.title)}</span>
-          <div style="display:flex; align-items:center; gap:4px;">
+          <div style="display:flex; align-items:center; gap:6px;">
             <span class="node-badge" style="font-size:0.75rem;">📍 ${this.escapeHtml(item.region || '景點')}</span>
-            <button class="vault-delete-btn" data-id="${item.id}" title="刪除此景點小卡">🗑️</button>
+            <div class="vault-action-group">
+              <button class="vault-action-btn btn-edit-vault" data-id="${item.id}" title="編輯此景點小卡">✏️ 編輯</button>
+              <button class="vault-action-btn btn-delete-vault" data-id="${item.id}" title="刪除此景點小卡">🗑️ 刪除</button>
+            </div>
           </div>
         </div>
         ${item.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
@@ -810,7 +834,12 @@ class VerticalTimelineAppV17 {
         this.openPlacementModal(item);
       });
 
-      card.querySelector('.vault-delete-btn').addEventListener('click', (e) => {
+      card.querySelector('.btn-edit-vault').addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openEditVaultModal(item);
+      });
+
+      card.querySelector('.btn-delete-vault').addEventListener('click', (e) => {
         e.stopPropagation();
         if (confirm(`確定要從靈感庫中刪除【${item.title}】嗎？`)) {
           this.vaultItems = this.vaultItems.filter(v => v.id !== item.id);
@@ -822,6 +851,23 @@ class VerticalTimelineAppV17 {
 
       this.vaultCardList.appendChild(card);
     });
+  }
+
+  openEditVaultModal(item) {
+    document.getElementById('mvEditingId').value = item.id;
+    document.getElementById('mvModalTitle').innerHTML = '<span>✏️</span> 編輯景點靈感卡片';
+    document.getElementById('mvSubmitBtn').innerHTML = '💾 儲存修改';
+    
+    document.getElementById('mvCountry').value = item.country || '日本';
+    document.getElementById('mvRegion').value = item.region || '';
+    document.getElementById('mvTitle').value = item.title || '';
+    document.getElementById('mvCategory').value = item.category || 'spot';
+    document.getElementById('mvCost').value = item.cost || '';
+    document.getElementById('mvMapsUrl').value = item.mapsUrl || '';
+    document.getElementById('mvUrl').value = item.url || '';
+    document.getElementById('mvNote').value = item.note || '';
+
+    this.manualVaultModal.classList.add('active');
   }
 
   openPlacementModal(item) {
