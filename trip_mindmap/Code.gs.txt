@@ -1,0 +1,11 @@
+// ==========================================
+// TripTree - Google Apps Script (Code.gs)
+// 貼上位置：script.google.com 的 Code.gs 檔案中
+// ==========================================
+
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('Index')
+      .setTitle('TripTree - 旅遊樹狀心智圖規劃工具')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1.0')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
