@@ -1,5 +1,5 @@
 /**
- * TripTree V5.1 - 新手功能指南與範例行程
+ * TripTree V6 - 零重疊演算法 + 精準子樹高度計算
  */
 
 const DEFAULT_TIMELINE_PROJECTS = [
@@ -151,7 +151,7 @@ const DEFAULT_TIMELINE_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV51 {
+class VerticalTimelineAppV6 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -206,7 +206,7 @@ class VerticalTimelineAppV51 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v51_projects');
+    const saved = localStorage.getItem('triptree_tl_v6_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -214,15 +214,15 @@ class VerticalTimelineAppV51 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v51_active_id');
+    const saved = localStorage.getItem('triptree_tl_v6_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_timeline_guide";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v51_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v51_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v6_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v6_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -426,6 +426,35 @@ class VerticalTimelineAppV51 {
     });
   }
 
+  // --- 🧮 零重疊動態子樹高度演算法 (Zero Overlap Subtree Layout) ---
+  getNodeHeight(node) {
+    if (node.category === 'root') return 80;
+    if (node.category === 'day') return 55;
+    if (node.category === 'period') return 50;
+
+    let h = 110; // 基礎卡片高度
+    if (node.note) h += 30;
+    if (node.url || node.mapsUrl) h += 25;
+    if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) h += 40;
+    return h;
+  }
+
+  getSubtreeHeight(node) {
+    const nodeSelfHeight = this.getNodeHeight(node);
+    if (!node.children || node.children.length === 0 || node.expanded === false) {
+      return nodeSelfHeight;
+    }
+
+    const gap = 35; // 垂直子節點間距
+    let childrenTotalHeight = 0;
+    node.children.forEach((child, index) => {
+      childrenTotalHeight += this.getSubtreeHeight(child);
+      if (index < node.children.length - 1) childrenTotalHeight += gap;
+    });
+
+    return Math.max(nodeSelfHeight, childrenTotalHeight);
+  }
+
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -435,33 +464,47 @@ class VerticalTimelineAppV51 {
 
     const nodePositions = new Map();
     const mainTrunkX = 450;
-    let currentY = 180;
+    const verticalGap = 35;
 
-    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, node: root });
+    // 計算並分派 Y 座標
+    const positionNodeSubtree = (node, parentX, startY, indentLevel) => {
+      const subtreeHeight = this.getSubtreeHeight(node);
+      const selfHeight = this.getNodeHeight(node);
 
-    const layoutChildren = (parent, parentX, parentY, indentLevel) => {
-      if (!parent.children || parent.children.length === 0 || parent.expanded === false) return;
+      let currentX = parentX + 280;
+      if (node.category === 'day') currentX = mainTrunkX + 160;
+      else if (node.category === 'period') currentX = parentX + 160;
 
-      parent.children.forEach(child => {
-        let childX = parentX + 240;
-        let childY = currentY;
+      // 本節點居中於該子樹高度
+      const centerY = startY + (subtreeHeight / 2) - (selfHeight / 2);
+      nodePositions.set(node.id, { x: currentX, y: centerY, height: selfHeight, node: node });
 
-        if (child.category === 'day') childX = mainTrunkX + 160;
-        else if (child.category === 'period') childX = parentX + 160;
-        else if (indentLevel >= 2) childX = parentX + 250;
-
-        nodePositions.set(child.id, { x: childX, y: childY, node: child });
-        currentY += 145;
-
-        layoutChildren(child, childX, childY, indentLevel + 1);
-      });
+      if (node.children && node.children.length > 0 && node.expanded !== false) {
+        let childStartY = startY;
+        node.children.forEach(child => {
+          const childSubtreeH = this.getSubtreeHeight(child);
+          positionNodeSubtree(child, currentX, childStartY, indentLevel + 1);
+          childStartY += childSubtreeH + verticalGap;
+        });
+      }
     };
 
-    layoutChildren(root, mainTrunkX, 40, 0);
+    // Root 置頂
+    nodePositions.set(root.id, { x: mainTrunkX - 180, y: 40, height: 80, node: root });
 
-    const maxY = Math.max(currentY + 120, 1200);
+    let currentDayY = 160;
+    if (root.children && root.children.length > 0) {
+      root.children.forEach(dayNode => {
+        const daySubtreeH = this.getSubtreeHeight(dayNode);
+        positionNodeSubtree(dayNode, mainTrunkX, currentDayY, 0);
+        currentDayY += daySubtreeH + 50;
+      });
+    }
+
+    const maxY = Math.max(currentDayY + 150, 1200);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
+    // 繪製節點卡片與連線
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
@@ -471,15 +514,16 @@ class VerticalTimelineAppV51 {
         if (parentNode) {
           const parentPos = nodePositions.get(parentNode.id);
           if (parentPos) {
-            let startX = parentPos.x + 140;
-            let startY = parentPos.y + 24;
+            let startX = parentPos.x + (parentNode.category === 'day' ? 160 : (parentNode.category === 'period' ? 110 : 260));
+            let startY = parentPos.y + (parentPos.height / 2);
 
             if (parentNode.id === root.id) {
               startX = mainTrunkX;
-              startY = pos.y + 24;
+              startY = pos.y + (pos.height / 2);
             }
 
-            this.drawStepArrowLine(startX, startY, pos.x, pos.y + 24);
+            const targetY = pos.y + (pos.height / 2);
+            this.drawStepArrowLine(startX, startY, pos.x, targetY);
           }
         }
       }
@@ -714,7 +758,7 @@ class VerticalTimelineAppV51 {
               <button class="btn btn-mini btn-del-outline">🗑️</button>
             </div>
           ` : ''}
-          <div class="outline-subitems" style="margin-top:8px; padding-left:12px;"></div>
+          <div class="outline-subitems"></div>
         `;
         container.appendChild(itemCard);
 
@@ -888,5 +932,5 @@ class VerticalTimelineAppV51 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV51 = new VerticalTimelineAppV51();
+  window.appTimelineV6 = new VerticalTimelineAppV6();
 });

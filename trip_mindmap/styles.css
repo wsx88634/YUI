@@ -1,4 +1,4 @@
-/* TripTree V5 - Readonly Companion Shareable Mode */
+/* TripTree V6 - 零重疊演算法 + 全適應間距 */
 :root {
   --bg-main: #e8f5e9;
   --bg-card-default: #ffffff;
@@ -150,17 +150,12 @@ header {
   box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
 }
 
-.btn-share-companion:hover {
-  background: #0369a1;
-}
-
 .btn-primary {
   background: #0f766e;
   color: #fff;
   border: none;
 }
 
-/* Toolbar */
 .toolbar {
   display: flex;
   align-items: center;
@@ -207,7 +202,6 @@ header {
   max-width: 400px;
 }
 
-/* Read-Only Companion Banner */
 .readonly-banner {
   background: #0284c7;
   color: #ffffff;
@@ -221,7 +215,6 @@ header {
   gap: 8px;
 }
 
-/* Hide edit elements when in Readonly mode */
 body.readonly-mode .btn-add-tab,
 body.readonly-mode .fab-btn,
 body.readonly-mode .node-actions,
@@ -265,8 +258,8 @@ main {
   position: absolute;
   top: 0;
   left: 0;
-  min-width: 4000px;
-  min-height: 5000px;
+  min-width: 4500px;
+  min-height: 6000px;
   padding: 120px;
   transform-origin: 0 0;
   transition: transform 0.15s ease-out;
@@ -299,23 +292,24 @@ main {
 .tree-node-group {
   position: absolute;
   z-index: 2;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .root-header-box {
   background: #ffffff;
   border: 4px solid #134e4a;
   border-radius: 28px;
-  padding: 18px 36px;
+  padding: 16px 32px;
   text-align: center;
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   align-items: center;
+  white-space: nowrap;
 }
 
 .root-header-title {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   font-weight: 900;
   color: #134e4a;
 }
@@ -324,8 +318,8 @@ main {
   background: #ffffff;
   border: 3px solid #134e4a;
   border-radius: 20px;
-  padding: 12px 24px;
-  font-size: 1.2rem;
+  padding: 10px 22px;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #134e4a;
   box-shadow: var(--shadow-sm);
@@ -339,8 +333,8 @@ main {
   background: #fef3c7;
   border: 2.5px solid #d97706;
   border-radius: var(--radius-pill);
-  padding: 8px 22px;
-  font-size: 1.05rem;
+  padding: 8px 20px;
+  font-size: 1rem;
   font-weight: 800;
   color: #78350f;
   box-shadow: var(--shadow-sm);
@@ -355,8 +349,7 @@ main {
   border: 2px solid #64748b;
   border-radius: 14px;
   padding: 12px 16px;
-  min-width: 220px;
-  max-width: 320px;
+  width: 260px; /* 固定寬度，防止爆版重疊 */
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -377,10 +370,11 @@ main {
 }
 
 .node-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #1e293b;
   line-height: 1.35;
+  word-break: break-word;
 }
 
 .node-badge {
@@ -523,16 +517,9 @@ main {
   margin-top: 4px;
 }
 
-.color-swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
+/* 📱 手機列表視圖 (Mobile Outline View 零重疊修正) */
 .outline-view {
-  padding: 20px;
+  padding: 16px;
   max-width: 768px;
   margin: 0 auto;
   width: 100%;
@@ -542,44 +529,60 @@ main {
 .outline-tree {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px; /* 擴大主區塊距離 */
 }
 
 .outline-group {
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .outline-group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  margin-bottom: 12px;
   color: #0f766e;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
 }
 
 .outline-items {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-left: 12px;
+  gap: 14px; /* 子卡片縱向排列大間距，絕不重疊 */
+  padding-left: 10px;
   border-left: 3px solid #0d9488;
 }
 
 .outline-item-card {
   background: #f8fafc;
   border: 1.5px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
+.outline-subitems {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  padding-left: 14px;
+  border-left: 2px dotted #0d9488;
+}
+
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
