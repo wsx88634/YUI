@@ -10,6 +10,7 @@
 
 ## 目標與路線圖
 - [x] 專案基礎建設初始化 (L1 + L3)
+- [x] 完成旅遊樹狀心智圖規劃工具 (TripTree)
 - [ ] 依需要擴充與維護各項小工具專案
 
 ## 資料夾結構
@@ -19,7 +20,11 @@
 ├── IOGEAR_GWU637_操作設定指南.pdf
 ├── generate_pdf_manual.py
 ├── notebooklm-quiz-hub/
-└── space_shooter/
+├── space_shooter/
+└── trip_mindmap/
+    ├── index.html
+    ├── styles.css
+    └── app.js
 ```
 
 ## 同步層級（本專案初始化至第 3 層級）
@@ -27,7 +32,7 @@
 | 層級 | 平台 | 位置 | 讀取時機 |
 |------|------|------|---------|
 | L1 | 本地（GDrive） | `agents.md`＋`handoff.md` | 每個 session |
-| L2 | GitHub | 未啟用（尚未登入 `gh auth login`） | 指定時 |
+| L2 | GitHub | wsx88634/YUI | 指定時 |
 | L3 | Obsidian | `小工具/專案工作流程.md` | 有需要時 |
 
 ## 工作約定
