@@ -1,21 +1,21 @@
 /**
- * TripTree V5 - 垂直時間軸心智圖 + 旅伴唯讀分享模式
+ * TripTree V5.1 - 新手功能指南與範例行程
  */
 
 const DEFAULT_TIMELINE_PROJECTS = [
   {
-    id: "proj_timeline_1",
-    title: "璇璇行程 10/19~10/25",
+    id: "proj_timeline_guide",
+    title: "TripTree 功能指南 (以 10/19 行程為例)",
     rootNode: {
-      id: "root_tl1",
-      title: "璇璇行程 10/19~10/25",
+      id: "root_tl_guide",
+      title: "TripTree 功能指南 (以 10/19 行程為例)",
       category: "root",
       expanded: true,
       bgColor: "#ffffff",
       children: [
         {
-          id: "day-1019",
-          title: "10/19 到日本",
+          id: "day-1019-guide",
+          title: "10/19 到日本 (範例行程)",
           category: "day",
           expanded: true,
           bgColor: "#ffffff",
@@ -33,7 +33,7 @@ const DEFAULT_TIMELINE_PROJECTS = [
                   category: "spot",
                   cost: "11:00 前",
                   bgColor: "#fef08a",
-                  note: "檢查護照、日幣與網卡。",
+                  note: "💡 提示：點擊右側 + 號即可在此新增延伸景點！",
                   children: []
                 }
               ]
@@ -47,11 +47,11 @@ const DEFAULT_TIMELINE_PROJECTS = [
               children: [
                 {
                   id: "act-2",
-                  title: "12:00 到小港機場！",
+                  title: "12:00 到小港機場辦理登機",
                   category: "spot",
                   cost: "12:00",
                   bgColor: "#fed7aa",
-                  note: "先辦理登機與托運行李。",
+                  note: "🎨 提示：點擊卡片上 ✏️ 圖示，可任意挑選卡片背景顏色！",
                   children: []
                 }
               ]
@@ -68,7 +68,7 @@ const DEFAULT_TIMELINE_PROJECTS = [
                   title: "15:35 起飛 ➔ 19:30 抵達日本關西機場",
                   category: "spot",
                   bgColor: "#bbf7d0",
-                  note: "抵達後依指示前往搭乘南海電鐵。",
+                  note: "🔍 提示：點擊左下角 🔍+ / 🔍− 控制盤可手動放大縮小畫面！",
                   children: []
                 }
               ]
@@ -82,20 +82,14 @@ const DEFAULT_TIMELINE_PROJECTS = [
               children: [
                 {
                   id: "act-4",
-                  title: "搭南海電鐵（依照出關時間搭乘班次）",
+                  title: "搭南海電鐵前往難波站",
                   category: "transit",
                   bgColor: "#dcfce7",
+                  note: "📱 提示：切換頂部「手機列表視圖」適合單手卡片瀏覽！",
                   children: [
                     {
                       id: "sub-train-1",
                       title: "關西機場站 20:09 ➔ 難波站 20:52",
-                      category: "transit",
-                      bgColor: "#fef08a",
-                      children: []
-                    },
-                    {
-                      id: "sub-train-2",
-                      title: "關西機場站 20:26 ➔ 難波站 21:08",
                       category: "transit",
                       bgColor: "#fef08a",
                       children: []
@@ -107,30 +101,45 @@ const DEFAULT_TIMELINE_PROJECTS = [
                   title: "入住【一心齋橋2號店】",
                   category: "hotel",
                   bgColor: "#ffedd5",
-                  hotelCheckIn: "21:30",
-                  hotelCheckOut: "11:00",
+                  hotelCheckIn: "21:30 Check-in",
+                  hotelCheckOut: "11:00 Check-out",
                   hotelRoomType: "心齋橋館 #BK9928",
-                  note: "步行地下道至【一心齋橋2號店】",
+                  note: "🏨 提示：選擇「住宿/飯店」類型可填寫入住退房時間與房型！",
                   children: [
                     {
                       id: "act-dinner",
-                      title: "晚餐：看路上有沒有超商或店家有開隨意吃！！",
+                      title: "晚餐美食推薦（帶地圖連結與筆記）",
                       category: "food",
                       bgColor: "#e0e7ff",
                       children: [
-                        { id: "food-sushi", title: "11:00~00:00 藏壽司 道頓堀全球旗艦店", category: "food", bgColor: "#fef08a", children: [] },
-                        { id: "food-ramen", title: "24HR 一蘭 道頓堀店別館", category: "food", bgColor: "#fef08a", children: [] },
-                        { id: "food-market", title: "黑門市場", category: "spot", bgColor: "#dcfce7", children: [] }
+                        { 
+                          id: "food-sushi", 
+                          title: "藏壽司 道頓堀全球旗艦店", 
+                          category: "food", 
+                          bgColor: "#fef08a", 
+                          cost: "11:00~00:00",
+                          mapsUrl: "https://maps.google.com",
+                          note: "🔗 提示：可附帶 Google 地圖與官方網址點擊直接開導航！",
+                          children: [] 
+                        },
+                        { 
+                          id: "food-ramen", 
+                          title: "24HR 一蘭拉麵 道頓堀店別館", 
+                          category: "food", 
+                          bgColor: "#fef08a", 
+                          cost: "24HR",
+                          children: [] 
+                        }
                       ]
                     }
                   ]
                 },
                 {
                   id: "act-donki",
-                  title: "24HR 唐吉訶德 道頓堀店",
+                  title: "24HR 唐吉訶德 道頓堀店補貨",
                   category: "shop",
                   bgColor: "#fef08a",
-                  note: "買零食與藥妝補貨！",
+                  note: "📤 提示：點擊右上角「📤匯出」可傳行程給朋友點「📥匯入」秒同步！",
                   children: []
                 }
               ]
@@ -142,7 +151,7 @@ const DEFAULT_TIMELINE_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV5 {
+class VerticalTimelineAppV51 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -197,7 +206,7 @@ class VerticalTimelineAppV5 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v5_projects');
+    const saved = localStorage.getItem('triptree_tl_v51_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -205,15 +214,15 @@ class VerticalTimelineAppV5 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v5_active_id');
+    const saved = localStorage.getItem('triptree_tl_v51_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
-    return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
+    return this.projects[0] ? this.projects[0].id : "proj_timeline_guide";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v5_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v5_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v51_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v51_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -234,7 +243,6 @@ class VerticalTimelineAppV5 {
       }
     }, { passive: false });
 
-    // Share Companion Read-Only Link
     const btnShareCompanion = document.getElementById('btnShareCompanion');
     if (btnShareCompanion) {
       btnShareCompanion.addEventListener('click', () => this.shareCompanionLink());
@@ -334,7 +342,7 @@ class VerticalTimelineAppV5 {
       this.activeProjectId = this.projects[0].id;
       this.saveProjects();
       this.render();
-      this.showToast('✨ 已重置為圖片範例！');
+      this.showToast('✨ 已重置為功能指南預設範例！');
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -384,7 +392,7 @@ class VerticalTimelineAppV5 {
     this.renderTabs();
     const proj = this.getActiveProject();
     if (proj) {
-      this.tripTitleInput.value = proj.title || "璇璇行程 10/19~10/25";
+      this.tripTitleInput.value = proj.title || "TripTree 功能指南 (以 10/19 行程為例)";
       if (this.currentView === 'mindmap') this.renderMindmap();
       else this.renderOutline();
     }
@@ -540,7 +548,7 @@ class VerticalTimelineAppV5 {
       if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) {
         cardHtml += `
           <div class="hotel-badge-box">
-            ${node.hotelCheckIn ? `<div>🏨 入住: ${this.escapeHtml(node.hotelCheckIn)} | 退房: ${this.escapeHtml(node.hotelCheckOut || '')}</div>` : ''}
+            ${node.hotelCheckIn ? `<div>🏨 ${this.escapeHtml(node.hotelCheckIn)} | ${this.escapeHtml(node.hotelCheckOut || '')}</div>` : ''}
             ${node.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(node.hotelRoomType)}</div>` : ''}
           </div>
         `;
@@ -693,7 +701,7 @@ class VerticalTimelineAppV5 {
             <strong style="font-size:1rem;">${icon} ${this.escapeHtml(child.title)}</strong>
             ${child.cost ? `<span class="node-badge">${this.escapeHtml(child.cost)}</span>` : ''}
           </div>
-          ${child.category === 'hotel' && child.hotelCheckIn ? `<div style="font-size:0.8rem; color:#0369a1;">🏨 入住: ${this.escapeHtml(child.hotelCheckIn)} | 退房: ${this.escapeHtml(child.hotelCheckOut || '')} (${this.escapeHtml(child.hotelRoomType || '')})</div>` : ''}
+          ${child.category === 'hotel' && child.hotelCheckIn ? `<div style="font-size:0.8rem; color:#0369a1;">🏨 ${this.escapeHtml(child.hotelCheckIn)} | ${this.escapeHtml(child.hotelCheckOut || '')} (${this.escapeHtml(child.hotelRoomType || '')})</div>` : ''}
           ${child.note ? `<div style="font-size:0.85rem; color:#475569; font-weight:600;">${this.escapeHtml(child.note)}</div>` : ''}
           <div style="display:flex; gap:10px; font-size:0.8rem; margin-top:4px;">
             ${child.url ? `<a href="${this.escapeHtml(child.url)}" target="_blank" class="node-link">🔗 連結</a>` : ''}
@@ -880,5 +888,5 @@ class VerticalTimelineAppV5 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV5 = new VerticalTimelineAppV5();
+  window.appTimelineV51 = new VerticalTimelineAppV51();
 });
