@@ -1,5 +1,5 @@
 /**
- * TripTree V10.1 - 支援 AI 自動導入網址景點 (Auto-Imported Spot Test)
+ * TripTree V11 - 景點資料庫與一鍵複製行程系統 (Personal Spot Vault & Instant Duplicate Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -40,7 +40,7 @@ const TOKYO_DEMO_PROJECTS = [
             },
             {
               id: "fk-d1-pm",
-              title: "下午 (自動解析導入景點 ✨)",
+              title: "下午",
               category: "period",
               expanded: true,
               bgColor: "#fef3c7",
@@ -183,80 +183,96 @@ const TOKYO_DEMO_PROJECTS = [
               ]
             }
           ]
-        },
-        {
-          id: "day-2",
-          title: "Day 2: 10/21 築地市場 ➔ 澀谷 ➔ 新宿夜景",
-          category: "day",
-          expanded: true,
-          bgColor: "#ffffff",
-          children: [
-            {
-              id: "d2-am",
-              title: "上午",
-              category: "period",
-              expanded: true,
-              bgColor: "#fef3c7",
-              children: [
-                {
-                  id: "d2-act-tsukiji",
-                  title: "09:00 築地外市場（黑鮪魚丼飯 🍣 & 玉子燒）",
-                  category: "food",
-                  cost: "09:00~11:30",
-                  bgColor: "#fef08a",
-                  note: "必吃丸武玉子燒與新鮮海鮮丼！",
-                  children: []
-                }
-              ]
-            },
-            {
-              id: "d2-pm",
-              title: "下午",
-              category: "period",
-              expanded: true,
-              bgColor: "#fef3c7",
-              children: [
-                {
-                  id: "d2-act-shibuya",
-                  title: "14:30 澀谷 SHIBUYA SKY 展望台 🌇",
-                  category: "spot",
-                  cost: "預約 15:00 入場",
-                  bgColor: "#bbf7d0",
-                  note: "俯瞰澀谷十字路口與遠眺富士山日落。",
-                  children: []
-                }
-              ]
-            },
-            {
-              id: "d2-night",
-              title: "晚上",
-              category: "period",
-              expanded: true,
-              bgColor: "#fef3c7",
-              children: [
-                {
-                  id: "d2-act-shinjuku",
-                  title: "新宿歌舞伎町漫步 ➔ 晚餐：敘敘苑 燒肉 🥩",
-                  category: "food",
-                  bgColor: "#ffedd5",
-                  cost: "¥8,500/人",
-                  note: "窗邊位置可邊享用高檔和牛邊賞夜景！",
-                  children: []
-                }
-              ]
-            }
-          ]
         }
       ]
     }
   }
 ];
 
-class VerticalTimelineAppV101 {
+// 預設景點靈感庫 (Preset Spot Vault)
+const DEFAULT_SPOT_VAULT = [
+  {
+    id: "vault_fk_1",
+    region: "福岡",
+    title: "🛒 Aeon Shoppers 福岡店 (天神商圈超市)",
+    category: "shop",
+    cost: "09:00~22:00",
+    bgColor: "#bbf7d0",
+    url: "https://www.instagram.com/reel/DanBwFgqNkE/",
+    mapsUrl: "https://maps.google.com/?q=Aeon+Shoppers+福岡店",
+    note: "複合式購物中心！有 DAISO 大創、3COINS、無印良品、ABC MART。附近還有 24h 唐吉訶德天神本店，荷包補給站！"
+  },
+  {
+    id: "vault_fk_2",
+    region: "福岡",
+    title: "⛩️ 博多總鎮守 櫛田神社",
+    category: "spot",
+    cost: "免費參拜",
+    bgColor: "#e0e7ff",
+    url: "https://www.crossroadfukuoka.jp/tw/spot/12510",
+    mapsUrl: "https://maps.google.com/?q=櫛田神社",
+    note: "千年御神木銀杏樹，展示 13 公尺高超震撼「博多祇園山笠神轎」！"
+  },
+  {
+    id: "vault_osaka_1",
+    region: "大阪",
+    title: "🏃‍♂️ 心齋橋 ➔ 道頓堀 固力果跑跑人看板",
+    category: "spot",
+    cost: "24 小時開放",
+    bgColor: "#fef3c7",
+    mapsUrl: "https://maps.google.com/?q=道頓堀固力果看板",
+    note: "大阪經典必拍地標！旁邊整條心齋橋筋商店街藥妝店與美食超豐富。"
+  },
+  {
+    id: "vault_osaka_2",
+    region: "大阪",
+    title: "🐙 本家大たこ 道頓堀章魚燒",
+    category: "food",
+    cost: "¥600 / 6顆",
+    bgColor: "#fef08a",
+    mapsUrl: "https://maps.google.com/?q=本家大たこ",
+    note: "大塊章魚肉加上外酥內軟的章魚燒口感，老字號必吃！"
+  },
+  {
+    id: "vault_kyoto_1",
+    region: "京都",
+    title: "⛩️ 伏見稻荷大社（千本鳥居）",
+    category: "spot",
+    cost: "免費參拜",
+    bgColor: "#ffedd5",
+    mapsUrl: "https://maps.google.com/?q=伏見稻荷大社",
+    note: "延綿不絕的朱紅色千本鳥居，狐狸神雕像守護，清晨去拍照最唯美。"
+  },
+  {
+    id: "vault_kyoto_2",
+    region: "京都",
+    title: "🏯 清水寺 ➔ 三年坂 / 二年坂 漫步",
+    category: "spot",
+    cost: "拜觀料 ¥400",
+    bgColor: "#bbf7d0",
+    mapsUrl: "https://maps.google.com/?q=清水寺",
+    note: "懸空清水舞台俯瞰京都市景，穿和服漫步傳統石板路古街。"
+  },
+  {
+    id: "vault_nara_1",
+    region: "奈良",
+    title: "🦌 奈良公園（餵小鹿 🍪 仙貝）",
+    category: "spot",
+    cost: "鹿仙貝 ¥200",
+    bgColor: "#dcfce7",
+    mapsUrl: "https://maps.google.com/?q=奈良公園",
+    note: "買鹿仙貝和小鹿互動鞠躬！注意小鹿搶食時要放慢速度喔。"
+  }
+];
+
+class VerticalTimelineAppV11 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
+    this.vaultItems = this.loadVaultItems();
+    this.vaultRegions = this.loadVaultRegions();
+    this.selectedRegion = "所有";
     this.currentView = 'mindmap';
     this.zoomLevel = 1.0;
 
@@ -290,6 +306,17 @@ class VerticalTimelineAppV101 {
     this.btnZoomOut = document.getElementById('btnZoomOut');
     this.zoomDisplay = document.getElementById('zoomDisplay');
 
+    // 📦 Vault Drawer Elements
+    this.vaultDrawer = document.getElementById('vaultDrawer');
+    this.btnOpenVault = document.getElementById('btnOpenVault');
+    this.btnCloseVault = document.getElementById('btnCloseVault');
+    this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
+    this.vaultCardList = document.getElementById('vaultCardList');
+    this.vaultQuickInput = document.getElementById('vaultQuickInput');
+    this.vaultTargetRegion = document.getElementById('vaultTargetRegion');
+    this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
+    this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
+
     this.modal = document.getElementById('nodeModal');
     this.nodeForm = document.getElementById('nodeForm');
     this.modalTitle = document.getElementById('modalTitle');
@@ -307,7 +334,7 @@ class VerticalTimelineAppV101 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v101_projects');
+    const saved = localStorage.getItem('triptree_tl_v11_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -315,16 +342,37 @@ class VerticalTimelineAppV101 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v101_active_id');
+    const saved = localStorage.getItem('triptree_tl_v11_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
+  loadVaultItems() {
+    const saved = localStorage.getItem('triptree_spot_vault_items');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e){}
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
+  }
+
+  loadVaultRegions() {
+    const saved = localStorage.getItem('triptree_spot_vault_regions');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e){}
+    }
+    return ["所有", "福岡", "東京", "大阪", "京都", "奈良"];
+  }
+
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v101_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v101_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v11_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v11_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
+  }
+
+  saveVaultData() {
+    localStorage.setItem('triptree_spot_vault_items', JSON.stringify(this.vaultItems));
+    localStorage.setItem('triptree_spot_vault_regions', JSON.stringify(this.vaultRegions));
   }
 
   getActiveProject() {
@@ -335,6 +383,55 @@ class VerticalTimelineAppV101 {
     this.btnZoomIn.addEventListener('click', () => this.setZoom(this.zoomLevel + 0.15));
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
+
+    // 📦 Drawer Events
+    this.btnOpenVault.addEventListener('click', () => {
+      this.vaultDrawer.classList.add('open');
+      this.renderVault();
+    });
+    this.btnCloseVault.addEventListener('click', () => this.vaultDrawer.classList.remove('open'));
+
+    this.btnAddRegionTag.addEventListener('click', () => {
+      const name = prompt('請輸入新地區分類名稱 (例: 沖繩 / 北海道)：');
+      if (name && !this.vaultRegions.includes(name)) {
+        this.vaultRegions.push(name);
+        // 也加到 select 元素
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = '🇯🇵 ' + name;
+        this.vaultTargetRegion.appendChild(opt);
+
+        this.selectedRegion = name;
+        this.saveVaultData();
+        this.renderVault();
+      }
+    });
+
+    this.btnGenVaultCard.addEventListener('click', () => {
+      const val = this.vaultQuickInput.value.trim();
+      if (!val) { alert('請先輸入網址或景點名稱！'); return; }
+      
+      const region = this.vaultTargetRegion.value;
+      const isUrl = val.startsWith('http://') || val.startsWith('https://');
+
+      let newSpot = {
+        id: 'vault_' + Date.now(),
+        region: region,
+        title: isUrl ? (val.includes('instagram') ? '📸 IG 驚喜推薦景點' : '🔗 網路精選景點') : '📍 ' + val,
+        category: 'spot',
+        cost: '門票/消費標註',
+        bgColor: '#e0e7ff',
+        url: isUrl ? val : '',
+        mapsUrl: `https://maps.google.com/?q=${encodeURIComponent(val)}`,
+        note: isUrl ? `來自網址：${val}` : `貼上新增之景點`
+      };
+
+      this.vaultItems.unshift(newSpot);
+      this.saveVaultData();
+      this.vaultQuickInput.value = '';
+      this.renderVault();
+      this.showToast(`✨ 成功將【${newSpot.title}】存入景點靈感庫！`);
+    });
 
     this.viewport.addEventListener('wheel', (e) => {
       if (e.ctrlKey) {
@@ -441,7 +538,9 @@ class VerticalTimelineAppV101 {
       localStorage.clear();
       this.projects = JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
       this.activeProjectId = this.projects[0].id;
+      this.vaultItems = JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
       this.saveProjects();
+      this.saveVaultData();
       this.render();
       this.showToast('✨ 已重置載入最新行程範例！');
     });
@@ -452,6 +551,108 @@ class VerticalTimelineAppV101 {
       e.preventDefault();
       this.handleFormSubmit();
     });
+  }
+
+  // --- 📦 渲染景點靈感庫 Drawer ---
+  renderVault() {
+    // 1. 渲染地區 Chip 標籤
+    this.vaultRegionTabs.innerHTML = '';
+    this.vaultRegions.forEach(reg => {
+      const chip = document.createElement('button');
+      chip.className = `region-chip ${reg === this.selectedRegion ? 'active' : ''}`;
+      chip.textContent = reg === '所有' ? '🌐 全部地區' : `📍 ${reg}`;
+      chip.addEventListener('click', () => {
+        this.selectedRegion = reg;
+        this.renderVault();
+      });
+      this.vaultRegionTabs.appendChild(chip);
+    });
+
+    // 2. 篩選景點卡片
+    this.vaultCardList.innerHTML = '';
+    const filtered = this.selectedRegion === '所有' ? this.vaultItems : this.vaultItems.filter(item => item.region === this.selectedRegion);
+
+    if (filtered.length === 0) {
+      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; font-size:0.9rem;">此地區目前無景點小卡，可在上方輸入框新增！</div>`;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'vault-item-card';
+      if (item.bgColor) card.style.backgroundColor = item.bgColor;
+
+      card.innerHTML = `
+        <div class="vault-card-header">
+          <span class="vault-card-title">${this.escapeHtml(item.title)}</span>
+          <span class="node-badge" style="font-size:0.75rem;">📍 ${this.escapeHtml(item.region || '景點')}</span>
+        </div>
+        ${item.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
+        ${item.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35;">${this.escapeHtml(item.note)}</div>` : ''}
+        <div class="vault-card-footer">
+          <div style="display:flex; gap:8px;">
+            ${item.mapsUrl ? `<a href="${this.escapeHtml(item.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
+            ${item.url ? `<a href="${this.escapeHtml(item.url)}" target="_blank" class="node-link" style="font-size:0.78rem;">🔗 連結</a>` : ''}
+          </div>
+          <button class="vault-copy-btn" data-id="${item.id}">📋 複製到當前行程</button>
+        </div>
+      `;
+
+      card.querySelector('.vault-copy-btn').addEventListener('click', () => {
+        this.copyVaultItemToCurrentProject(item);
+      });
+
+      this.vaultCardList.appendChild(card);
+    });
+  }
+
+  // 一鍵將靈感庫小卡複製複製到當前行程指定天數
+  copyVaultItemToCurrentProject(item) {
+    if (this.isReadOnly) return;
+    const proj = this.getActiveProject();
+    if (!proj || !proj.rootNode) return;
+
+    const days = proj.rootNode.children ? proj.rootNode.children.filter(c => c.category === 'day') : [];
+    
+    let targetDay = days[0];
+    if (days.length > 1) {
+      const dayTitles = days.map((d, idx) => `${idx + 1}. ${d.title}`).join('\n');
+      const choice = prompt(`請選擇要將【${item.title}】加入哪一天：\n\n${dayTitles}\n\n(請輸入數字 1~${days.length})`, '1');
+      if (choice && parseInt(choice) >= 1 && parseInt(choice) <= days.length) {
+        targetDay = days[parseInt(choice) - 1];
+      }
+    }
+
+    if (!targetDay) {
+      alert('請先在行程中創建至少一天 Day 1 行程！');
+      return;
+    }
+
+    if (!targetDay.children) targetDay.children = [];
+    let period = targetDay.children.find(c => c.category === 'period');
+    if (!period) {
+      period = { id: 'p_' + Date.now(), title: '下午 / 景點行程', category: 'period', expanded: true, children: [] };
+      targetDay.children.push(period);
+    }
+    if (!period.children) period.children = [];
+
+    const newSpotCard = {
+      id: 'spot_' + Date.now(),
+      title: item.title,
+      category: item.category || 'spot',
+      cost: item.cost || '',
+      bgColor: item.bgColor || '#e0e7ff',
+      url: item.url || '',
+      mapsUrl: item.mapsUrl || '',
+      note: item.note || '',
+      expanded: true,
+      children: []
+    };
+
+    period.children.push(newSpotCard);
+    this.saveProjects();
+    this.render();
+    this.showToast(`🎉 成功將【${item.title}】複製到 ${targetDay.title}！`);
   }
 
   shareCompanionLink() {
@@ -1104,5 +1305,5 @@ class VerticalTimelineAppV101 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV101 = new VerticalTimelineAppV101();
+  window.appTimelineV11 = new VerticalTimelineAppV11();
 });

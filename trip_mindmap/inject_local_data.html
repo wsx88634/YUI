@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>TripTree 本機資料寫入器</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; text-align: center; background: #f8fafc; color: #0f766e; }
+    .card { background: #fff; border-radius: 16px; padding: 30px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    button { background: #0d9488; color: #fff; border: none; padding: 12px 24px; font-size: 1rem; border-radius: 999px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>✨ TripTree AI 本機行程注入器</h2>
+    <p>已為您分析完成 Instagram 影片景點：</p>
+    <div style="text-align:left; background:#f1f5f9; padding:15px; border-radius:10px; font-size:0.9rem; margin:15px 0;">
+      <strong>🛒 Aeon Shoppers 福岡店 (天神商圈超市)</strong><br>
+      • 營業時間：09:00 - 22:00<br>
+      • 景點地址：福岡縣福岡市中央區天神4丁目4-11<br>
+      • 亮點：DAISO大創、3COINS、無印良品、ABC MART、24hr唐吉訶德天神本店附近
+    </div>
+    <p>點擊下方按鈕，直接將這筆資料寫入您這台電腦的本地端（不影響雲端範例）：</p>
+    <button onclick="injectData()">📥 寫入我電腦的 TripTree 本地端</button>
+  </div>
+
+  <script>
+    function injectData() {
+      const KEY = 'triptree_tl_v101_projects';
+      let current = localStorage.getItem(KEY);
+      let projects = [];
+      if (current) {
+        try { projects = JSON.parse(current); } catch(e){}
+      }
+
+      if (projects.length === 0) {
+        projects = [{
+          id: "proj_fukuoka_local",
+          title: "🏮 福岡天神購物私房行程",
+          rootNode: {
+            id: "root_fk_local",
+            title: "🏮 福岡天神購物私房行程",
+            category: "root",
+            expanded: true,
+            bgColor: "#ffffff",
+            children: [
+              {
+                id: "fk-d1",
+                title: "Day 1: 天神商圈血拼補給日",
+                category: "day",
+                expanded: true,
+                bgColor: "#ffffff",
+                children: [
+                  {
+                    id: "fk-d1-pm",
+                    title: "下午 / 晚上 (IG 推薦超市血拼)",
+                    category: "period",
+                    expanded: true,
+                    bgColor: "#fef3c7",
+                    children: [
+                      {
+                        id: "spot_aeon_shopper",
+                        title: "🛒 Aeon Shoppers 福岡店 (天神商圈超市)",
+                        category: "shop",
+                        cost: "09:00~22:00",
+                        bgColor: "#bbf7d0",
+                        url: "https://www.instagram.com/reel/DanBwFgqNkE/",
+                        mapsUrl: "https://maps.google.com/?q=Aeon+Shoppers+福岡店",
+                        note: "複合式購物中心！大創 DAISO、3COINS、無印良品、ABC MART。附近還有 24h 唐吉訶德天神本店，出遊回飯店前荷包補給站！",
+                        children: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }];
+      } else {
+        // 加到第一個行程的 Day 1 中
+        const root = projects[0].rootNode;
+        if (root && root.children && root.children[0]) {
+          const day1 = root.children[0];
+          if (!day1.children) day1.children = [];
+          
+          let pm = day1.children.find(c => c.category === 'period');
+          if (!pm) {
+            pm = { id: 'p_' + Date.now(), title: '下午 / 晚上', category: 'period', expanded: true, children: [] };
+            day1.children.push(pm);
+          }
+          if (!pm.children) pm.children = [];
+          
+          pm.children.push({
+            id: "spot_aeon_shopper_" + Date.now(),
+            title: "🛒 Aeon Shoppers 福岡店 (天神商圈超市)",
+            category: "shop",
+            cost: "09:00~22:00",
+            bgColor: "#bbf7d0",
+            url: "https://www.instagram.com/reel/DanBwFgqNkE/",
+            mapsUrl: "https://maps.google.com/?q=Aeon+Shoppers+福岡店",
+            note: "複合式購物中心！大創 DAISO、3COINS、無印良品、ABC MART。附近還有 24h 唐吉訶德天神本店，出遊回飯店前荷包補給站！",
+            children: []
+          });
+        }
+      }
+
+      localStorage.setItem(KEY, JSON.stringify(projects));
+      alert("🎉 成功將【Aeon Shoppers 福岡店】寫入您這台電腦的本地端！\n\n現在為您自動打開 TripTree 網頁觀看！");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

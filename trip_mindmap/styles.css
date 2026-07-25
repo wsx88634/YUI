@@ -1,4 +1,4 @@
-/* TripTree V10 - 專為手機優化之精品時間軸行程清單 (Executive Mobile Itinerary UI) */
+/* TripTree V11 - 景點資料庫 / 靈感庫抽屜 (Personal Spot Vault & Ai Generator UI) */
 :root {
   --bg-main: #f8fafc;
   --bg-card-default: #ffffff;
@@ -78,7 +78,7 @@ header {
   gap: 6px;
   overflow-x: auto;
   padding: 4px 0;
-  max-width: 40vw;
+  max-width: 35vw;
   scrollbar-width: none;
 }
 
@@ -141,6 +141,13 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.btn-vault {
+  background: #f59e0b;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
 }
 
 .btn-share-companion {
@@ -516,9 +523,7 @@ main {
   margin-top: 4px;
 }
 
-/* ==========================================================================
-   📱 2026 全新精品手機行程清單 UI (Executive Mobile Itinerary Stream)
-   ========================================================================== */
+/* Mobile Itinerary Stream */
 .outline-view {
   padding: 16px;
   max-width: 600px;
@@ -677,7 +682,206 @@ main {
   border-left: 2.5px dotted #0d9488;
 }
 
-/* Modal */
+/* ==========================================================================
+   📦 景點靈感庫 / 資料庫側邊抽屜 (Personal Spot Vault & Generator Panel)
+   ========================================================================== */
+.vault-drawer {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 2.5px solid #e2e8f0;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vault-drawer.open {
+  right: 0;
+}
+
+.vault-header {
+  background: #f59e0b;
+  color: #ffffff;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.vault-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vault-close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.vault-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* AI 快速產生卡片輸入區 */
+.vault-ai-box {
+  background: #fffbeb;
+  border: 1.5px dashed #f59e0b;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vault-ai-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vault-input {
+  width: 100%;
+  background: #ffffff;
+  border: 1.5px solid #fde68a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+
+.vault-gen-btn {
+  background: #f59e0b;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* 地區分類標籤 */
+.vault-region-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.vault-region-tabs::-webkit-scrollbar { display: none; }
+
+.region-chip {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.region-chip.active {
+  background: #0f766e;
+  color: #fff;
+  border-color: #0f766e;
+}
+
+.btn-add-region {
+  background: #ffffff;
+  border: 1px dashed #0f766e;
+  color: #0f766e;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 景點小卡列表 */
+.vault-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vault-item-card {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.vault-item-card:hover {
+  border-color: #f59e0b;
+  box-shadow: var(--shadow-md);
+}
+
+.vault-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.vault-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.vault-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.vault-copy-btn {
+  background: #0d9488;
+  color: #ffffff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -812,6 +1016,7 @@ main {
 }
 
 @media (max-width: 640px) {
+  .vault-drawer { width: 100vw; right: -100vw; }
   .trip-tabs-bar { max-width: 100%; }
   .btn-text { display: none; }
 }

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V10.1 - 福岡 櫛田神社 (AI 網址自動導入測試範例)</title>
+  <title>TripTree V11 - 景點資料庫與一鍵複製行程 (Spot Vault System)</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=10.1.0">
+  <link rel="stylesheet" href="styles.css?v=11.0.0">
 </head>
 <body>
 
@@ -31,6 +31,11 @@
     <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
 
     <div class="nav-actions">
+      <!-- Open Personal Spot Vault Drawer -->
+      <button class="btn btn-vault" id="btnOpenVault" title="開啟景點資料庫 / 靈感庫">
+        <span>📦</span> <span class="btn-text">景點靈感庫</span>
+      </button>
+
       <!-- Share Readonly Link to Companion -->
       <button class="btn btn-share-companion" id="btnShareCompanion" title="複製唯讀網址分享給旅伴看">
         <span>🔗</span> <span class="btn-text">分享旅伴 (唯讀)</span>
@@ -76,6 +81,45 @@
       <div id="outlineTree" class="outline-tree"></div>
     </div>
   </main>
+
+  <!-- 📦 景點資料庫 / 靈感庫 側邊抽屜 Drawer -->
+  <div class="vault-drawer" id="vaultDrawer">
+    <div class="vault-header">
+      <div class="vault-title"><span>📦</span> 個人景點靈感庫</div>
+      <button class="vault-close-btn" id="btnCloseVault">&times;</button>
+    </div>
+    <div class="vault-body">
+      <!-- AI / 網址貼上快捷建卡盒 -->
+      <div class="vault-ai-box">
+        <div class="vault-ai-title"><span>✨</span> 貼上網址 / IG / 景點名稱自動建卡</div>
+        <input type="text" id="vaultQuickInput" class="vault-input" placeholder="貼上 IG 網址 / Google 地圖連結 / 景點名稱...">
+        <div style="display:flex; gap:6px;">
+          <select id="vaultTargetRegion" class="form-select" style="font-size:0.8rem; padding:4px 8px;">
+            <option value="福岡">🇯🇵 福岡</option>
+            <option value="東京">🇯🇵 東京</option>
+            <option value="大阪">🇯🇵 大阪</option>
+            <option value="京都">🇯🇵 京都</option>
+            <option value="奈良">🇯🇵 奈良</option>
+          </select>
+          <button class="vault-gen-btn" id="btnGenVaultCard">+ 存入景點庫</button>
+        </div>
+      </div>
+
+      <!-- 地區分類標籤 -->
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.85rem; font-weight:800; color:#475569;">地區分類篩選：</span>
+        <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
+      </div>
+      <div class="vault-region-tabs" id="vaultRegionTabs">
+        <!-- Region chips rendered via JS -->
+      </div>
+
+      <!-- 景點卡片清單 -->
+      <div class="vault-card-list" id="vaultCardList">
+        <!-- Vault cards rendered via JS -->
+      </div>
+    </div>
+  </div>
 
   <!-- Floating Manual Zoom Control Panel -->
   <div class="zoom-controls-widget" id="zoomWidget">
@@ -185,6 +229,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=10.1.0"></script>
+  <script src="app.js?v=11.0.0"></script>
 </body>
 </html>
