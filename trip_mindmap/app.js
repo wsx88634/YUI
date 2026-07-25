@@ -1,111 +1,140 @@
 /**
- * TripTree V2 - 由上而下樹狀心智圖旅遊規劃工具
+ * TripTree V2 - 垂直時間軸樹狀心智圖 (對照使用者範例圖片佈局)
  */
 
-// 預設 Demo 多行程資料夾資料集
-const DEFAULT_PROJECTS = [
+// 預設 Demo 範例（對照使用者圖片資料結構）
+const DEFAULT_TIMELINE_PROJECTS = [
   {
-    id: "proj_1",
-    title: "✈️ 東京 5天4夜自由行心智圖",
+    id: "proj_timeline_1",
+    title: "璇璇行程 10/19~10/25",
     rootNode: {
-      id: "root_1",
-      title: "🇯🇵 東京 5天4夜自由行",
+      id: "root_tl1",
+      title: "璇璇行程 10/19~10/25",
       category: "root",
       expanded: true,
-      bgColor: "#1e293b",
+      bgColor: "#ffffff",
       children: [
         {
-          id: "day-1",
-          title: "📅 Day 1: 澀谷與原宿潮流探訪",
+          id: "day-1019",
+          title: "10/19 到日本",
           category: "day",
           expanded: true,
-          bgColor: "#1e293b",
+          bgColor: "#ffffff",
           children: [
             {
-              id: "spot-1",
-              title: "SHIBUYA SKY 展望台",
-              category: "spot",
-              url: "https://www.shibuya-scramble-square.com/sky/",
-              mapsUrl: "https://maps.google.com/?q=SHIBUYA+SKY",
-              imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=500&auto=format&fit=crop",
-              cost: "¥2,200",
-              bgColor: "#3b0764",
-              note: "預約 17:00 觀賞夕陽與黃昏俯瞰澀谷十字路口。",
-              children: []
+              id: "period-am",
+              title: "上午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "act-1",
+                  title: "準備行李 ~ 11:00 出門！",
+                  category: "spot",
+                  cost: "11:00 前",
+                  bgColor: "#fef08a",
+                  note: "檢查護照、日幣與網卡。",
+                  children: []
+                }
+              ]
             },
             {
-              id: "food-1",
-              title: "阿夫利 AFURI 柚子鹽拉麵",
-              category: "food",
-              url: "https://afuri.com/",
-              mapsUrl: "https://maps.google.com/?q=AFURI+Harajuku",
-              cost: "¥1,380",
-              bgColor: "#7c2d12",
-              note: "推薦招牌柚子鹽拉麵與烤叉燒飯！",
-              children: []
-            }
-          ]
-        },
-        {
-          id: "day-2",
-          title: "📅 Day 2: 淺草與新宿住宿",
-          category: "day",
-          expanded: true,
-          bgColor: "#1e293b",
-          children: [
-            {
-              id: "hotel-1",
-              title: "新宿格拉斯麗飯店 (哥吉拉飯店)",
-              category: "hotel",
-              mapsUrl: "https://maps.google.com/?q=Hotel+Gracery+Shinjuku",
-              cost: "NT$ 4,500/晚",
-              bgColor: "#064e3b",
-              hotelCheckIn: "15:00",
-              hotelCheckOut: "11:00",
-              hotelRoomType: "高級雙人房 #BK88219",
-              note: "靠近新宿東口，樓下生活機能極佳！",
-              children: []
+              id: "period-noon",
+              title: "中午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "act-2",
+                  title: "12:00 到小港機場！",
+                  category: "spot",
+                  cost: "12:00",
+                  bgColor: "#fed7aa",
+                  note: "先辦理登機與托運行李。",
+                  children: []
+                }
+              ]
             },
             {
-              id: "spot-2",
-              title: "淺草寺與雷門",
-              category: "spot",
-              mapsUrl: "https://maps.google.com/?q=Sensoji+Temple",
-              imageUrl: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=500&auto=format&fit=crop",
-              bgColor: "#0c4a6e",
-              note: "早上 8:30 前到達可避開人潮。",
-              children: []
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    id: "proj_2",
-    title: "🇰🇷 首爾 4天3夜美食巡禮",
-    rootNode: {
-      id: "root_2",
-      title: "🇰🇷 首爾 4天3夜美食巡禮",
-      category: "root",
-      expanded: true,
-      bgColor: "#1e293b",
-      children: [
-        {
-          id: "kr-day-1",
-          title: "📅 Day 1: 弘大商圈與美食",
-          category: "day",
-          expanded: true,
-          bgColor: "#1e293b",
-          children: [
+              id: "period-pm",
+              title: "下午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "act-3",
+                  title: "15:35 起飛 ➔ 19:30 抵達日本關西機場",
+                  category: "spot",
+                  bgColor: "#bbf7d0",
+                  note: "抵達後依指示前往搭乘南海電鐵。",
+                  children: []
+                }
+              ]
+            },
             {
-              id: "kr-food-1",
-              title: "保承會館 (弘大店 豬肉湯飯)",
-              category: "food",
-              cost: "₩10,000",
-              bgColor: "#831843",
-              note: "24小時營業，白湯濃郁必吃！",
-              children: []
+              id: "period-night",
+              title: "晚上",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "act-4",
+                  title: "搭南海電鐵（依照出關時間搭乘班次）",
+                  category: "transit",
+                  bgColor: "#dcfce7",
+                  children: [
+                    {
+                      id: "sub-train-1",
+                      title: "關西機場站 20:09 ➔ 難波站 20:52",
+                      category: "transit",
+                      bgColor: "#fef08a",
+                      children: []
+                    },
+                    {
+                      id: "sub-train-2",
+                      title: "關西機場站 20:26 ➔ 難波站 21:08",
+                      category: "transit",
+                      bgColor: "#fef08a",
+                      children: []
+                    }
+                  ]
+                },
+                {
+                  id: "act-5",
+                  title: "入住【一心齋橋2號店】",
+                  category: "hotel",
+                  bgColor: "#ffedd5",
+                  hotelCheckIn: "21:30",
+                  hotelCheckOut: "11:00",
+                  hotelRoomType: "心齋橋館 #BK9928",
+                  note: "步行地下道至【一心齋橋2號店】",
+                  children: [
+                    {
+                      id: "act-dinner",
+                      title: "晚餐：看路上有沒有超商或店家有開隨意吃！！",
+                      category: "food",
+                      bgColor: "#e0e7ff",
+                      children: [
+                        { id: "food-sushi", title: "11:00~00:00 藏壽司 道頓堀全球旗艦店", category: "food", bgColor: "#fef08a", children: [] },
+                        { id: "food-ramen", title: "24HR 一蘭 道頓堀店別館", category: "food", bgColor: "#fef08a", children: [] },
+                        { id: "food-market", title: "黑門市場", category: "spot", bgColor: "#dcfce7", children: [] }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  id: "act-donki",
+                  title: "24HR 唐吉訶德 道頓堀店",
+                  category: "shop",
+                  bgColor: "#fef08a",
+                  note: "買零食與藥妝補貨！",
+                  children: []
+                }
+              ]
             }
           ]
         }
@@ -114,13 +143,12 @@ const DEFAULT_PROJECTS = [
   }
 ];
 
-class TripAppV2 {
+class VerticalTimelineApp {
   constructor() {
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
-    this.currentView = 'mindmap'; // 'mindmap' | 'outline'
+    this.currentView = 'mindmap';
 
-    // Pan variables for canvas
     this.isPanning = false;
     this.startX = 0;
     this.startY = 0;
@@ -154,25 +182,23 @@ class TripAppV2 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_v2_projects');
+    const saved = localStorage.getItem('triptree_tl_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    return JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+    return JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_v2_active_id');
-    if (saved && this.projects.some(p => p.id === saved)) {
-      return saved;
-    }
-    return this.projects[0] ? this.projects[0].id : "proj_1";
+    const saved = localStorage.getItem('triptree_tl_active_id');
+    if (saved && this.projects.some(p => p.id === saved)) return saved;
+    return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
   }
 
   saveProjects() {
-    localStorage.setItem('triptree_v2_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_v2_active_id', this.activeProjectId);
-    this.showToast('💾 資料已自動保存');
+    localStorage.setItem('triptree_tl_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_active_id', this.activeProjectId);
+    this.showToast('💾 行程已保存');
   }
 
   getActiveProject() {
@@ -180,7 +206,6 @@ class TripAppV2 {
   }
 
   bindEvents() {
-    // Project Title Edit
     this.tripTitleInput.addEventListener('input', (e) => {
       const proj = this.getActiveProject();
       if (proj) {
@@ -191,24 +216,22 @@ class TripAppV2 {
       }
     });
 
-    // View Switcher
     document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
     document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
 
-    // Add New Trip Tab
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
-      const title = prompt('請輸入新行程資料夾名稱：', '新旅遊行程');
+      const title = prompt('請輸入新行程名稱：', '新行程 10/19~10/25');
       if (title) {
-        const newProjId = 'proj_' + Date.now();
+        const newProjId = 'proj_tl_' + Date.now();
         const newProj = {
           id: newProjId,
           title: title,
           rootNode: {
-            id: 'root_' + Date.now(),
+            id: 'root_tl_' + Date.now(),
             title: title,
             category: 'root',
             expanded: true,
-            bgColor: '#1e293b',
+            bgColor: '#ffffff',
             children: []
           }
         };
@@ -219,12 +242,10 @@ class TripAppV2 {
       }
     });
 
-    // Category Select toggle Hotel fields
     this.nodeCategorySelect.addEventListener('change', (e) => {
       this.hotelFieldsBox.style.display = e.target.value === 'hotel' ? 'flex' : 'none';
     });
 
-    // Color Swatch Selection
     this.colorPickerGrid.addEventListener('click', (e) => {
       const swatch = e.target.closest('.color-swatch');
       if (swatch) {
@@ -240,9 +261,8 @@ class TripAppV2 {
       this.nodeColorInput.value = e.target.value;
     });
 
-    // Canvas Panning (Drag)
     this.viewport.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.node-card') || e.target.closest('.btn') || e.target.closest('.fab-btn')) return;
+      if (e.target.closest('.tree-node-group') || e.target.closest('.btn') || e.target.closest('.fab-btn')) return;
       this.isPanning = true;
       this.startX = e.pageX - this.viewport.offsetLeft;
       this.startY = e.pageY - this.viewport.offsetTop;
@@ -261,28 +281,23 @@ class TripAppV2 {
       this.viewport.scrollTop = this.scrollTop - (y - this.startY) * 1.2;
     });
 
-    // FAB Add
     document.getElementById('fabAdd').addEventListener('click', () => {
       const proj = this.getActiveProject();
-      if (proj && proj.rootNode) {
-        this.openModalForAdd(proj.rootNode.id);
-      }
+      if (proj && proj.rootNode) this.openModalForAdd(proj.rootNode.id);
     });
 
-    // Export / Import / Demo Reset
     document.getElementById('btnExport').addEventListener('click', () => this.exportJSON());
     document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileImportInput').click());
     document.getElementById('fileImportInput').addEventListener('change', (e) => this.importJSON(e));
     document.getElementById('btnResetDemo').addEventListener('click', () => {
-      if (confirm('確定重置為預設多行程範例資料嗎？現有修改將被覆蓋。')) {
-        this.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+      if (confirm('確定重置為圖片範例行程嗎？')) {
+        this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
         this.activeProjectId = this.projects[0].id;
         this.saveProjects();
         this.render();
       }
     });
 
-    // Modal Form Submit & Cancel
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
     document.getElementById('btnCancelModal').addEventListener('click', () => this.closeModal());
     this.nodeForm.addEventListener('submit', (e) => {
@@ -311,13 +326,12 @@ class TripAppV2 {
     this.renderTabs();
     const proj = this.getActiveProject();
     if (proj) {
-      this.tripTitleInput.value = proj.title || "✈️ 我的旅遊心智圖";
+      this.tripTitleInput.value = proj.title || "璇璇行程 10/19~10/25";
       if (this.currentView === 'mindmap') this.renderMindmap();
       else this.renderOutline();
     }
   }
 
-  // --- Render Folder Tabs ---
   renderTabs() {
     this.tripTabsBar.innerHTML = '';
     this.projects.forEach(proj => {
@@ -325,17 +339,14 @@ class TripAppV2 {
       tab.className = `folder-tab ${proj.id === this.activeProjectId ? 'active' : ''}`;
       tab.innerHTML = `
         <span>📁 ${this.escapeHtml(proj.title)}</span>
-        ${this.projects.length > 1 ? `<span class="tab-close" title="刪除此行程">✕</span>` : ''}
+        ${this.projects.length > 1 ? `<span class="tab-close">✕</span>` : ''}
       `;
-
       tab.addEventListener('click', (e) => {
         if (e.target.classList.contains('tab-close')) {
           e.stopPropagation();
-          if (confirm(`確定刪除行程資料夾「${proj.title}」？`)) {
+          if (confirm(`確定刪除行程「${proj.title}」？`)) {
             this.projects = this.projects.filter(p => p.id !== proj.id);
-            if (this.activeProjectId === proj.id) {
-              this.activeProjectId = this.projects[0].id;
-            }
+            if (this.activeProjectId === proj.id) this.activeProjectId = this.projects[0].id;
             this.saveProjects();
             this.render();
           }
@@ -345,88 +356,84 @@ class TripAppV2 {
         this.saveProjects();
         this.render();
       });
-
       this.tripTabsBar.appendChild(tab);
     });
   }
 
-  // --- Top-Down Mindmap Tree Positioning Logic ---
+  // --- Vertical Timeline Positioning (Match User Reference Image) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
-
     const proj = this.getActiveProject();
     if (!proj || !proj.rootNode) return;
     const root = proj.rootNode;
 
     const nodePositions = new Map();
-    const levelHeight = 170; // Vertical distance between levels
-    const cardWidth = 220;
-    const cardHeight = 110;
-    const siblingGap = 40;
-    const startY = 120;
-    const startX = 1400; // Center X origin on canvas
+    const mainTrunkX = 450; // 垂直主幹的 X 座標
+    let currentY = 160;
 
-    // Top-Down Layout Algorithm: Calculate Widths & Positions
-    const calculateSubtreeWidth = (node) => {
-      if (!node.children || node.children.length === 0 || node.expanded === false) {
-        return cardWidth + siblingGap;
-      }
-      let totalWidth = 0;
-      node.children.forEach(child => {
-        totalWidth += calculateSubtreeWidth(child);
+    // 1. Root Card at top of Main Trunk
+    nodePositions.set(root.id, { x: mainTrunkX - 140, y: 40, node: root });
+
+    // Helper recursive layout for children
+    const layoutChildren = (parent, parentX, parentY, indentLevel) => {
+      if (!parent.children || parent.children.length === 0 || parent.expanded === false) return;
+
+      parent.children.forEach(child => {
+        let childX = parentX + (indentLevel === 0 ? 120 : 160);
+        let childY = currentY;
+
+        // Custom indent per category
+        if (child.category === 'period') {
+          childX = parentX + 70;
+        } else if (indentLevel >= 2) {
+          childX = parentX + 130;
+        }
+
+        nodePositions.set(child.id, { x: childX, y: childY, node: child });
+        currentY += 85; // vertical gap
+
+        // Recursive subchildren
+        layoutChildren(child, childX, childY, indentLevel + 1);
       });
-      return Math.max(totalWidth, cardWidth + siblingGap);
     };
 
-    const positionSubtree = (node, level, leftX, topY) => {
-      const subtreeWidth = calculateSubtreeWidth(node);
-      const nodeX = leftX + subtreeWidth / 2 - cardWidth / 2;
-      const nodeY = topY;
+    layoutChildren(root, mainTrunkX, 40, 0);
 
-      nodePositions.set(node.id, { x: nodeX, y: nodeY, node });
+    // Draw Main Trunk Line (垂直主幹)
+    const maxY = Math.max(currentY + 100, 1000);
+    this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-      if (node.children && node.children.length > 0 && node.expanded !== false) {
-        let childLeftX = leftX;
-        node.children.forEach(child => {
-          const childWidth = calculateSubtreeWidth(child);
-          positionSubtree(child, level + 1, childLeftX, topY + levelHeight);
-          childLeftX += childWidth;
-        });
-      }
-    };
-
-    const totalRootWidth = calculateSubtreeWidth(root);
-    positionSubtree(root, 0, startX - totalRootWidth / 2, startY);
-
-    // Render Cards & SVG Bezier Lines (From Top to Bottom)
+    // Draw Nodes & Step Connectors (帶箭頭折線)
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
 
-      if (pos.node.children && pos.node.children.length > 0 && pos.node.expanded !== false) {
-        pos.node.children.forEach(child => {
-          const childPos = nodePositions.get(child.id);
-          if (childPos) {
-            // Draw line from bottom center of parent to top center of child
-            const parentBottomX = pos.x + cardWidth / 2;
-            const parentBottomY = pos.y + cardHeight;
-            const childTopX = childPos.x + cardWidth / 2;
-            const childTopY = childPos.y;
+      // Connect to parent
+      if (id !== root.id) {
+        // Find parent
+        const parentNode = this.findParentNode(root, id);
+        if (parentNode) {
+          const parentPos = nodePositions.get(parentNode.id);
+          if (parentPos) {
+            let startX = parentPos.x + 120;
+            let startY = parentPos.y + 20;
 
-            this.drawSvgTopDownCurve(parentBottomX, parentBottomY, childTopX, childTopY);
+            if (parentNode.id === root.id) {
+              startX = mainTrunkX;
+              startY = pos.y + 20;
+            }
+
+            this.drawStepArrowLine(startX, startY, pos.x, pos.y + 20);
           }
-        });
+        }
       }
     });
 
-    // Center Viewport on Root Node
+    // Initial center focus
     setTimeout(() => {
-      const rootPos = nodePositions.get(root.id);
-      if (rootPos) {
-        this.viewport.scrollLeft = rootPos.x - this.viewport.clientWidth / 2 + cardWidth / 2;
-        this.viewport.scrollTop = rootPos.y - 60;
-      }
+      this.viewport.scrollLeft = mainTrunkX - 300;
+      this.viewport.scrollTop = 0;
     }, 50);
   }
 
@@ -438,70 +445,91 @@ class TripAppV2 {
 
     const isRoot = node.category === 'root';
     const isDay = node.category === 'day';
+    const isPeriod = node.category === 'period';
 
-    let icon = '📍';
-    if (node.category === 'food') icon = '🍜';
-    if (node.category === 'hotel') icon = '🏨';
-    if (node.category === 'shop') icon = '🛍️';
-    if (node.category === 'transit') icon = '🚌';
-    if (isDay) icon = '📅';
-    if (isRoot) icon = '🗺️';
+    const cardBgColor = node.bgColor || (isDay ? '#ffffff' : (isPeriod ? '#fef3c7' : '#ffffff'));
 
-    const cardBgColor = node.bgColor || '#1e293b';
+    let cardHtml = '';
 
-    let cardHtml = `
-      <div class="node-card ${isRoot ? 'root-node' : ''} ${isDay ? 'category-node' : ''}" style="background-color: ${cardBgColor};">
-        <div class="node-header">
-          <span class="node-title">${icon} ${this.escapeHtml(node.title)}</span>
-          ${node.cost ? `<span class="node-badge">${this.escapeHtml(node.cost)}</span>` : ''}
-        </div>
-    `;
-
-    // Special Hotel Info Display
-    if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) {
-      cardHtml += `
-        <div class="hotel-badge-box">
-          ${node.hotelCheckIn ? `<div>🏨 入住: ${this.escapeHtml(node.hotelCheckIn)} | 退房: ${this.escapeHtml(node.hotelCheckOut || '')}</div>` : ''}
-          ${node.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(node.hotelRoomType)}</div>` : ''}
+    if (isRoot) {
+      cardHtml = `
+        <div class="root-header-box">
+          <div class="root-header-title">${this.escapeHtml(node.title)}</div>
         </div>
       `;
-    }
+    } else if (isDay) {
+      cardHtml = `
+        <div class="day-hex-card" style="background-color:${cardBgColor};">
+          <span>📅 ${this.escapeHtml(node.title)}</span>
+          <div class="node-actions" style="margin-left:8px;">
+            <button class="btn-mini btn-add-child">+</button>
+            <button class="btn-mini btn-edit-node">✏️</button>
+          </div>
+        </div>
+      `;
+    } else if (isPeriod) {
+      cardHtml = `
+        <div class="period-pill-card" style="background-color:${cardBgColor};">
+          <span>🕒 ${this.escapeHtml(node.title)}</span>
+          <div class="node-actions" style="margin-left:6px;">
+            <button class="btn-mini btn-add-child">+</button>
+            <button class="btn-mini btn-edit-node">✏️</button>
+          </div>
+        </div>
+      `;
+    } else {
+      let icon = '📍';
+      if (node.category === 'food') icon = '🍜';
+      if (node.category === 'hotel') icon = '🏨';
+      if (node.category === 'transit') icon = '🚌';
+      if (node.category === 'shop') icon = '🛍️';
 
-    if (node.imageUrl) {
-      cardHtml += `<img class="node-thumb" src="${this.escapeHtml(node.imageUrl)}" alt="thumb" loading="lazy">`;
-    }
+      cardHtml = `
+        <div class="node-card" style="background-color:${cardBgColor};">
+          <div class="node-header">
+            <span class="node-title">${icon} ${this.escapeHtml(node.title)}</span>
+            ${node.cost ? `<span class="node-badge">${this.escapeHtml(node.cost)}</span>` : ''}
+          </div>
+      `;
 
-    if (node.url || node.mapsUrl || node.note) {
-      cardHtml += `<div class="node-meta">`;
-      if (node.url) cardHtml += `<a href="${this.escapeHtml(node.url)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🔗 網頁連結</a>`;
-      if (node.mapsUrl) cardHtml += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🗺️ 地圖</a>`;
-      if (node.note) cardHtml += `<div style="font-size:0.75rem; color:var(--text-muted);">${this.escapeHtml(node.note)}</div>`;
+      if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) {
+        cardHtml += `
+          <div class="hotel-badge-box">
+            ${node.hotelCheckIn ? `<div>🏨 入住: ${this.escapeHtml(node.hotelCheckIn)} | 退房: ${this.escapeHtml(node.hotelCheckOut || '')}</div>` : ''}
+            ${node.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(node.hotelRoomType)}</div>` : ''}
+          </div>
+        `;
+      }
+
+      if (node.imageUrl) cardHtml += `<img class="node-thumb" src="${this.escapeHtml(node.imageUrl)}" alt="thumb" loading="lazy">`;
+
+      if (node.url || node.mapsUrl || node.note) {
+        cardHtml += `<div class="node-meta">`;
+        if (node.url) cardHtml += `<a href="${this.escapeHtml(node.url)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🔗 網頁連結</a>`;
+        if (node.mapsUrl) cardHtml += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🗺️ 地圖</a>`;
+        if (node.note) cardHtml += `<div style="font-size:0.75rem; color:#475569; font-weight:600;">${this.escapeHtml(node.note)}</div>`;
+        cardHtml += `</div>`;
+      }
+
+      cardHtml += `
+        <div class="node-actions">
+          <button class="btn-mini btn-add-child" title="新增子景點">+</button>
+          <button class="btn-mini btn-edit-node" title="編輯">✏️</button>
+          <button class="btn-mini btn-delete-node" title="刪除">🗑️</button>
+        </div>
+      `;
+
+      if (node.children && node.children.length > 0) {
+        const isExpanded = node.expanded !== false;
+        cardHtml += `<button class="toggle-btn-side">${isExpanded ? '−' : '+'}</button>`;
+      }
+
       cardHtml += `</div>`;
     }
 
-    cardHtml += `
-      <div class="node-actions">
-        <button class="btn-mini btn-add-child" title="新增子節點">+</button>
-        ${!isRoot ? `<button class="btn-mini btn-edit-node" title="編輯">✏️</button>` : ''}
-        ${!isRoot ? `<button class="btn-mini btn-delete-node" title="刪除">🗑️</button>` : ''}
-      </div>
-    `;
-
-    // Top-Down Collapse Button (Bottom of Card)
-    if (node.children && node.children.length > 0) {
-      const isExpanded = node.expanded !== false;
-      cardHtml += `
-        <button class="toggle-btn-bottom" title="${isExpanded ? '收合' : '展開'}">
-          ${isExpanded ? '−' : '+'}
-        </button>
-      `;
-    }
-
-    cardHtml += `</div>`;
     group.innerHTML = cardHtml;
 
-    // Toggle Button Event
-    const toggleBtn = group.querySelector('.toggle-btn-bottom');
+    const toggleBtn = group.querySelector('.toggle-btn-side');
     if (toggleBtn) {
       toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -511,10 +539,13 @@ class TripAppV2 {
       });
     }
 
-    group.querySelector('.btn-add-child').addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.openModalForAdd(node.id);
-    });
+    const addBtn = group.querySelector('.btn-add-child');
+    if (addBtn) {
+      addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openModalForAdd(node.id);
+      });
+    }
 
     const editBtn = group.querySelector('.btn-edit-node');
     if (editBtn) {
@@ -529,7 +560,7 @@ class TripAppV2 {
       deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const proj = this.getActiveProject();
-        if (confirm(`確定刪除「${node.title}」及其子節點嗎？`)) {
+        if (confirm(`確定刪除「${node.title}」？`)) {
           this.deleteNode(proj.rootNode, node.id);
           this.saveProjects();
           this.render();
@@ -540,17 +571,47 @@ class TripAppV2 {
     return group;
   }
 
-  // Draw Top-Down Bezier Curve Path
-  drawSvgTopDownCurve(x1, y1, x2, y2) {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const dy = y2 - y1;
-    const cy1 = y1 + dy * 0.5;
-    const cy2 = y1 + dy * 0.5;
+  // Draw Vertical Backbone Line (垂直主幹粗線)
+  drawMainTrunkLine(x, y1, x2, y2) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x);
+    line.setAttribute('y1', y1);
+    line.setAttribute('x2', x);
+    line.setAttribute('y2', y2);
+    line.setAttribute('class', 'timeline-main-trunk');
+    this.svgConnectors.appendChild(line);
+  }
 
-    const d = `M ${x1} ${y1} C ${x1} ${cy1}, ${x2} ${cy2}, ${x2} ${y2}`;
+  // Draw Step Arrow Line ➔ (帶箭頭的勾型/直角連線)
+  drawStepArrowLine(x1, y1, x2, y2) {
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    
+    // Step line path
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const midX = x1 + 25;
+    const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${x2 - 8}`;
     path.setAttribute('d', d);
-    path.setAttribute('class', 'connector-path');
-    this.svgConnectors.appendChild(path);
+    path.setAttribute('class', 'connector-path-timeline');
+    group.appendChild(path);
+
+    // Arrowhead at (x2, y2)
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const arrowPoints = `${x2},${y2} ${x2 - 8},${y2 - 5} ${x2 - 8},${y2 + 5}`;
+    arrow.setAttribute('points', arrowPoints);
+    arrow.setAttribute('fill', '#0f766e');
+    group.appendChild(arrow);
+
+    this.svgConnectors.appendChild(group);
+  }
+
+  findParentNode(current, targetId) {
+    if (!current.children) return null;
+    for (const child of current.children) {
+      if (child.id === targetId) return current;
+      const found = this.findParentNode(child, targetId);
+      if (found) return found;
+    }
+    return null;
   }
 
   // --- Mobile Outline View ---
@@ -588,11 +649,11 @@ class TripAppV2 {
 
         itemCard.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong style="font-size:1rem; color:var(--text-main);">${icon} ${this.escapeHtml(child.title)}</strong>
+            <strong style="font-size:1rem;">${icon} ${this.escapeHtml(child.title)}</strong>
             ${child.cost ? `<span class="node-badge">${this.escapeHtml(child.cost)}</span>` : ''}
           </div>
-          ${child.category === 'hotel' && child.hotelCheckIn ? `<div style="font-size:0.8rem; color:#67e8f9;">🏨 入住: ${this.escapeHtml(child.hotelCheckIn)} | 退房: ${this.escapeHtml(child.hotelCheckOut || '')} (${this.escapeHtml(child.hotelRoomType || '')})</div>` : ''}
-          ${child.note ? `<div style="font-size:0.85rem; color:var(--text-muted);">${this.escapeHtml(child.note)}</div>` : ''}
+          ${child.category === 'hotel' && child.hotelCheckIn ? `<div style="font-size:0.8rem; color:#0369a1;">🏨 入住: ${this.escapeHtml(child.hotelCheckIn)} | 退房: ${this.escapeHtml(child.hotelCheckOut || '')} (${this.escapeHtml(child.hotelRoomType || '')})</div>` : ''}
+          ${child.note ? `<div style="font-size:0.85rem; color:#475569; font-weight:600;">${this.escapeHtml(child.note)}</div>` : ''}
           <div style="display:flex; gap:10px; font-size:0.8rem; margin-top:4px;">
             ${child.url ? `<a href="${this.escapeHtml(child.url)}" target="_blank" class="node-link">🔗 連結</a>` : ''}
             ${child.mapsUrl ? `<a href="${this.escapeHtml(child.mapsUrl)}" target="_blank" class="node-link">🗺️ 地圖</a>` : ''}
@@ -622,14 +683,13 @@ class TripAppV2 {
     renderOutlineNode(root, itemsContainer);
   }
 
-  // --- Modal Operations ---
   openModalForAdd(parentId) {
     this.modalTitle.textContent = '新增景點 / 節點';
     this.nodeForm.reset();
     document.getElementById('nodeId').value = '';
     document.getElementById('nodeParentId').value = parentId;
-    this.nodeColorInput.value = '#1e293b';
-    this.nodeColorCustom.value = '#1e293b';
+    this.nodeColorInput.value = '#ffffff';
+    this.nodeColorCustom.value = '#ffffff';
     this.hotelFieldsBox.style.display = 'none';
     this.modal.classList.add('active');
   }
@@ -646,17 +706,14 @@ class TripAppV2 {
     document.getElementById('nodeCost').value = node.cost || '';
     document.getElementById('nodeNote').value = node.note || '';
 
-    // Hotel special fields
     document.getElementById('hotelCheckIn').value = node.hotelCheckIn || '';
     document.getElementById('hotelCheckOut').value = node.hotelCheckOut || '';
     document.getElementById('hotelRoomType').value = node.hotelRoomType || '';
     this.hotelFieldsBox.style.display = node.category === 'hotel' ? 'flex' : 'none';
 
-    // Color fields
-    const color = node.bgColor || '#1e293b';
+    const color = node.bgColor || '#ffffff';
     this.nodeColorInput.value = color;
     this.nodeColorCustom.value = color;
-
     this.modal.classList.add('active');
   }
 
@@ -741,7 +798,7 @@ class TripAppV2 {
       try {
         const imported = JSON.parse(event.target.result);
         if (imported && (imported.rootNode || imported.title)) {
-          const newId = 'proj_' + Date.now();
+          const newId = 'proj_tl_' + Date.now();
           const newProj = {
             id: newId,
             title: imported.title || '匯入行程',
@@ -753,7 +810,7 @@ class TripAppV2 {
           this.render();
           this.showToast('📥 成功匯入全新行程資料夾！');
         }
-      } catch (err) { alert('解析 JSON 檔案失敗'); }
+      } catch (err) {}
     };
     reader.readAsText(file);
   }
@@ -774,5 +831,5 @@ class TripAppV2 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appV2 = new TripAppV2();
+  window.appTimeline = new VerticalTimelineApp();
 });
