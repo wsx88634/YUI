@@ -1,145 +1,158 @@
 /**
- * TripTree V6 - 零重疊演算法 + 精準子樹高度計算
+ * TripTree V7 - 東京 5 天 4 夜旅遊範例 + 堅若磐石經典垂直時間軸排版
  */
 
-const DEFAULT_TIMELINE_PROJECTS = [
+const TOKYO_DEMO_PROJECTS = [
   {
-    id: "proj_timeline_guide",
-    title: "TripTree 功能指南 (以 10/19 行程為例)",
+    id: "proj_tokyo_demo",
+    title: "🗼 東京 5 天 4 夜自由行 經典心智圖",
     rootNode: {
-      id: "root_tl_guide",
-      title: "TripTree 功能指南 (以 10/19 行程為例)",
+      id: "root_tokyo",
+      title: "🗼 東京 5 天 4 夜自由行 經典心智圖",
       category: "root",
       expanded: true,
       bgColor: "#ffffff",
       children: [
         {
-          id: "day-1019-guide",
-          title: "10/19 到日本 (範例行程)",
+          id: "day-1",
+          title: "Day 1: 10/20 成田機場 ➔ 淺草 ➔ 上野",
           category: "day",
           expanded: true,
           bgColor: "#ffffff",
           children: [
             {
-              id: "period-am",
+              id: "d1-am",
               title: "上午",
               category: "period",
               expanded: true,
               bgColor: "#fef3c7",
               children: [
                 {
-                  id: "act-1",
-                  title: "準備行李 ~ 11:00 出門！",
+                  id: "d1-act-flight",
+                  title: "08:50 桃園起飛 ➔ 13:15 抵達成田機場",
                   category: "spot",
-                  cost: "11:00 前",
-                  bgColor: "#fef08a",
-                  note: "💡 提示：點擊右側 + 號即可在此新增延伸景點！",
+                  cost: "08:50~13:15",
+                  bgColor: "#bbf7d0",
+                  note: "出關後前往 B1 樓層購買 Skyliner 車票。",
                   children: []
                 }
               ]
             },
             {
-              id: "period-noon",
-              title: "中午",
-              category: "period",
-              expanded: true,
-              bgColor: "#fef3c7",
-              children: [
-                {
-                  id: "act-2",
-                  title: "12:00 到小港機場辦理登機",
-                  category: "spot",
-                  cost: "12:00",
-                  bgColor: "#fed7aa",
-                  note: "🎨 提示：點擊卡片上 ✏️ 圖示，可任意挑選卡片背景顏色！",
-                  children: []
-                }
-              ]
-            },
-            {
-              id: "period-pm",
+              id: "d1-pm",
               title: "下午",
               category: "period",
               expanded: true,
               bgColor: "#fef3c7",
               children: [
                 {
-                  id: "act-3",
-                  title: "15:35 起飛 ➔ 19:30 抵達日本關西機場",
-                  category: "spot",
-                  bgColor: "#bbf7d0",
-                  note: "🔍 提示：點擊左下角 🔍+ / 🔍− 控制盤可手動放大縮小畫面！",
+                  id: "d1-act-skyliner",
+                  title: "搭乘 Skyliner 特急（成田機場 ➔ 京成上野站）",
+                  category: "transit",
+                  cost: "41 分鐘直達",
+                  bgColor: "#dcfce7",
+                  note: "車程僅需 41 分鐘，舒適又快速！",
                   children: []
                 }
               ]
             },
             {
-              id: "period-night",
+              id: "d1-night",
               title: "晚上",
               category: "period",
               expanded: true,
               bgColor: "#fef3c7",
               children: [
                 {
-                  id: "act-4",
-                  title: "搭南海電鐵前往難波站",
-                  category: "transit",
-                  bgColor: "#dcfce7",
-                  note: "📱 提示：切換頂部「手機列表視圖」適合單手卡片瀏覽！",
-                  children: [
-                    {
-                      id: "sub-train-1",
-                      title: "關西機場站 20:09 ➔ 難波站 20:52",
-                      category: "transit",
-                      bgColor: "#fef08a",
-                      children: []
-                    }
-                  ]
-                },
-                {
-                  id: "act-5",
-                  title: "入住【一心齋橋2號店】",
+                  id: "d1-act-hotel",
+                  title: "入住【上野雷門大飯店】",
                   category: "hotel",
                   bgColor: "#ffedd5",
-                  hotelCheckIn: "21:30 Check-in",
-                  hotelCheckOut: "11:00 Check-out",
-                  hotelRoomType: "心齋橋館 #BK9928",
-                  note: "🏨 提示：選擇「住宿/飯店」類型可填寫入住退房時間與房型！",
+                  hotelCheckIn: "15:00 入住",
+                  hotelCheckOut: "11:00 退房",
+                  hotelRoomType: "高級雙人房 #TK8829",
+                  note: "出站步行 3 分鐘即達，交通超方便。",
                   children: [
                     {
-                      id: "act-dinner",
-                      title: "晚餐美食推薦（帶地圖連結與筆記）",
-                      category: "food",
+                      id: "d1-act-sensoji",
+                      title: "淺草寺雷門漫步 ➔ 拍大提燈 🏮",
+                      category: "spot",
                       bgColor: "#e0e7ff",
+                      mapsUrl: "https://maps.google.com",
                       children: [
-                        { 
-                          id: "food-sushi", 
-                          title: "藏壽司 道頓堀全球旗艦店", 
-                          category: "food", 
-                          bgColor: "#fef08a", 
-                          cost: "11:00~00:00",
-                          mapsUrl: "https://maps.google.com",
-                          note: "🔗 提示：可附帶 Google 地圖與官方網址點擊直接開導航！",
-                          children: [] 
-                        },
-                        { 
-                          id: "food-ramen", 
-                          title: "24HR 一蘭拉麵 道頓堀店別館", 
-                          category: "food", 
-                          bgColor: "#fef08a", 
-                          cost: "24HR",
-                          children: [] 
+                        {
+                          id: "d1-act-ichiran",
+                          title: "晚餐：一蘭拉麵 淺草店（豚骨拉麵）",
+                          category: "food",
+                          cost: "¥1,100",
+                          bgColor: "#fef08a",
+                          children: []
                         }
                       ]
                     }
                   ]
-                },
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "day-2",
+          title: "Day 2: 10/21 築地市場 ➔ 澀谷 ➔ 新宿夜景",
+          category: "day",
+          expanded: true,
+          bgColor: "#ffffff",
+          children: [
+            {
+              id: "d2-am",
+              title: "上午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
                 {
-                  id: "act-donki",
-                  title: "24HR 唐吉訶德 道頓堀店補貨",
-                  category: "shop",
+                  id: "d2-act-tsukiji",
+                  title: "09:00 築地外市場（黑鮪魚丼飯 🍣 & 玉子燒）",
+                  category: "food",
+                  cost: "09:00~11:30",
                   bgColor: "#fef08a",
-                  note: "📤 提示：點擊右上角「📤匯出」可傳行程給朋友點「📥匯入」秒同步！",
+                  note: "必吃丸武玉子燒與新鮮海鮮丼！",
+                  children: []
+                }
+              ]
+            },
+            {
+              id: "d2-pm",
+              title: "下午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "d2-act-shibuya",
+                  title: "14:30 澀谷 SHIBUYA SKY 展望台 🌇",
+                  category: "spot",
+                  cost: "預約 15:00 入場",
+                  bgColor: "#bbf7d0",
+                  note: "俯瞰澀谷十字路口與遠眺富士山日落。",
+                  children: []
+                }
+              ]
+            },
+            {
+              id: "d2-night",
+              title: "晚上",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "d2-act-shinjuku",
+                  title: "新宿歌舞伎町漫步 ➔ 晚餐：敘敘苑 燒肉 🥩",
+                  category: "food",
+                  bgColor: "#ffedd5",
+                  cost: "¥8,500/人",
+                  note: "窗邊位置可邊享用高檔和牛邊賞夜景！",
                   children: []
                 }
               ]
@@ -151,7 +164,7 @@ const DEFAULT_TIMELINE_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV6 {
+class VerticalTimelineAppV7 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -206,23 +219,23 @@ class VerticalTimelineAppV6 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v6_projects');
+    const saved = localStorage.getItem('triptree_tl_v7_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    return JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
+    return JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v6_active_id');
+    const saved = localStorage.getItem('triptree_tl_v7_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
-    return this.projects[0] ? this.projects[0].id : "proj_timeline_guide";
+    return this.projects[0] ? this.projects[0].id : "proj_tokyo_demo";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v6_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v6_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v7_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v7_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -264,7 +277,7 @@ class VerticalTimelineAppV6 {
 
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      const title = prompt('請輸入新行程名稱：', '新行程 10/19~10/25');
+      const title = prompt('請輸入新行程名稱：', '東京 5 天 4 夜自由行');
       if (title) {
         const newProjId = 'proj_tl_' + Date.now();
         const newProj = {
@@ -338,11 +351,11 @@ class VerticalTimelineAppV6 {
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (this.isReadOnly) return;
       localStorage.clear();
-      this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
+      this.projects = JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
       this.activeProjectId = this.projects[0].id;
       this.saveProjects();
       this.render();
-      this.showToast('✨ 已重置為功能指南預設範例！');
+      this.showToast('✨ 已重置為東京旅遊經典範例！');
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -392,7 +405,7 @@ class VerticalTimelineAppV6 {
     this.renderTabs();
     const proj = this.getActiveProject();
     if (proj) {
-      this.tripTitleInput.value = proj.title || "TripTree 功能指南 (以 10/19 行程為例)";
+      this.tripTitleInput.value = proj.title || "🗼 東京 5 天 4 夜自由行 經典心智圖";
       if (this.currentView === 'mindmap') this.renderMindmap();
       else this.renderOutline();
     }
@@ -426,35 +439,7 @@ class VerticalTimelineAppV6 {
     });
   }
 
-  // --- 🧮 零重疊動態子樹高度演算法 (Zero Overlap Subtree Layout) ---
-  getNodeHeight(node) {
-    if (node.category === 'root') return 80;
-    if (node.category === 'day') return 55;
-    if (node.category === 'period') return 50;
-
-    let h = 110; // 基礎卡片高度
-    if (node.note) h += 30;
-    if (node.url || node.mapsUrl) h += 25;
-    if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) h += 40;
-    return h;
-  }
-
-  getSubtreeHeight(node) {
-    const nodeSelfHeight = this.getNodeHeight(node);
-    if (!node.children || node.children.length === 0 || node.expanded === false) {
-      return nodeSelfHeight;
-    }
-
-    const gap = 35; // 垂直子節點間距
-    let childrenTotalHeight = 0;
-    node.children.forEach((child, index) => {
-      childrenTotalHeight += this.getSubtreeHeight(child);
-      if (index < node.children.length - 1) childrenTotalHeight += gap;
-    });
-
-    return Math.max(nodeSelfHeight, childrenTotalHeight);
-  }
-
+  // --- 📐 堅若磐石零錯位直觀幾何排版演算法 ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -463,48 +448,50 @@ class VerticalTimelineAppV6 {
     const root = proj.rootNode;
 
     const nodePositions = new Map();
-    const mainTrunkX = 450;
-    const verticalGap = 35;
+    const mainTrunkX = 400; // 縱向主幹 X 座標
+    let currentY = 160;
 
-    // 計算並分派 Y 座標
-    const positionNodeSubtree = (node, parentX, startY, indentLevel) => {
-      const subtreeHeight = this.getSubtreeHeight(node);
-      const selfHeight = this.getNodeHeight(node);
+    // Root 頂部
+    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, width: 320, height: 75, node: root });
 
-      let currentX = parentX + 280;
-      if (node.category === 'day') currentX = mainTrunkX + 160;
-      else if (node.category === 'period') currentX = parentX + 160;
+    const processTree = (node, parentX, level) => {
+      if (!node.children || node.children.length === 0 || node.expanded === false) return;
 
-      // 本節點居中於該子樹高度
-      const centerY = startY + (subtreeHeight / 2) - (selfHeight / 2);
-      nodePositions.set(node.id, { x: currentX, y: centerY, height: selfHeight, node: node });
+      node.children.forEach(child => {
+        let childX = parentX + 310;
+        let cardW = 280;
+        let cardH = 120;
 
-      if (node.children && node.children.length > 0 && node.expanded !== false) {
-        let childStartY = startY;
-        node.children.forEach(child => {
-          const childSubtreeH = this.getSubtreeHeight(child);
-          positionNodeSubtree(child, currentX, childStartY, indentLevel + 1);
-          childStartY += childSubtreeH + verticalGap;
-        });
-      }
+        if (child.category === 'day') {
+          childX = mainTrunkX + 160;
+          cardW = 260;
+          cardH = 50;
+        } else if (child.category === 'period') {
+          childX = parentX + 220;
+          cardW = 120;
+          cardH = 45;
+        }
+
+        const childY = currentY;
+        nodePositions.set(child.id, { x: childX, y: childY, width: cardW, height: cardH, node: child });
+
+        // 垂直間距增量 (包含長備註時加寬)
+        let deltaY = 140;
+        if (child.note && child.note.length > 20) deltaY = 165;
+        if (child.category === 'day') deltaY = 80;
+
+        currentY += deltaY;
+
+        processTree(child, childX, level + 1);
+      });
     };
 
-    // Root 置頂
-    nodePositions.set(root.id, { x: mainTrunkX - 180, y: 40, height: 80, node: root });
+    processTree(root, mainTrunkX, 0);
 
-    let currentDayY = 160;
-    if (root.children && root.children.length > 0) {
-      root.children.forEach(dayNode => {
-        const daySubtreeH = this.getSubtreeHeight(dayNode);
-        positionNodeSubtree(dayNode, mainTrunkX, currentDayY, 0);
-        currentDayY += daySubtreeH + 50;
-      });
-    }
-
-    const maxY = Math.max(currentDayY + 150, 1200);
+    const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // 繪製節點卡片與連線
+    // 繪製卡片與完美平滑折線
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
@@ -514,7 +501,7 @@ class VerticalTimelineAppV6 {
         if (parentNode) {
           const parentPos = nodePositions.get(parentNode.id);
           if (parentPos) {
-            let startX = parentPos.x + (parentNode.category === 'day' ? 160 : (parentNode.category === 'period' ? 110 : 260));
+            let startX = parentPos.x + parentPos.width;
             let startY = parentPos.y + (parentPos.height / 2);
 
             if (parentNode.id === root.id) {
@@ -522,15 +509,16 @@ class VerticalTimelineAppV6 {
               startY = pos.y + (pos.height / 2);
             }
 
+            const targetX = pos.x;
             const targetY = pos.y + (pos.height / 2);
-            this.drawStepArrowLine(startX, startY, pos.x, targetY);
+            this.drawStepArrowLine(startX, startY, targetX, targetY);
           }
         }
       }
     });
 
     setTimeout(() => {
-      this.viewport.scrollLeft = mainTrunkX - 300;
+      this.viewport.scrollLeft = mainTrunkX - 250;
       this.viewport.scrollTop = 0;
     }, 50);
   }
@@ -603,7 +591,7 @@ class VerticalTimelineAppV6 {
       if (node.url || node.mapsUrl || node.note) {
         cardHtml += `<div class="node-meta">`;
         if (node.url) cardHtml += `<a href="${this.escapeHtml(node.url)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🔗 網頁連結</a>`;
-        if (node.mapsUrl) cardHtml += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🗺️ 地圖</a>`;
+        if (node.mapsUrl) cardHtml += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🗺️ 地圖導覽</a>`;
         if (node.note) cardHtml += `<div style="font-size:0.78rem; color:#475569; font-weight:600;">${this.escapeHtml(node.note)}</div>`;
         cardHtml += `</div>`;
       }
@@ -683,7 +671,7 @@ class VerticalTimelineAppV6 {
   drawStepArrowLine(x1, y1, x2, y2) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const midX = x1 + 35;
+    const midX = x1 + 30;
     const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${x2 - 10}`;
     path.setAttribute('d', d);
     path.setAttribute('class', 'connector-path-timeline');
@@ -691,7 +679,7 @@ class VerticalTimelineAppV6 {
 
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${x2 - 10},${y2 - 6} ${x2 - 10},${y2 + 6}`);
-    arrow.setAttribute('fill', '#0f766e');
+    arrow.setAttribute('fill', '#0d9488');
     group.appendChild(arrow);
 
     this.svgConnectors.appendChild(group);
@@ -932,5 +920,5 @@ class VerticalTimelineAppV6 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV6 = new VerticalTimelineAppV6();
+  window.appTimelineV7 = new VerticalTimelineAppV7();
 });

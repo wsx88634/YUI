@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V6 - 垂直時間軸旅遊心智圖 (零重疊升級版)</title>
+  <title>TripTree V7 - 東京 5 天 4 夜自由行 (堅若磐石經典心智圖)</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=6.0.0">
+  <link rel="stylesheet" href="styles.css?v=7.0.0">
 </head>
 <body>
 
@@ -45,15 +45,15 @@
       <button class="btn" id="btnImport" title="匯入 JSON">
         <span>📥</span> <span class="btn-text">匯入</span>
       </button>
-      <button class="btn btn-primary" id="btnResetDemo" title="重置載入圖片範例與指南">
-        <span>✨</span> <span class="btn-text">功能範例</span>
+      <button class="btn btn-primary" id="btnResetDemo" title="重置載入東京範例行程">
+        <span>✨</span> <span class="btn-text">東京範例</span>
       </button>
     </div>
   </header>
 
   <!-- Toolbar Bar -->
   <div class="toolbar">
-    <input type="text" id="tripTitleInput" class="trip-title-edit" value="TripTree 功能指南 (以 10/19 行程為例)" placeholder="點擊編輯行程名稱...">
+    <input type="text" id="tripTitleInput" class="trip-title-edit" value="🗼 東京 5 天 4 夜自由行 經典心智圖" placeholder="點擊編輯行程名稱...">
     
     <div class="view-switcher">
       <button class="tab-btn active" id="tabMindmap">🌳 垂直時間軸心智圖</button>
@@ -105,7 +105,7 @@
         <div class="form-group">
           <label class="form-label" for="nodeCategory">節點類型</label>
           <select id="nodeCategory" class="form-select" required>
-            <option value="day">📅 日期 / 天數 (10/19 到日本)</option>
+            <option value="day">📅 日期 / 天數 (Day 1: 10/20 成田機場)</option>
             <option value="period">🕒 時段膠囊 (上午/中午/下午/晚上)</option>
             <option value="spot" selected>📍 景點 / 行程動作</option>
             <option value="food">🍜 美食 / 餐廳</option>
@@ -133,20 +133,20 @@
 
         <div class="form-group">
           <label class="form-label" for="nodeTitle">景點 / 節點名稱 *</label>
-          <input type="text" id="nodeTitle" class="form-input" placeholder="例如：15:35起飛 ➔ 19:30抵達關西機場" required>
+          <input type="text" id="nodeTitle" class="form-input" placeholder="例如：14:30 澀谷 SHIBUYA SKY 展望台" required>
         </div>
 
         <div id="hotelFieldsBox" class="hotel-fields-box" style="display: none;">
           <div class="form-group">
             <label class="form-label">入住時間 / 退房時間</label>
             <div style="display:flex; gap:8px;">
-              <input type="text" id="hotelCheckIn" class="form-input" placeholder="入住 (如 21:30)">
-              <input type="text" id="hotelCheckOut" class="form-input" placeholder="退房 (如 11:00)">
+              <input type="text" id="hotelCheckIn" class="form-input" placeholder="入住 (如 15:00 入住)">
+              <input type="text" id="hotelCheckOut" class="form-input" placeholder="退房 (如 11:00 退房)">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label" for="hotelRoomType">房型 / 訂房確認號</label>
-            <input type="text" id="hotelRoomType" class="form-input" placeholder="例如：一心齋橋2號店 #BK9928">
+            <input type="text" id="hotelRoomType" class="form-input" placeholder="例如：上野雷門大飯店 #TK8829">
           </div>
         </div>
 
@@ -167,12 +167,12 @@
 
         <div class="form-group">
           <label class="form-label" for="nodeCost">預算 / 時間標註</label>
-          <input type="text" id="nodeCost" class="form-input" placeholder="例如：24HR 或 11:00前">
+          <input type="text" id="nodeCost" class="form-input" placeholder="例如：¥1,100 或 41分鐘直達">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="nodeNote">筆記 / 說明備註</label>
-          <textarea id="nodeNote" class="form-textarea" placeholder="填寫出關時間、搭車指引等資訊..."></textarea>
+          <textarea id="nodeNote" class="form-textarea" placeholder="填寫景點指引、美食推薦等資訊..."></textarea>
         </div>
 
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
@@ -185,6 +185,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=6.0.0"></script>
+  <script src="app.js?v=7.0.0"></script>
 </body>
 </html>

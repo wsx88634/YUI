@@ -1,17 +1,17 @@
-/* TripTree V6 - 零重疊演算法 + 全適應間距 */
+/* TripTree V7 - 東京旅遊範例 + 堅若磐石經典垂直時間軸排版 */
 :root {
-  --bg-main: #e8f5e9;
+  --bg-main: #eef2f6;
   --bg-card-default: #ffffff;
-  --accent-tree-line: #134e4a;
+  --accent-tree-line: #0f766e;
   --accent-primary: #0f766e;
   --accent-secondary: #0d9488;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --border-color: #cbd5e1;
   --radius-pill: 9999px;
-  --radius-card: 12px;
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.12);
+  --radius-card: 14px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.1);
   --font-family: 'Outfit', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
 }
 
@@ -37,7 +37,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 2px solid #cbd5e1;
   padding: 10px 16px;
@@ -161,7 +161,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.75);
   border-bottom: 1.5px solid #cbd5e1;
   gap: 10px;
   flex-wrap: wrap;
@@ -199,7 +199,7 @@ header {
   border: 2px dashed transparent;
   padding: 4px 10px;
   border-radius: 10px;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 .readonly-banner {
@@ -260,7 +260,7 @@ main {
   left: 0;
   min-width: 4500px;
   min-height: 6000px;
-  padding: 120px;
+  padding: 100px;
   transform-origin: 0 0;
   transition: transform 0.15s ease-out;
 }
@@ -276,15 +276,15 @@ main {
 }
 
 .timeline-main-trunk {
-  stroke: #134e4a;
-  stroke-width: 7;
+  stroke: #0f766e;
+  stroke-width: 8;
   stroke-linecap: round;
 }
 
 .connector-path-timeline {
   fill: none;
-  stroke: #0f766e;
-  stroke-width: 3.5;
+  stroke: #0d9488;
+  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -292,14 +292,13 @@ main {
 .tree-node-group {
   position: absolute;
   z-index: 2;
-  transition: all 0.2s ease;
 }
 
 .root-header-box {
   background: #ffffff;
-  border: 4px solid #134e4a;
+  border: 4px solid #0f766e;
   border-radius: 28px;
-  padding: 16px 32px;
+  padding: 16px 36px;
   text-align: center;
   box-shadow: var(--shadow-md);
   display: flex;
@@ -311,17 +310,17 @@ main {
 .root-header-title {
   font-size: 1.6rem;
   font-weight: 900;
-  color: #134e4a;
+  color: #0f766e;
 }
 
 .day-hex-card {
   background: #ffffff;
-  border: 3px solid #134e4a;
+  border: 3px solid #0f766e;
   border-radius: 20px;
   padding: 10px 22px;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #134e4a;
+  color: #0f766e;
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
@@ -349,7 +348,7 @@ main {
   border: 2px solid #64748b;
   border-radius: 14px;
   padding: 12px 16px;
-  width: 260px; /* 固定寬度，防止爆版重疊 */
+  width: 280px; /* 固化寬度，防止排版推擠錯位 */
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -529,7 +528,7 @@ main {
 .outline-tree {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 擴大主區塊距離 */
+  gap: 20px;
 }
 
 .outline-group {
@@ -557,7 +556,7 @@ main {
 .outline-items {
   display: flex;
   flex-direction: column;
-  gap: 14px; /* 子卡片縱向排列大間距，絕不重疊 */
+  gap: 14px;
   padding-left: 10px;
   border-left: 3px solid #0d9488;
 }
