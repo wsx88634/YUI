@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>IOGEAR GWU637 操作與設定指南</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+    @page {
+      size: A4;
+      margin: 12mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Segoe UI', Arial, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Header Banner */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-text h1 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .header-text p {
+      margin: 0;
+      font-size: 13px;
+      color: #93c5fd;
+      font-weight: 500;
+    }
+
+    .model-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #f8fafc;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Section Styling */
+    .section {
+      margin-bottom: 22px;
+      page-break-inside: avoid;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e3a8a;
+      border-bottom: 2.5px solid #3b82f6;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .icon {
+      background: #eff6ff;
+      color: #2563eb;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    /* Step Cards */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 10px 14px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content strong {
+      color: #0f172a;
+      display: block;
+      font-size: 13px;
+    }
+
+    .step-content p {
+      margin: 2px 0 0 0;
+      color: #475569;
+      font-size: 12px;
+    }
+
+    /* Images */
+    .img-container {
+      width: 100%;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .img-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .img-caption {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-solid { background: #dbeafe; color: #1e40af; }
+    .badge-blink { background: #fef3c7; color: #92400e; }
+    .badge-off { background: #f1f5f9; color: #64748b; }
+
+    /* Callout Alert */
+    .alert {
+      background: #fffbebf8;
+      border-left: 4px solid #f59e0b;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #78350f;
+    }
+
+    .alert strong {
+      color: #92400e;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-text">
+      <h1>IOGEAR GWU637 操作與設定指南</h1>
+      <p>Ethernet-to-Wi-Fi Universal Wireless Adapter 快速圖解說明書</p>
+    </div>
+    <div class="model-badge">GWU637 | USER GUIDE</div>
+  </div>
+
+  <!-- 1. 產品概述與接線圖 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">1</span>
+      產品簡介與硬體連接示意圖
+    </div>
+    <p style="margin-top:0;">
+      <strong>IOGEAR GWU637</strong> 能將無無線網路功能的有線設備（如智慧電視、印表機、舊型電腦、IP Camera）轉接連接至無線 Wi-Fi 網路。
+    </p>
+
+    <div class="img-container">
+      <img src="C:/Users/yuie.liu/.gemini/antigravity/brain/6a4fd438-e793-40d5-9ea8-f46b52f612b6/gwu637_connection_diagram_1784899453565.jpg" alt="GWU637 連接示意圖">
+      <div class="img-caption">圖 1：GWU637 轉接器與設備、路由器連接關係圖</div>
+    </div>
+  </div>
+
+  <!-- 2. 設定方式 1：WPS -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">2</span>
+      設定方案一：WPS 一鍵快速連線（推薦）
+    </div>
+
+    <div class="img-container">
+      <img src="C:/Users/yuie.liu/.gemini/antigravity/brain/6a4fd438-e793-40d5-9ea8-f46b52f612b6/gwu637_wps_setup_1784899848683.jpg" alt="WPS 設定步驟">
+      <div class="img-caption">圖 2：WPS 按鍵一鍵自動配對流程圖</div>
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>供電與連接</strong>
+          <p>使用 USB 線插入轉接器供電，並將 RJ-45 網路線插入電腦或電視的有線網口。</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>按壓 GWU637 的 WPS 鍵</strong>
+          <p>長按 GWU637 上的 WPS 按鈕約 <strong>3～5 秒</strong>，觀察面板上的 WPS 指示燈開始閃爍。</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>啟動無線路由器 WPS 鍵</strong>
+          <p>在 <strong>2 分鐘內</strong>，按下家中無線路由器上的 WPS 按鈕，兩台設備將自動配對並完成連線。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- 3. 設定方式 2：網頁手動設定 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">3</span>
+      設定方案二：網頁介面手動設定（無 WPS 時使用）
+    </div>
+
+    <div class="img-container">
+      <img src="C:/Users/yuie.liu/.gemini/antigravity/brain/6a4fd438-e793-40d5-9ea8-f46b52f612b6/gwu637_web_setup_1784899863398.jpg" alt="網頁設定步驟">
+      <div class="img-caption">圖 3：透過電腦瀏覽器登入 192.168.1.252 設定 Wi-Fi</div>
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>設定電腦靜態 IP (Static IP)</strong>
+          <p>將電腦以網線連接 GWU637 並關閉電腦 Wi-Fi。將電腦以太網 IPv4 設定為：<br>
+          IP 位址：<code>192.168.1.3</code> | 子網路遮罩：<code>255.255.255.0</code></p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>開啟瀏覽器並登入管理網頁</strong>
+          <p>開啟 Safari / Edge 瀏覽器，輸入預設 IP <code>192.168.1.252</code>。<br>
+          預設帳號：<code>admin</code> | 預設密碼：<code>admin</code></p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>進行無線網路掃描 (Site Survey)</strong>
+          <p>點選「Site Survey」選單，掃描並選取您家中的 Wi-Fi SSID，輸入 Wi-Fi 密碼後點擊 Connect。</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>恢復電腦網路設定為 DHCP</strong>
+          <p>設定完成後，切記將電腦 IP 設定還原為「自動取得 IP 位址 (DHCP)」，即可正常上網。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LED 指示燈說明 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">4</span>
+      LED 指示燈狀態說明
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>指示燈</th>
+          <th>狀態</th>
+          <th>說明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3"><strong>WPS / Reset</strong></td>
+          <td><span class="badge badge-solid">常亮 (Solid)</span></td>
+          <td>設備正在執行恢復出廠預設值 (Reset)</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blink">閃爍 (Blinking)</span></td>
+          <td>WPS 功能已啟動，正在搜尋與配對路由器</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-off">熄滅 (Off)</span></td>
+          <td>WPS 未啟用 / 處於正常運作狀態</td>
+        </tr>
+        <tr>
+          <td rowspan="2"><strong>WLAN (無線)</strong></td>
+          <td><span class="badge badge-blink">閃爍 (Blinking)</span></td>
+          <td>無線網路正常運作中，正在發送/接收封包</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-off">熄滅 (Off)</span></td>
+          <td>未連線至無線網路或 WLAN 功能關閉</td>
+        </tr>
+        <tr>
+          <td rowspan="2"><strong>Ethernet (有線)</strong></td>
+          <td><span class="badge badge-blink">閃爍 (Blinking)</span></td>
+          <td>與有線設備（如電視/電腦）資料傳輸中</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-off">熄滅 (Off)</span></td>
+          <td>未檢測到有線網線連接</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. 故障排除與重置 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">5</span>
+      恢復出廠設定與疑難排解 (Troubleshooting)
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔄 恢復出廠設定 (Reset)</div>
+        <ul style="margin:0; padding-left:18px; font-size:12px; color:#334155;">
+          <li><strong>一般重置：</strong>通電狀態下長按 Reset 鈕 3~5 秒，至 WPS 燈常亮後放開。</li>
+          <li><strong>強制重置：</strong>拔下電源 -> 按住 Reset 鈕不放 -> 插上電源 -> 等待 Port 燈亮起後放開。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ 常見問題解決</div>
+        <ul style="margin:0; padding-left:18px; font-size:12px; color:#334155;">
+          <li><strong>無法登入 192.168.1.252：</strong>確認已關閉電腦 Wi-Fi，且網卡 IP 已設為 192.168.1.3。</li>
+          <li><strong>相容性須知：</strong>不支援企業級驗證 (Enterprise Wi-Fi) 及部分 Mesh Wi-Fi 系統。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert">
+      <strong>💡 提示：</strong>使用網頁手動設定完成後，請務必將電腦以太網卡重新設定為「自動取得 IP 位址 (DHCP)」，否則電腦將無法正常存取網際網絡。
+    </div>
+  </div>
+
+  <div class="footer">
+    IOGEAR GWU637 Quick Setup Manual &copy; 2026 | Antigravity Visual Assistant
+  </div>
+
+</body>
+</html>

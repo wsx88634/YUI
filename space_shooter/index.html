@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霓虹星空射擊戰 - Neon Galaxy</title>
+    <!-- 引入炫酷的 Google 字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 遊戲畫布 -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- 遊戲內抬頭顯示器 (HUD) -->
+        <div id="hud" class="hidden">
+            <div class="hud-top">
+                <div class="hud-item score-container">
+                    <span class="label">SCORE</span>
+                    <span id="score-val" class="value">000000</span>
+                </div>
+                <div class="hud-item wave-container">
+                    <span class="label">WAVE</span>
+                    <span id="wave-val" class="value">1</span>
+                </div>
+                <div class="hud-item high-score-container">
+                    <span class="label">HI-SCORE</span>
+                    <span id="high-score-val" class="value">000000</span>
+                </div>
+            </div>
+            
+            <div class="hud-bottom">
+                <div class="hud-item lives-container">
+                    <span class="label">LIVES</span>
+                    <div id="lives-icons" class="icons">
+                        <!-- 動態插入生命圖示 -->
+                    </div>
+                </div>
+                <div class="hud-item shield-container">
+                    <span class="label">SHIELD</span>
+                    <div class="progress-bar">
+                        <div id="shield-bar" class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <div class="hud-item weapon-container">
+                    <span class="label">POWER</span>
+                    <span id="weapon-level" class="value">LV.1</span>
+                </div>
+            </div>
+
+            <!-- Boss 血條 -->
+            <div id="boss-hud" class="hidden">
+                <div class="boss-label">BOSS INCOMING</div>
+                <div class="progress-bar boss-bar">
+                    <div id="boss-hp-bar" class="progress-fill boss-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 開始畫面 Overlay -->
+        <div id="start-screen" class="overlay">
+            <div class="overlay-content">
+                <h1 class="game-title">NEON GALAXY</h1>
+                <p class="game-subtitle">霓虹星空射擊戰</p>
+                
+                <div class="instructions">
+                    <h3>操作說明 (CONTROLS)</h3>
+                    <ul>
+                        <li><span class="key">W A S D</span> / <span class="key">↑ ↓ ← →</span> 鍵：移動戰機</li>
+                        <li><span class="key">空白鍵 SPACE</span>：發射雷射</li>
+                        <li>滑鼠/觸控：按住螢幕拖曳可直接控制並自動射擊</li>
+                    </ul>
+                </div>
+
+                <div class="items-legend">
+                    <h3>升級道具 (POWER-UPS)</h3>
+                    <div class="items-grid">
+                        <div class="item-desc"><span class="badge badge-weapon">W</span> 武器升級</div>
+                        <div class="item-desc"><span class="badge badge-shield">S</span> 護盾充能</div>
+                        <div class="item-desc"><span class="badge badge-heal">H</span> 恢復生命</div>
+                        <div class="item-desc"><span class="badge badge-bomb">B</span> 全螢幕炸彈</div>
+                    </div>
+                </div>
+
+                <button id="start-btn" class="btn">START GAME</button>
+            </div>
+        </div>
+
+        <!-- 遊戲結束 Overlay -->
+        <div id="game-over-screen" class="overlay hidden">
+            <div class="overlay-content">
+                <h2 class="title-failed">MISSION FAILED</h2>
+                <p class="reason">你的戰機已被摧毀</p>
+                <div class="final-score">
+                    <p>最終得分 (FINAL SCORE)</p>
+                    <span id="final-score-val" class="score-highlight">000000</span>
+                </div>
+                <button id="restart-btn" class="btn">TRY AGAIN</button>
+            </div>
+        </div>
+
+        <!-- 遊戲勝利 Overlay -->
+        <div id="victory-screen" class="overlay hidden">
+            <div class="overlay-content">
+                <h2 class="title-victory">VICTORY</h2>
+                <p class="reason">你拯救了星系！</p>
+                <div class="final-score">
+                    <p>最終得分 (FINAL SCORE)</p>
+                    <span id="victory-score-val" class="score-highlight">000000</span>
+                </div>
+                <button id="victory-restart-btn" class="btn btn-gold">NEW MISSION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入遊戲核心邏輯 -->
+    <script src="game.js"></script>
+</body>
+</html>

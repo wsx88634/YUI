@@ -1,0 +1,95 @@
+{
+  "quizzes": [
+    {
+      "id": "sample-js-basics",
+      "title": "JavaScript 基礎與核心概念測驗",
+      "description": "這是一個測試您對 JavaScript 基礎型別與核心運作機制理解程度的測驗。包含單選題與複選題，並附有詳細解析說明。",
+      "createdAt": "2026-07-12T13:20:00.000Z",
+      "questions": [
+        {
+          "id": "q1",
+          "text": "在 JavaScript 中，執行 typeof null 的回傳值是什麼？",
+          "type": "single",
+          "options": [
+            {
+              "id": "q1-o1",
+              "text": "null",
+              "isCorrect": false,
+              "explanation": "錯誤。雖然直覺上 typeof null 應該回傳 null，但這並非其實際行為。"
+            },
+            {
+              "id": "q1-o2",
+              "text": "undefined",
+              "isCorrect": false,
+              "explanation": "錯誤。undefined 代表變數已宣告但未賦值，而 null 代表一個空值物件指標。"
+            },
+            {
+              "id": "q1-o3",
+              "text": "object",
+              "isCorrect": true,
+              "explanation": "正確！這是 JavaScript 自早期版本就存在的歷史遺留錯誤（Bug）。由於二進位表示法中，物件的類型標籤（Type Tag）為 000，而 null 的二進位表示也是全為 0，導致 null 被誤判定為 object。"
+            },
+            {
+              "id": "q1-o4",
+              "text": "boolean",
+              "isCorrect": false,
+              "explanation": "錯誤。布林型別（Boolean）只有 true 與 false 兩個值。"
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "text": "下列哪些項目在 JavaScript 中屬於「基本資料型別（Primitive Types）」？（複選）",
+          "type": "multiple",
+          "options": [
+            {
+              "id": "q2-o1",
+              "text": "String",
+              "isCorrect": true,
+              "explanation": "正確！String（字串）是基本資料型別之一，代表純文字資料。"
+            },
+            {
+              "id": "q2-o2",
+              "text": "Array",
+              "isCorrect": false,
+              "explanation": "錯誤。Array（陣列）本質上是特殊的 Object（物件），屬於參照型別（Reference Type）而非基本資料型別。"
+            },
+            {
+              "id": "q2-o3",
+              "text": "Symbol",
+              "isCorrect": true,
+              "explanation": "正確！Symbol（符號）是在 ES6 引入的基本資料型別，用於建立獨一無二且不可變的標識符。"
+            },
+            {
+              "id": "q2-o4",
+              "text": "Boolean",
+              "isCorrect": true,
+              "explanation": "正確！Boolean（布林）是基本資料型別之一，只有 true 和 false 兩種值。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sample-sub-1",
+      "quizId": "sample-js-basics",
+      "studentName": "林小明",
+      "score": 50,
+      "submittedAt": "2026-07-12T13:25:00.000Z",
+      "answers": [
+        {
+          "questionId": "q1",
+          "selectedOptionIds": ["q1-o3"],
+          "isCorrect": true
+        },
+        {
+          "questionId": "q2",
+          "selectedOptionIds": ["q2-o1", "q2-o2"],
+          "isCorrect": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,462 @@
+/* 霓虹星空射擊戰 - 樣式表 */
+
+:root {
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff007f;
+    --neon-yellow: #ffea00;
+    --neon-green: #39ff14;
+    --neon-blue: #0044ff;
+    --bg-dark: #06060c;
+    --panel-bg: rgba(10, 10, 25, 0.8);
+    --border-glow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(255, 0, 127, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: #030307;
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* 遊戲容器限制 */
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 600px;
+    max-height: 900px;
+    background-color: var(--bg-dark);
+    box-shadow: var(--border-glow);
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 遊戲畫布 */
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0c0d20 0%, #030307 100%);
+}
+
+/* --- HUD 抬頭顯示器 --- */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 讓點擊穿透 HUD */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    z-index: 10;
+}
+
+.hud-top, .hud-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.hud-item {
+    background: rgba(10, 10, 25, 0.6);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 1px;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.score-container .value {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.wave-container {
+    align-items: center;
+}
+
+.wave-container .value {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 5px var(--neon-magenta);
+    font-size: 20px;
+}
+
+/* 生命與護盾 */
+.lives-container {
+    min-width: 120px;
+}
+
+.icons {
+    display: flex;
+    gap: 6px;
+    height: 18px;
+    align-items: center;
+}
+
+/* 戰機圖示 CSS */
+.ship-icon {
+    width: 14px;
+    height: 14px;
+    background-color: var(--neon-cyan);
+    clip-path: polygon(50% 0%, 0% 100%, 50% 75%, 100% 100%);
+    display: inline-block;
+    box-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.shield-container {
+    flex-grow: 1;
+    margin: 0 16px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
+    box-shadow: 0 0 8px var(--neon-cyan);
+    transition: width 0.1s ease-out;
+}
+
+/* Boss HUD */
+#boss-hud {
+    position: absolute;
+    top: 75px;
+    left: 5%;
+    width: 90%;
+    background: rgba(20, 5, 5, 0.8);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+    padding: 8px 16px;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.boss-label {
+    font-size: 13px;
+    color: #ff3333;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px #ff0000;
+    animation: pulse 1s infinite alternate;
+}
+
+.boss-bar {
+    border-color: rgba(255, 0, 0, 0.5);
+}
+
+.boss-fill {
+    background: linear-gradient(90deg, #ff0000, #ff6600);
+    box-shadow: 0 0 8px #ff0000;
+}
+
+/* --- Overlays (覆蓋畫面) --- */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 6, 14, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.hidden, #hud.hidden, #boss-hud.hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.overlay-content {
+    width: 85%;
+    max-width: 450px;
+    background: var(--panel-bg);
+    border: 2px solid rgba(255, 0, 127, 0.3);
+    box-shadow: var(--border-glow);
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: floatIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 標題與文字 */
+.game-title {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(to bottom, #fff 20%, #ff007f 60%, #00f0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    animation: textGlitch 3s infinite alternate;
+}
+
+.game-subtitle {
+    font-size: 16px;
+    color: var(--neon-cyan);
+    letter-spacing: 6px;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    margin-top: -10px;
+}
+
+.instructions {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.instructions h3, .items-legend h3 {
+    font-size: 13px;
+    color: var(--neon-yellow);
+    margin-bottom: 10px;
+    border-left: 3px solid var(--neon-yellow);
+    padding-left: 8px;
+}
+
+.instructions ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    color: #dddddd;
+    line-height: 1.5;
+}
+
+.key {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--neon-cyan);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 道具圖例 */
+.items-legend {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.item-desc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 11px;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.badge-weapon { background-color: #ffaa00; color: #fff; }
+.badge-shield { background-color: #00ccff; color: #fff; }
+.badge-heal { background-color: #00ff66; color: #000; }
+.badge-bomb { background-color: #ff3333; color: #fff; }
+
+/* 按鈕樣式 */
+.btn {
+    background: transparent;
+    border: 2px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    padding: 14px 28px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background: var(--neon-cyan);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+    transform: scale(1.03);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-gold {
+    border-color: var(--neon-yellow);
+    color: var(--neon-yellow);
+    box-shadow: 0 0 10px rgba(255, 234, 0, 0.2);
+}
+
+.btn-gold:hover {
+    background: var(--neon-yellow);
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 234, 0, 0.6);
+}
+
+/* 遊戲結束與勝利 */
+.title-failed {
+    font-size: 32px;
+    color: #ff3333;
+    text-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+    letter-spacing: 3px;
+}
+
+.title-victory {
+    font-size: 36px;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 15px rgba(255, 234, 0, 0.6);
+    letter-spacing: 4px;
+}
+
+.reason {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: -10px;
+}
+
+.final-score {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.final-score p {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 6px;
+}
+
+.score-highlight {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* 動畫 */
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes floatIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes textGlitch {
+    0% {
+        text-shadow: 0 0 10px rgba(255, 0, 127, 0.5), 2px 0 0 rgba(0, 240, 255, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 12px rgba(255, 0, 127, 0.6), -1px 0 0 rgba(0, 240, 255, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 15px rgba(255, 0, 127, 0.5), 1px 1px 0 rgba(0, 240, 255, 0.3);
+    }
+}
+
+/* 行動裝置調整 */
+@media (max-width: 600px) {
+    #game-container {
+        border-radius: 0;
+        border: none;
+    }
+    .game-title {
+        font-size: 30px;
+    }
+    .overlay-content {
+        padding: 20px;
+        width: 90%;
+    }
+}
