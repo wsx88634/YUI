@@ -1,8 +1,14 @@
 /**
- * TripTree V2 - 垂直時間軸樹狀心智圖 (對照使用者範例圖片佈局)
+ * TripTree V3 - 強制同步垂直時間軸心智圖 (自動清除舊版快取)
  */
 
-// 預設 Demo 範例（對照使用者圖片資料結構）
+// 清除舊版 localStorage 快取，確保使用者即刻看到圖片範例
+(function clearLegacyCache() {
+  localStorage.removeItem('triptree_data');
+  localStorage.removeItem('triptree_v2_projects');
+  localStorage.removeItem('triptree_v2_active_id');
+})();
+
 const DEFAULT_TIMELINE_PROJECTS = [
   {
     id: "proj_timeline_1",
@@ -182,7 +188,7 @@ class VerticalTimelineApp {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_projects');
+    const saved = localStorage.getItem('triptree_tl_v3_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -190,14 +196,14 @@ class VerticalTimelineApp {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_active_id');
+    const saved = localStorage.getItem('triptree_tl_v3_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
   }
 
   saveProjects() {
-    localStorage.setItem('triptree_tl_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v3_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v3_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -289,13 +295,15 @@ class VerticalTimelineApp {
     document.getElementById('btnExport').addEventListener('click', () => this.exportJSON());
     document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileImportInput').click());
     document.getElementById('fileImportInput').addEventListener('change', (e) => this.importJSON(e));
+    
+    // 強制重置按鈕
     document.getElementById('btnResetDemo').addEventListener('click', () => {
-      if (confirm('確定重置為圖片範例行程嗎？')) {
-        this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
-        this.activeProjectId = this.projects[0].id;
-        this.saveProjects();
-        this.render();
-      }
+      localStorage.clear();
+      this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
+      this.activeProjectId = this.projects[0].id;
+      this.saveProjects();
+      this.render();
+      this.showToast('✨ 已強制重置為最新版時間軸！');
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -369,13 +377,11 @@ class VerticalTimelineApp {
     const root = proj.rootNode;
 
     const nodePositions = new Map();
-    const mainTrunkX = 450; // 垂直主幹的 X 座標
+    const mainTrunkX = 450;
     let currentY = 160;
 
-    // 1. Root Card at top of Main Trunk
     nodePositions.set(root.id, { x: mainTrunkX - 140, y: 40, node: root });
 
-    // Helper recursive layout for children
     const layoutChildren = (parent, parentX, parentY, indentLevel) => {
       if (!parent.children || parent.children.length === 0 || parent.expanded === false) return;
 
@@ -383,35 +389,26 @@ class VerticalTimelineApp {
         let childX = parentX + (indentLevel === 0 ? 120 : 160);
         let childY = currentY;
 
-        // Custom indent per category
-        if (child.category === 'period') {
-          childX = parentX + 70;
-        } else if (indentLevel >= 2) {
-          childX = parentX + 130;
-        }
+        if (child.category === 'period') childX = parentX + 70;
+        else if (indentLevel >= 2) childX = parentX + 130;
 
         nodePositions.set(child.id, { x: childX, y: childY, node: child });
-        currentY += 85; // vertical gap
+        currentY += 85;
 
-        // Recursive subchildren
         layoutChildren(child, childX, childY, indentLevel + 1);
       });
     };
 
     layoutChildren(root, mainTrunkX, 40, 0);
 
-    // Draw Main Trunk Line (垂直主幹)
     const maxY = Math.max(currentY + 100, 1000);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // Draw Nodes & Step Connectors (帶箭頭折線)
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
 
-      // Connect to parent
       if (id !== root.id) {
-        // Find parent
         const parentNode = this.findParentNode(root, id);
         if (parentNode) {
           const parentPos = nodePositions.get(parentNode.id);
@@ -430,7 +427,6 @@ class VerticalTimelineApp {
       }
     });
 
-    // Initial center focus
     setTimeout(() => {
       this.viewport.scrollLeft = mainTrunkX - 300;
       this.viewport.scrollTop = 0;
@@ -446,17 +442,12 @@ class VerticalTimelineApp {
     const isRoot = node.category === 'root';
     const isDay = node.category === 'day';
     const isPeriod = node.category === 'period';
-
     const cardBgColor = node.bgColor || (isDay ? '#ffffff' : (isPeriod ? '#fef3c7' : '#ffffff'));
 
     let cardHtml = '';
 
     if (isRoot) {
-      cardHtml = `
-        <div class="root-header-box">
-          <div class="root-header-title">${this.escapeHtml(node.title)}</div>
-        </div>
-      `;
+      cardHtml = `<div class="root-header-box"><div class="root-header-title">${this.escapeHtml(node.title)}</div></div>`;
     } else if (isDay) {
       cardHtml = `
         <div class="day-hex-card" style="background-color:${cardBgColor};">
@@ -513,9 +504,9 @@ class VerticalTimelineApp {
 
       cardHtml += `
         <div class="node-actions">
-          <button class="btn-mini btn-add-child" title="新增子景點">+</button>
-          <button class="btn-mini btn-edit-node" title="編輯">✏️</button>
-          <button class="btn-mini btn-delete-node" title="刪除">🗑️</button>
+          <button class="btn-mini btn-add-child">+</button>
+          <button class="btn-mini btn-edit-node">✏️</button>
+          <button class="btn-mini btn-delete-node">🗑️</button>
         </div>
       `;
 
@@ -571,22 +562,16 @@ class VerticalTimelineApp {
     return group;
   }
 
-  // Draw Vertical Backbone Line (垂直主幹粗線)
   drawMainTrunkLine(x, y1, x2, y2) {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', x);
-    line.setAttribute('y1', y1);
-    line.setAttribute('x2', x);
-    line.setAttribute('y2', y2);
+    line.setAttribute('x1', x); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
     line.setAttribute('class', 'timeline-main-trunk');
     this.svgConnectors.appendChild(line);
   }
 
-  // Draw Step Arrow Line ➔ (帶箭頭的勾型/直角連線)
   drawStepArrowLine(x1, y1, x2, y2) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    
-    // Step line path
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     const midX = x1 + 25;
     const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${x2 - 8}`;
@@ -594,10 +579,8 @@ class VerticalTimelineApp {
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
-    // Arrowhead at (x2, y2)
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    const arrowPoints = `${x2},${y2} ${x2 - 8},${y2 - 5} ${x2 - 8},${y2 + 5}`;
-    arrow.setAttribute('points', arrowPoints);
+    arrow.setAttribute('points', `${x2},${y2} ${x2 - 8},${y2 - 5} ${x2 - 8},${y2 + 5}`);
     arrow.setAttribute('fill', '#0f766e');
     group.appendChild(arrow);
 
@@ -614,7 +597,6 @@ class VerticalTimelineApp {
     return null;
   }
 
-  // --- Mobile Outline View ---
   renderOutline() {
     this.outlineTree.innerHTML = '';
     const proj = this.getActiveProject();
@@ -645,7 +627,6 @@ class VerticalTimelineApp {
         let icon = '📍';
         if (child.category === 'food') icon = '🍜';
         if (child.category === 'hotel') icon = '🏨';
-        if (child.category === 'day') icon = '📅';
 
         itemCard.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -808,7 +789,7 @@ class VerticalTimelineApp {
           this.activeProjectId = newId;
           this.saveProjects();
           this.render();
-          this.showToast('📥 成功匯入全新行程資料夾！');
+          this.showToast('📥 成功匯入全新行程！');
         }
       } catch (err) {}
     };
