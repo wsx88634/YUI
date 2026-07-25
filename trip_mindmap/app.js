@@ -1,5 +1,5 @@
 /**
- * TripTree V16 - 實體 DOM 物理高度動態重排引擎 (Physical Height Layout Engine - 徹底解決重疊)
+ * TripTree V17 - 終極實體 DOM 物理樹狀重排引擎 (Physical Tree Layout Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -279,7 +279,7 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV16 {
+class VerticalTimelineAppV17 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -384,7 +384,7 @@ class VerticalTimelineAppV16 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v16_projects');
+    const saved = localStorage.getItem('triptree_tl_v17_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -392,13 +392,13 @@ class VerticalTimelineAppV16 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v16_active_id');
+    const saved = localStorage.getItem('triptree_tl_v17_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   loadVaultItems() {
-    const saved = localStorage.getItem('triptree_spot_vault_items_v16');
+    const saved = localStorage.getItem('triptree_spot_vault_items_v17');
     if (saved) {
       try { return JSON.parse(saved); } catch(e){}
     }
@@ -415,13 +415,13 @@ class VerticalTimelineAppV16 {
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v16_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v16_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v17_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v17_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
   saveVaultData() {
-    localStorage.setItem('triptree_spot_vault_items_v16', JSON.stringify(this.vaultItems));
+    localStorage.setItem('triptree_spot_vault_items_v17', JSON.stringify(this.vaultItems));
     localStorage.setItem('triptree_country_hierarchy', JSON.stringify(this.countryHierarchy));
   }
 
@@ -861,8 +861,12 @@ class VerticalTimelineAppV16 {
 
   insertVaultItemIntoNode(item, targetNode) {
     if (!targetNode.children) targetNode.children = [];
+    
+    // 使用隨機數確保 ID 絕對不重複 (解決快速點擊重複生成相同 Date.now 的 BUG)
+    const uniqueId = 'spot_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    
     targetNode.children.push({
-      id: 'spot_' + Date.now(),
+      id: uniqueId,
       title: item.title,
       category: item.category || 'spot',
       cost: item.cost || '',
@@ -953,8 +957,8 @@ class VerticalTimelineAppV16 {
   }
 
   // ==========================================================================
-  // 📐 V16 終極實體 DOM 物理高度量測佈局引擎 (Physical Height Layout Engine)
-  // 徹底告別卡片重疊！以實測卡片長度 + 30px 安全邊界精準重排！
+  // 📐 V17 終極實體 DOM 物理高度量測佈局引擎 (Physical Tree Layout Engine)
+  // 徹底解決重疊，且 100% 保持心智圖「父子水平對齊」的優美樹狀結構！
   // ==========================================================================
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
@@ -963,20 +967,23 @@ class VerticalTimelineAppV16 {
     if (!proj || !proj.rootNode) return;
     const root = proj.rootNode;
 
-    const nodePositions = new Map();
-    const mainTrunkX = 350;
-
     const COL_DAY_X = 460;
     const COL_PERIOD_X = 520;
     const COL_SPOT_X = 760;
     const COL_SUB1_X = 1110;
     const COL_SUB2_X = 1460;
 
-    // 1. 初步拓撲樹狀劃分與列數歸類 (Tree Topology Partitioning)
-    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, category: 'root', node: root, level: 0 });
-
+    // 1. 扁平化並掛載所有卡片到 DOM (Top=0)，以便讀取真實物理高度
+    const renderedNodesMap = new Map();
     const flatNodeList = [];
-    const traverseTree = (node, level) => {
+    
+    // 掛載 Root
+    const rootX = 190;
+    const rootCard = this.createNodeCard(root, rootX, 0);
+    this.nodesLayer.appendChild(rootCard);
+    renderedNodesMap.set(root.id, { element: rootCard, x: rootX, y: 0, node: root, parentId: null, level: 0 });
+
+    const mountTree = (node, level) => {
       if (!node.children || node.children.length === 0 || node.expanded === false) return;
       node.children.forEach(child => {
         let childX = COL_SUB1_X;
@@ -986,53 +993,68 @@ class VerticalTimelineAppV16 {
         else if (level === 3) childX = COL_SUB1_X;
         else if (level >= 4) childX = COL_SUB2_X;
 
-        flatNodeList.push({ childNode: child, parentId: node.id, x: childX, level: level });
-        traverseTree(child, level + 1);
+        const cardEl = this.createNodeCard(child, childX, 0);
+        this.nodesLayer.appendChild(cardEl);
+        renderedNodesMap.set(child.id, { element: cardEl, x: childX, y: 0, node: child, parentId: node.id, level: level });
+        
+        flatNodeList.push({ id: child.id, node: child, parentId: node.id });
+        mountTree(child, level + 1);
       });
     };
+    mountTree(root, 1);
 
-    traverseTree(root, 0);
-
-    // 2. 第一階段：掛載 DOM 節點卡片到畫布中 (Mount DOM Cards)
-    const renderedNodesMap = new Map();
-    
-    // 先掛載 root 節點
-    const rootCard = this.createNodeCard(root, mainTrunkX - 160, 40);
-    this.nodesLayer.appendChild(rootCard);
-    renderedNodesMap.set(root.id, { element: rootCard, x: mainTrunkX - 160, y: 40, node: root });
-
-    // 暫時掛載所有子卡片
-    flatNodeList.forEach(item => {
-      const cardEl = this.createNodeCard(item.childNode, item.x, 0);
-      this.nodesLayer.appendChild(cardEl);
-      renderedNodesMap.set(item.childNode.id, { element: cardEl, x: item.x, y: 0, node: item.childNode, parentId: item.parentId, level: item.level });
-    });
-
-    // 3. 第二階段：在 requestAnimationFrame 中讀取真正的實體 DOM 高度 (Physical Measurement & Dynamic Top Assignment)
+    // 2. 核心：在 DOM 渲染完成後讀取真實高度，並套用 DFS 樹狀排版演算法
     requestAnimationFrame(() => {
       setTimeout(() => {
         let currentY = 160;
-        const SAFETY_MARGIN = 32; // 每張卡片之間絕不重疊的黃金離隙 Gap (32px)
+        const SAFETY_MARGIN = 28; // 卡片間距
 
-        // 依據扁平化遍歷順序，實測前一張卡片真實 offsetHeight 重排
-        flatNodeList.forEach(item => {
-          const itemData = renderedNodesMap.get(item.childNode.id);
-          if (itemData) {
-            itemData.y = currentY;
-            itemData.element.style.top = `${currentY}px`;
+        // Root 節點固定位置
+        const rootData = renderedNodesMap.get(root.id);
+        if (rootData) {
+          rootData.y = 40;
+          rootData.element.style.top = '40px';
+        }
 
-            // 精確讀取物理長度，絕對不打折
-            const realHeight = itemData.element.offsetHeight || 60;
-            
-            // 下一張卡片的起點 Y 軸 = 當前 Y 軸 + 實測卡片高度 + 安全距離
-            currentY += realHeight + SAFETY_MARGIN;
-          }
-        });
+        // DFS 計算真實排版 (保留水平對齊的優美階層)
+        const calculateTreePositions = (node) => {
+          if (!node.children || node.children.length === 0 || node.expanded === false) return;
+          
+          node.children.forEach(child => {
+            const childData = renderedNodesMap.get(child.id);
+            if (childData) {
+              // 第一個子節點 (或每個子節點剛開始) 對齊 currentY
+              childData.y = currentY;
+              childData.element.style.top = `${currentY}px`;
+              
+              // 取得卡片真實高度
+              const realHeight = childData.element.offsetHeight || 60;
+              
+              // 如果它沒有子節點，那麼 currentY 就要往下推，讓出空間給下一個兄弟節點
+              if (!child.children || child.children.length === 0 || child.expanded === false) {
+                currentY += realHeight + SAFETY_MARGIN;
+              } else {
+                // 如果它有子節點，則深入排版子節點
+                // 子節點的排版會自己去推動 currentY
+                calculateTreePositions(child);
+                
+                // 為了防止父節點(例如"上午")本身很高，但其子節點數量少總高度很低，
+                // 導致下一個兄弟節點往上縮。必須確保 currentY 至少大於 (父節點Y + 父節點高度 + 間距)
+                const minNextY = childData.y + realHeight + SAFETY_MARGIN;
+                if (currentY < minNextY) {
+                  currentY = minNextY;
+                }
+              }
+            }
+          });
+        };
 
-        // 4. 第三階段：依據精確重新排列後的實體 Y 軸座標，繪製完美的無縫向量連線 (Draw Vector Connectors)
+        // 啟動排版運算
+        calculateTreePositions(root);
+
+        // 3. 依據計算出的精準座標，繪製連線
         const maxY = Math.max(currentY + 180, 1400);
-        this.svgConnectors.innerHTML = '';
-        this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
+        this.drawMainTrunkLine(350, 100, 350, maxY);
 
         renderedNodesMap.forEach((childItem, id) => {
           if (id !== root.id) {
@@ -1052,7 +1074,7 @@ class VerticalTimelineAppV16 {
                 startX = parentItem.x + 30;
                 startY = parentItem.y + parentH;
               } else if (parentItem.node.id === root.id) {
-                startX = mainTrunkX;
+                startX = 350;
                 startY = childItem.y + (childH / 2);
               }
 
@@ -1063,13 +1085,13 @@ class VerticalTimelineAppV16 {
             }
           }
         });
-      }, 35);
+      }, 50);
     });
 
     setTimeout(() => {
-      this.viewport.scrollLeft = mainTrunkX - 200;
+      this.viewport.scrollLeft = 100;
       this.viewport.scrollTop = 0;
-    }, 50);
+    }, 80);
   }
 
   createNodeCard(node, x, y) {
@@ -1555,5 +1577,5 @@ class VerticalTimelineAppV16 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV16 = new VerticalTimelineAppV16();
+  window.appTimelineV17 = new VerticalTimelineAppV17();
 });
