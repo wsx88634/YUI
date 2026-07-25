@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V12 - 以景點靈感庫為主軸 (Vault-Centric Engine)</title>
+  <title>TripTree V13 - 置中精美 Modal 視窗與行程標籤列優化</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=12.0.0">
+  <link rel="stylesheet" href="styles.css?v=13.0.0">
 </head>
 <body>
 
@@ -19,40 +19,45 @@
 
   <!-- Top Header -->
   <header>
-    <div class="logo-group">
-      <div class="logo-icon">🗺️</div>
-      <div class="logo-title">TripTree</div>
+    <!-- Top Row: Logo & Action Buttons -->
+    <div class="header-top-row">
+      <div class="logo-group">
+        <div class="logo-icon">🗺️</div>
+        <div class="logo-title">TripTree</div>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Open Personal Spot Vault Drawer -->
+        <button class="btn btn-vault" id="btnOpenVault" title="開啟景點資料庫 / 靈感庫">
+          <span>📦</span> <span class="btn-text">景點靈感庫</span>
+        </button>
+
+        <!-- Share Readonly Link to Companion -->
+        <button class="btn btn-share-companion" id="btnShareCompanion" title="複製唯讀網址分享給旅伴看">
+          <span>🔗</span> <span class="btn-text">分享旅伴 (唯讀)</span>
+        </button>
+
+        <button class="btn" id="btnRefresh" title="手機強制刷新" onclick="localStorage.clear(); location.reload(true);">
+          <span>🔄</span> <span class="btn-text">刷新</span>
+        </button>
+        <button class="btn" id="btnExport" title="匯出 JSON">
+          <span>📤</span> <span class="btn-text">匯出</span>
+        </button>
+        <button class="btn" id="btnImport" title="匯入 JSON">
+          <span>📥</span> <span class="btn-text">匯入</span>
+        </button>
+        <button class="btn btn-primary" id="btnResetDemo" title="重置載入最新行程範例">
+          <span>✨</span> <span class="btn-text">重置範例</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Left Top Multi-Trip Folder / Project Tabs -->
-    <div class="trip-tabs-bar" id="tripTabsBar">
-      <!-- Tabs populated via JS -->
-    </div>
-    <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
-
-    <div class="nav-actions">
-      <!-- Open Personal Spot Vault Drawer -->
-      <button class="btn btn-vault" id="btnOpenVault" title="開啟景點資料庫 / 靈感庫">
-        <span>📦</span> <span class="btn-text">景點靈感庫</span>
-      </button>
-
-      <!-- Share Readonly Link to Companion -->
-      <button class="btn btn-share-companion" id="btnShareCompanion" title="複製唯讀網址分享給旅伴看">
-        <span>🔗</span> <span class="btn-text">分享旅伴 (唯讀)</span>
-      </button>
-
-      <button class="btn" id="btnRefresh" title="手機強制刷新" onclick="localStorage.clear(); location.reload(true);">
-        <span>🔄</span> <span class="btn-text">刷新</span>
-      </button>
-      <button class="btn" id="btnExport" title="匯出 JSON">
-        <span>📤</span> <span class="btn-text">匯出</span>
-      </button>
-      <button class="btn" id="btnImport" title="匯入 JSON">
-        <span>📥</span> <span class="btn-text">匯入</span>
-      </button>
-      <button class="btn btn-primary" id="btnResetDemo" title="重置載入最新行程範例">
-        <span>✨</span> <span class="btn-text">重置範例</span>
-      </button>
+    <!-- 3. 獨立且可順暢滑動的行程標籤頁面列 (解決被蓋住問題) -->
+    <div class="trip-tabs-container">
+      <div class="trip-tabs-bar" id="tripTabsBar">
+        <!-- Tabs populated via JS -->
+      </div>
+      <button class="btn-add-tab" id="btnAddTripTab" title="新增行程資料夾">➕ 新增行程</button>
     </div>
   </header>
 
@@ -108,7 +113,7 @@
         </div>
       </div>
 
-      <!-- 地區分類篩選獨立面板 (解決遮擋) -->
+      <!-- 地區分類篩選獨立面板 -->
       <div class="vault-filter-bar">
         <div class="vault-filter-header">
           <span style="font-size:0.85rem; font-weight:800; color:#0f766e;">📍 地區分類篩選：</span>
@@ -122,6 +127,56 @@
       <!-- 景點卡片清單 -->
       <div class="vault-card-list" id="vaultCardList">
         <!-- Vault cards rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ✨ 2. 置中精美 Modal: 創建全新行程資料夾 (整合名稱、日期、天數) -->
+  <div class="modal-overlay" id="newTripModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>✨</span> 創建全新行程資料夾</h3>
+        <button class="close-btn" id="btnCloseNewTripModal">&times;</button>
+      </div>
+
+      <form id="newTripForm">
+        <div class="form-group">
+          <label class="form-label" for="newTripTitle">行程名稱 *</label>
+          <input type="text" id="newTripTitle" class="form-input" placeholder="例如：東京 5 天 4 夜自由行" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newTripStartDate">出發日期 *</label>
+          <input type="date" id="newTripStartDate" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newTripDays">旅行天數 *</label>
+          <input type="number" id="newTripDays" class="form-input" min="1" max="30" value="5" required>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" class="btn" id="btnCancelNewTrip">取消</button>
+          <button type="submit" class="btn btn-primary">🚀 立即自動生成分支</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✨ 1. 置中精美 Modal: 選擇景點放置位置 (取代醜陋 Prompt 數字輸入) -->
+  <div class="modal-overlay" id="placementModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="placementModalTitle"><span>📍</span> 選擇景點放置位置</h3>
+        <button class="close-btn" id="btnClosePlacementModal">&times;</button>
+      </div>
+
+      <div style="font-size:0.9rem; color:#475569; font-weight:600;" id="placementSpotTargetName">
+        請選擇要把景點放入哪一天的哪個時段：
+      </div>
+
+      <div class="placement-options-list" id="placementOptionsList">
+        <!-- Placement options buttons rendered via JS -->
       </div>
     </div>
   </div>
@@ -234,6 +289,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=12.0.0"></script>
+  <script src="app.js?v=13.0.0"></script>
 </body>
 </html>

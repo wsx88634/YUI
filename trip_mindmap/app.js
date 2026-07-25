@@ -1,5 +1,5 @@
 /**
- * TripTree V12 - 景點靈感庫為主軸旗艦引擎 (Vault-Centric Engine & Drag/Drop Placement)
+ * TripTree V13 - 置中精美 Modal 視窗與行程標籤列優化 (Executive Modal Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -265,7 +265,7 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV12 {
+class VerticalTimelineAppV13 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -319,6 +319,19 @@ class VerticalTimelineAppV12 {
     this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
     this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
 
+    // ✨ New Trip Modal
+    this.newTripModal = document.getElementById('newTripModal');
+    this.newTripForm = document.getElementById('newTripForm');
+    this.btnCloseNewTripModal = document.getElementById('btnCloseNewTripModal');
+    this.btnCancelNewTrip = document.getElementById('btnCancelNewTrip');
+    this.newTripStartDateInput = document.getElementById('newTripStartDate');
+
+    // ✨ Placement Modal
+    this.placementModal = document.getElementById('placementModal');
+    this.btnClosePlacementModal = document.getElementById('btnClosePlacementModal');
+    this.placementSpotTargetName = document.getElementById('placementSpotTargetName');
+    this.placementOptionsList = document.getElementById('placementOptionsList');
+
     this.modal = document.getElementById('nodeModal');
     this.nodeForm = document.getElementById('nodeForm');
     this.modalTitle = document.getElementById('modalTitle');
@@ -336,7 +349,7 @@ class VerticalTimelineAppV12 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v12_projects');
+    const saved = localStorage.getItem('triptree_tl_v13_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -344,7 +357,7 @@ class VerticalTimelineAppV12 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v12_active_id');
+    const saved = localStorage.getItem('triptree_tl_v13_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
@@ -367,8 +380,8 @@ class VerticalTimelineAppV12 {
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v12_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v12_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v13_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v13_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -386,7 +399,7 @@ class VerticalTimelineAppV12 {
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
 
-    // 📦 Drawer Events
+    // 📦 Vault Drawer
     this.btnOpenVault.addEventListener('click', () => {
       this.vaultDrawer.classList.add('open');
       this.renderVault();
@@ -395,7 +408,6 @@ class VerticalTimelineAppV12 {
       this.vaultDrawer.classList.remove('open', 'expanded-full');
     });
 
-    // 📖 全螢幕切換
     this.btnToggleFullVault.addEventListener('click', () => {
       this.vaultDrawer.classList.toggle('expanded-full');
       const isFull = this.vaultDrawer.classList.contains('expanded-full');
@@ -443,44 +455,27 @@ class VerticalTimelineAppV12 {
       this.showToast(`✨ 成功將【${newSpot.title}】存入景點靈感庫！`);
     });
 
-    this.viewport.addEventListener('wheel', (e) => {
-      if (e.ctrlKey) {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 0.1 : -0.1;
-        this.setZoom(this.zoomLevel + delta);
-      }
-    }, { passive: false });
-
-    const btnShareCompanion = document.getElementById('btnShareCompanion');
-    if (btnShareCompanion) {
-      btnShareCompanion.addEventListener('click', () => this.shareCompanionLink());
-    }
-
-    this.tripTitleInput.addEventListener('input', (e) => {
-      if (this.isReadOnly) return;
-      const proj = this.getActiveProject();
-      if (proj) {
-        proj.title = e.target.value;
-        if (proj.rootNode) proj.rootNode.title = e.target.value;
-        this.saveProjects();
-        this.renderTabs();
-      }
-    });
-
-    document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
-    document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
-
-    // --- 1. 新增行程對話框 (輸入名稱、日期與天數，自動生成早中晚分支) ---
+    // ✨ 2. 新增行程 Modal 綁定 (置中精美視窗整合名稱、日期、天數)
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      const title = prompt('請輸入行程名稱 (例: 東京 5 天 4 夜自由行)：', '東京 5 天 4 夜自由行');
-      if (!title) return;
+      // 預設今日日期
+      const today = new Date().toISOString().split('T')[0];
+      this.newTripStartDateInput.value = today;
+      document.getElementById('newTripTitle').value = '東京 5 天 4 夜自由行';
+      document.getElementById('newTripDays').value = '5';
+      this.newTripModal.classList.add('active');
+    });
 
-      const dateStr = prompt('請輸入出發日期 (例: 2026-10-20)：', '2026-10-20');
-      const daysCountStr = prompt('請輸入旅行總天數 (例: 5)：', '5');
-      const daysCount = Math.max(1, parseInt(daysCountStr) || 3);
+    this.btnCloseNewTripModal.addEventListener('click', () => this.newTripModal.classList.remove('active'));
+    this.btnCancelNewTrip.addEventListener('click', () => this.newTripModal.classList.remove('active'));
 
-      const startDate = dateStr ? new Date(dateStr) : new Date();
+    this.newTripForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('newTripTitle').value.trim();
+      const startDateStr = this.newTripStartDateInput.value;
+      const daysCount = Math.max(1, parseInt(document.getElementById('newTripDays').value) || 3);
+
+      const startDate = startDateStr ? new Date(startDateStr) : new Date();
 
       const newDaysChildren = [];
       for (let i = 0; i < daysCount; i++) {
@@ -521,9 +516,40 @@ class VerticalTimelineAppV12 {
       this.projects.push(newProj);
       this.activeProjectId = newProjId;
       this.saveProjects();
+      this.newTripModal.classList.remove('active');
       this.render();
       this.showToast(`🎉 成功自動生成 ${daysCount} 天行程與早中晚分支！`);
     });
+
+    // ✨ 1. Placement Modal 關閉綁定
+    this.btnClosePlacementModal.addEventListener('click', () => this.placementModal.classList.remove('active'));
+
+    this.viewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.1 : -0.1;
+        this.setZoom(this.zoomLevel + delta);
+      }
+    }, { passive: false });
+
+    const btnShareCompanion = document.getElementById('btnShareCompanion');
+    if (btnShareCompanion) {
+      btnShareCompanion.addEventListener('click', () => this.shareCompanionLink());
+    }
+
+    this.tripTitleInput.addEventListener('input', (e) => {
+      if (this.isReadOnly) return;
+      const proj = this.getActiveProject();
+      if (proj) {
+        proj.title = e.target.value;
+        if (proj.rootNode) proj.rootNode.title = e.target.value;
+        this.saveProjects();
+        this.renderTabs();
+      }
+    });
+
+    document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
+    document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
 
     this.nodeCategorySelect.addEventListener('change', (e) => {
       this.hotelFieldsBox.style.display = e.target.value === 'hotel' ? 'flex' : 'none';
@@ -638,23 +664,22 @@ class VerticalTimelineAppV12 {
         </div>
       `;
 
-      // 🖐️ 2. 支援 Drag 拖拉到心智圖上
       card.addEventListener('dragstart', (e) => {
         this.draggedVaultItem = item;
         e.dataTransfer.setData('text/plain', JSON.stringify(item));
       });
 
-      // 📱 3. 支援手機與點擊指定日期放置
+      // ✨ 1. 點擊「放至指定日期」彈出全自訂高質感置中 Modal (取代醜陋 Prompt)
       card.querySelector('.vault-copy-btn').addEventListener('click', () => {
-        this.openPlacementMenu(item);
+        this.openPlacementModal(item);
       });
 
       this.vaultCardList.appendChild(card);
     });
   }
 
-  // 📱 手機與點擊指定日期放置選單
-  openPlacementMenu(item) {
+  // ✨ 1. 全自訂高質感置中 Modal 選單 (取代 Prompt 數字輸入)
+  openPlacementModal(item) {
     if (this.isReadOnly) return;
     const proj = this.getActiveProject();
     if (!proj || !proj.rootNode) return;
@@ -665,25 +690,41 @@ class VerticalTimelineAppV12 {
       return;
     }
 
-    let menuOptions = [];
-    days.forEach((day, dIdx) => {
+    this.placementSpotTargetName.textContent = `請選擇要將【${item.title}】放置在哪一天哪個時段：`;
+    this.placementOptionsList.innerHTML = '';
+
+    days.forEach((day) => {
       const periods = day.children ? day.children.filter(c => c.category === 'period') : [];
       if (periods.length > 0) {
         periods.forEach(p => {
-          menuOptions.push({ label: `${day.title} ➔ ${p.title}`, dayNode: day, periodNode: p });
+          const btn = document.createElement('button');
+          btn.className = 'placement-btn';
+          btn.innerHTML = `
+            <span>📅 ${this.escapeHtml(day.title)} ➔ 🕒 ${this.escapeHtml(p.title)}</span>
+            <span style="color:#0d9488;">＋ 放入此處</span>
+          `;
+          btn.addEventListener('click', () => {
+            this.insertVaultItemIntoNode(item, p);
+            this.placementModal.classList.remove('active');
+          });
+          this.placementOptionsList.appendChild(btn);
         });
       } else {
-        menuOptions.push({ label: `${day.title}`, dayNode: day, periodNode: null });
+        const btn = document.createElement('button');
+        btn.className = 'placement-btn';
+        btn.innerHTML = `
+          <span>📅 ${this.escapeHtml(day.title)}</span>
+          <span style="color:#0d9488;">＋ 放入此處</span>
+        `;
+        btn.addEventListener('click', () => {
+          this.insertVaultItemIntoNode(item, day);
+          this.placementModal.classList.remove('active');
+        });
+        this.placementOptionsList.appendChild(btn);
       }
     });
 
-    const optionText = menuOptions.map((opt, i) => `${i + 1}. ${opt.label}`).join('\n');
-    const choice = prompt(`請選擇要把【${item.title}】放置在哪個位置：\n\n${optionText}\n\n(請輸入數字 1~${menuOptions.length})`, '1');
-
-    if (choice && parseInt(choice) >= 1 && parseInt(choice) <= menuOptions.length) {
-      const selectedOpt = menuOptions[parseInt(choice) - 1];
-      this.insertVaultItemIntoNode(item, selectedOpt.periodNode || selectedOpt.dayNode);
-    }
+    this.placementModal.classList.add('active');
   }
 
   insertVaultItemIntoNode(item, targetNode) {
@@ -751,6 +792,7 @@ class VerticalTimelineAppV12 {
     }
   }
 
+  // ✨ 3. 行程標籤頁面列優化 (平滑橫向滑動，絕不蓋住其他元素)
   renderTabs() {
     this.tripTabsBar.innerHTML = '';
     this.projects.forEach(proj => {
@@ -779,7 +821,6 @@ class VerticalTimelineAppV12 {
     });
   }
 
-  // --- 📐 6. 完美雙階段座標計算引擎 (修復新增卡片後連線跑版的問題) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -828,7 +869,6 @@ class VerticalTimelineAppV12 {
     const maxY = Math.max(currentY + 150, 1400);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
-    // 1. 渲染所有 DOM 節點卡片
     const renderedNodesMap = new Map();
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
@@ -836,7 +876,6 @@ class VerticalTimelineAppV12 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    // 2. 兩階段繪製連線（待 DOM layout 100% 安定後才量測連線，徹底防止跑版）
     requestAnimationFrame(() => {
       setTimeout(() => {
         this.svgConnectors.innerHTML = '';
@@ -887,7 +926,6 @@ class VerticalTimelineAppV12 {
     group.style.left = `${x}px`;
     group.style.top = `${y}px`;
 
-    // 🖐️ 支援放卡 drop 事件
     group.addEventListener('dragover', (e) => {
       e.preventDefault();
       group.classList.add('drag-over-target');
@@ -1379,5 +1417,5 @@ class VerticalTimelineAppV12 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV12 = new VerticalTimelineAppV12();
+  window.appTimelineV13 = new VerticalTimelineAppV13();
 });
