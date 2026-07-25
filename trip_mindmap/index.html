@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TripTree - 垂直時間軸旅遊心智圖</title>
-  <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具，支援手繪風格時間軸、住宿資訊與卡片色彩調配。">
+  <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具，支援手繪風格時間軸、寬敞排版、手動放大縮小與住宿資訊。">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
       <button class="btn" id="btnImport" title="匯入 JSON">
         <span>📥</span> <span class="btn-text">匯入</span>
       </button>
-      <button class="btn btn-primary" id="btnResetDemo" title="載入範例圖片行程">
+      <button class="btn btn-primary" id="btnResetDemo" title="載入圖片範例">
         <span>✨</span> <span class="btn-text">圖片範例</span>
       </button>
     </div>
@@ -64,6 +64,13 @@
       <div id="outlineTree" class="outline-tree"></div>
     </div>
   </main>
+
+  <!-- Floating Manual Zoom Control Panel (畫面手動放大縮小控制盤) -->
+  <div class="zoom-controls-widget" id="zoomWidget">
+    <button class="zoom-btn" id="btnZoomOut" title="縮小 (Ctrl + 滾輪向下)">−</button>
+    <div class="zoom-display" id="zoomDisplay" title="點擊重置為 100%">100%</div>
+    <button class="zoom-btn" id="btnZoomIn" title="放大 (Ctrl + 滾輪向上)">+</button>
+  </div>
 
   <!-- Floating Add Node Button -->
   <button class="fab-btn" id="fabAdd" title="新增景點節點">+</button>

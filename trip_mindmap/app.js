@@ -1,12 +1,11 @@
 /**
- * TripTree V3 - 強制同步垂直時間軸心智圖 (自動清除舊版快取)
+ * TripTree V4 - 寬敞排版垂直時間軸 + 手動畫面放大縮小控制
  */
 
-// 清除舊版 localStorage 快取，確保使用者即刻看到圖片範例
 (function clearLegacyCache() {
   localStorage.removeItem('triptree_data');
   localStorage.removeItem('triptree_v2_projects');
-  localStorage.removeItem('triptree_v2_active_id');
+  localStorage.removeItem('triptree_tl_projects');
 })();
 
 const DEFAULT_TIMELINE_PROJECTS = [
@@ -149,11 +148,12 @@ const DEFAULT_TIMELINE_PROJECTS = [
   }
 ];
 
-class VerticalTimelineApp {
+class VerticalTimelineAppV4 {
   constructor() {
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
     this.currentView = 'mindmap';
+    this.zoomLevel = 1.0;
 
     this.isPanning = false;
     this.startX = 0;
@@ -176,6 +176,10 @@ class VerticalTimelineApp {
     this.tripTitleInput = document.getElementById('tripTitleInput');
     this.tripTabsBar = document.getElementById('tripTabsBar');
 
+    this.btnZoomIn = document.getElementById('btnZoomIn');
+    this.btnZoomOut = document.getElementById('btnZoomOut');
+    this.zoomDisplay = document.getElementById('zoomDisplay');
+
     this.modal = document.getElementById('nodeModal');
     this.nodeForm = document.getElementById('nodeForm');
     this.modalTitle = document.getElementById('modalTitle');
@@ -188,7 +192,7 @@ class VerticalTimelineApp {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v3_projects');
+    const saved = localStorage.getItem('triptree_tl_v4_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -196,14 +200,14 @@ class VerticalTimelineApp {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v3_active_id');
+    const saved = localStorage.getItem('triptree_tl_v4_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_timeline_1";
   }
 
   saveProjects() {
-    localStorage.setItem('triptree_tl_v3_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v3_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v4_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v4_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -212,6 +216,20 @@ class VerticalTimelineApp {
   }
 
   bindEvents() {
+    // Zoom Controls
+    this.btnZoomIn.addEventListener('click', () => this.setZoom(this.zoomLevel + 0.15));
+    this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
+    this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
+
+    // Ctrl + Wheel Zoom
+    this.viewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.1 : -0.1;
+        this.setZoom(this.zoomLevel + delta);
+      }
+    }, { passive: false });
+
     this.tripTitleInput.addEventListener('input', (e) => {
       const proj = this.getActiveProject();
       if (proj) {
@@ -268,7 +286,7 @@ class VerticalTimelineApp {
     });
 
     this.viewport.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.tree-node-group') || e.target.closest('.btn') || e.target.closest('.fab-btn')) return;
+      if (e.target.closest('.tree-node-group') || e.target.closest('.btn') || e.target.closest('.fab-btn') || e.target.closest('.zoom-controls-widget')) return;
       this.isPanning = true;
       this.startX = e.pageX - this.viewport.offsetLeft;
       this.startY = e.pageY - this.viewport.offsetTop;
@@ -296,14 +314,13 @@ class VerticalTimelineApp {
     document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileImportInput').click());
     document.getElementById('fileImportInput').addEventListener('change', (e) => this.importJSON(e));
     
-    // 強制重置按鈕
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       localStorage.clear();
       this.projects = JSON.parse(JSON.stringify(DEFAULT_TIMELINE_PROJECTS));
       this.activeProjectId = this.projects[0].id;
       this.saveProjects();
       this.render();
-      this.showToast('✨ 已強制重置為最新版時間軸！');
+      this.showToast('✨ 已重置為圖片範例！');
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -312,6 +329,12 @@ class VerticalTimelineApp {
       e.preventDefault();
       this.handleFormSubmit();
     });
+  }
+
+  setZoom(level) {
+    this.zoomLevel = Math.max(0.4, Math.min(2.2, level));
+    this.canvas.style.transform = `scale(${this.zoomLevel})`;
+    this.zoomDisplay.textContent = `${Math.round(this.zoomLevel * 100)}%`;
   }
 
   switchView(view) {
@@ -368,7 +391,7 @@ class VerticalTimelineApp {
     });
   }
 
-  // --- Vertical Timeline Positioning (Match User Reference Image) ---
+  // --- Generous Spacing Vertical Timeline Layout (寬敞利落不擠在一塊) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -378,22 +401,30 @@ class VerticalTimelineApp {
 
     const nodePositions = new Map();
     const mainTrunkX = 450;
-    let currentY = 160;
+    let currentY = 180; // 頂部與主幹留出空間
 
-    nodePositions.set(root.id, { x: mainTrunkX - 140, y: 40, node: root });
+    nodePositions.set(root.id, { x: mainTrunkX - 160, y: 40, node: root });
 
+    // 大間距引出計算
     const layoutChildren = (parent, parentX, parentY, indentLevel) => {
       if (!parent.children || parent.children.length === 0 || parent.expanded === false) return;
 
       parent.children.forEach(child => {
-        let childX = parentX + (indentLevel === 0 ? 120 : 160);
+        let childX = parentX + 240; // 預設廣闊的 X 軸水平縮排距離
         let childY = currentY;
 
-        if (child.category === 'period') childX = parentX + 70;
-        else if (indentLevel >= 2) childX = parentX + 130;
+        if (child.category === 'day') {
+          childX = mainTrunkX + 160;
+        } else if (child.category === 'period') {
+          childX = parentX + 160;
+        } else if (indentLevel >= 2) {
+          childX = parentX + 250;
+        }
 
         nodePositions.set(child.id, { x: childX, y: childY, node: child });
-        currentY += 85;
+
+        // 垂直 Y 軸高度加大到 145px (利落寬廣，絕不重疊擁擠)
+        currentY += 145;
 
         layoutChildren(child, childX, childY, indentLevel + 1);
       });
@@ -401,9 +432,10 @@ class VerticalTimelineApp {
 
     layoutChildren(root, mainTrunkX, 40, 0);
 
-    const maxY = Math.max(currentY + 100, 1000);
+    const maxY = Math.max(currentY + 120, 1200);
     this.drawMainTrunkLine(mainTrunkX, 100, mainTrunkX, maxY);
 
+    // Draw Connectors
     nodePositions.forEach((pos, id) => {
       const cardEl = this.createNodeCard(pos.node, pos.x, pos.y);
       this.nodesLayer.appendChild(cardEl);
@@ -413,15 +445,15 @@ class VerticalTimelineApp {
         if (parentNode) {
           const parentPos = nodePositions.get(parentNode.id);
           if (parentPos) {
-            let startX = parentPos.x + 120;
-            let startY = parentPos.y + 20;
+            let startX = parentPos.x + 140;
+            let startY = parentPos.y + 24;
 
             if (parentNode.id === root.id) {
               startX = mainTrunkX;
-              startY = pos.y + 20;
+              startY = pos.y + 24;
             }
 
-            this.drawStepArrowLine(startX, startY, pos.x, pos.y + 20);
+            this.drawStepArrowLine(startX, startY, pos.x, pos.y + 24);
           }
         }
       }
@@ -452,7 +484,7 @@ class VerticalTimelineApp {
       cardHtml = `
         <div class="day-hex-card" style="background-color:${cardBgColor};">
           <span>📅 ${this.escapeHtml(node.title)}</span>
-          <div class="node-actions" style="margin-left:8px;">
+          <div class="node-actions" style="margin-left:10px;">
             <button class="btn-mini btn-add-child">+</button>
             <button class="btn-mini btn-edit-node">✏️</button>
           </div>
@@ -462,7 +494,7 @@ class VerticalTimelineApp {
       cardHtml = `
         <div class="period-pill-card" style="background-color:${cardBgColor};">
           <span>🕒 ${this.escapeHtml(node.title)}</span>
-          <div class="node-actions" style="margin-left:6px;">
+          <div class="node-actions" style="margin-left:8px;">
             <button class="btn-mini btn-add-child">+</button>
             <button class="btn-mini btn-edit-node">✏️</button>
           </div>
@@ -498,7 +530,7 @@ class VerticalTimelineApp {
         cardHtml += `<div class="node-meta">`;
         if (node.url) cardHtml += `<a href="${this.escapeHtml(node.url)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🔗 網頁連結</a>`;
         if (node.mapsUrl) cardHtml += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" onclick="event.stopPropagation()">🗺️ 地圖</a>`;
-        if (node.note) cardHtml += `<div style="font-size:0.75rem; color:#475569; font-weight:600;">${this.escapeHtml(node.note)}</div>`;
+        if (node.note) cardHtml += `<div style="font-size:0.78rem; color:#475569; font-weight:600;">${this.escapeHtml(node.note)}</div>`;
         cardHtml += `</div>`;
       }
 
@@ -573,14 +605,14 @@ class VerticalTimelineApp {
   drawStepArrowLine(x1, y1, x2, y2) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const midX = x1 + 25;
-    const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${x2 - 8}`;
+    const midX = x1 + 35;
+    const d = `M ${x1} ${y1} H ${midX} V ${y2} H ${x2 - 10}`;
     path.setAttribute('d', d);
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    arrow.setAttribute('points', `${x2},${y2} ${x2 - 8},${y2 - 5} ${x2 - 8},${y2 + 5}`);
+    arrow.setAttribute('points', `${x2},${y2} ${x2 - 10},${y2 - 6} ${x2 - 10},${y2 + 6}`);
     arrow.setAttribute('fill', '#0f766e');
     group.appendChild(arrow);
 
@@ -812,5 +844,5 @@ class VerticalTimelineApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimeline = new VerticalTimelineApp();
+  window.appTimelineV4 = new VerticalTimelineAppV4();
 });
