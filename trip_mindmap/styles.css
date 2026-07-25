@@ -994,44 +994,39 @@ main {
 .vault-action-group {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .vault-action-btn {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  padding: 3px 8px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 3px 6px;
   border-radius: 6px;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  transition: all 0.2s ease;
+  gap: 2px;
+  transition: all 0.18s ease;
+  box-shadow: none;
 }
 
 .vault-action-btn.btn-edit-vault:hover {
-  background: #e0e7ff;
-  color: #4338ca;
-  border-color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.15);
 }
 
 .vault-action-btn.btn-delete-vault {
-  background: #fef2f2;
-  color: #dc2626;
-  border-color: #fca5a5;
+  color: #94a3b8;
 }
 
 .vault-action-btn.btn-delete-vault:hover {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.15);
 }
 
 .vault-copy-btn {

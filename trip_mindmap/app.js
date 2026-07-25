@@ -841,12 +841,12 @@ class VerticalTimelineAppV17 {
 
       card.querySelector('.btn-delete-vault').addEventListener('click', (e) => {
         e.stopPropagation();
-        if (confirm(`確定要從靈感庫中刪除【${item.title}】嗎？`)) {
+        this.triggerCustomConfirm(`確定要從靈感庫中刪除【${item.title}】嗎？此動作無法復原。`, () => {
           this.vaultItems = this.vaultItems.filter(v => v.id !== item.id);
           this.saveVaultData();
           this.renderVault();
           this.showToast(`🗑️ 已成功刪除【${item.title}】`);
-        }
+        });
       });
 
       this.vaultCardList.appendChild(card);
