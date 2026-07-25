@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripTree V14 - 國家與地區二級分類與完美向量連線</title>
+  <title>TripTree V15 - 純化靈感庫導入主軸與防重疊幾何排版</title>
   <meta name="description" content="專為手機與桌面最佳化的垂直時間軸樹狀心智圖旅遊規劃小工具。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=14.0.0">
+  <link rel="stylesheet" href="styles.css?v=15.0.0">
 </head>
 <body>
 
@@ -100,7 +100,7 @@
       <div class="vault-ai-box">
         <div class="vault-ai-title"><span>✨</span> 貼上網址 / IG / 景點名稱自動建卡</div>
         <input type="text" id="vaultQuickInput" class="vault-input" placeholder="貼上 IG 網址 / Google 地圖連結 / 景點名稱...">
-        <div style="display:flex; gap:6px; align-items:center;">
+        <div style="display:flex; gap:6px; align-items:center; justify-content:space-between;">
           <select id="vaultTargetRegion" class="form-select" style="font-size:0.8rem; padding:4px 8px;">
             <option value="福岡">🇯🇵 福岡</option>
             <option value="東京">🇯🇵 東京</option>
@@ -110,14 +110,19 @@
             <option value="首爾">🇰🇷 首爾</option>
             <option value="台北">🇹🇼 台北</option>
           </select>
-          <button class="vault-gen-btn" id="btnGenVaultCard">+ 存入景點庫</button>
+          <button class="vault-gen-btn" id="btnGenVaultCard">+ 自動建卡</button>
         </div>
+
+        <!-- 3. 手動輸入新增至景點靈感庫按鈕 -->
+        <button class="btn-manual-vault" id="btnOpenManualVaultModal">
+          <span>✍️</span> 手動詳細新增至靈感庫
+        </button>
       </div>
 
-      <!-- 🌐 3. 國家與地區二級階層分類面板 -->
+      <!-- 🌐 國家與地區二級階層分類面板 -->
       <div class="vault-filter-bar">
         <!-- 第一層：國家群組分類 (Country Chips) -->
-        <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">🌏 選擇國家 / 區域：</div>
+        <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">🌏 選擇國家 / 區域 (可向右滑動)：</div>
         <div class="country-tabs-row" id="countryTabsRow">
           <!-- Country chips rendered via JS -->
         </div>
@@ -136,6 +141,75 @@
       <div class="vault-card-list" id="vaultCardList">
         <!-- Vault cards rendered via JS -->
       </div>
+    </div>
+  </div>
+
+  <!-- ✨ 置中 Modal: 3. 手動詳細新增至景點靈感庫 Modal -->
+  <div class="modal-overlay" id="manualVaultModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>✍️</span> 手動新增至景點靈感庫</h3>
+        <button class="close-btn" id="btnCloseManualVaultModal">&times;</button>
+      </div>
+
+      <form id="manualVaultForm">
+        <div style="display:flex; gap:8px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">選擇國家 *</label>
+            <select id="mvCountry" class="form-select">
+              <option value="日本">🇯🇵 日本</option>
+              <option value="韓國">🇰🇷 韓國</option>
+              <option value="台灣">🇹🇼 台灣</option>
+              <option value="泰國">🇹🇭 泰國</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">地區名稱 *</label>
+            <input type="text" id="mvRegion" class="form-input" placeholder="例如：福岡 / 東京" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mvTitle">景點 / 店家名稱 *</label>
+          <input type="text" id="mvTitle" class="form-input" placeholder="例如：博多一双 拉麵" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">類型標籤</label>
+          <select id="mvCategory" class="form-select">
+            <option value="spot" selected>📍 景點 / 拍照地標</option>
+            <option value="food">🍜 美食 / 餐廳拉麵</option>
+            <option value="shop">🛍️ 購物 / 商店街超市</option>
+            <option value="hotel">🏨 住宿 / 飯店</option>
+            <option value="transit">🚌 交通 / 車站</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mvCost">預算 / 時間消費標註</label>
+          <input type="text" id="mvCost" class="form-input" placeholder="例如：¥900 或 09:00~22:00">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mvMapsUrl">Google 地圖連結</label>
+          <input type="url" id="mvMapsUrl" class="form-input" placeholder="https://maps.google.com/...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mvUrl">官方網站 / IG 連結</label>
+          <input type="url" id="mvUrl" class="form-input" placeholder="https://example.com/...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mvNote">筆記細節 / 美食指引</label>
+          <textarea id="mvNote" class="form-textarea" placeholder="填寫推薦美食、公休日等資訊..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" class="btn" id="btnCancelManualVault">取消</button>
+          <button type="submit" class="btn btn-primary">✨ 存入靈感庫</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -189,7 +263,7 @@
     </div>
   </div>
 
-  <!-- ✨ 置中 Modal: 2. 新增地區標籤 Modal (取代 Prompt) -->
+  <!-- ✨ 置中 Modal: 新增地區標籤 Modal -->
   <div class="modal-overlay" id="addRegionModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -218,7 +292,7 @@
     </div>
   </div>
 
-  <!-- ✨ 置中 Modal: 2. 確認刪除對話框 Modal (取代 Confirm) -->
+  <!-- ✨ 置中 Modal: 確認刪除對話框 Modal -->
   <div class="modal-overlay" id="confirmDeleteModal">
     <div class="modal-box" style="max-width:420px;">
       <div class="modal-header">
@@ -343,6 +417,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=14.0.0"></script>
+  <script src="app.js?v=15.0.0"></script>
 </body>
 </html>

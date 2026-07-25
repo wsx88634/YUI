@@ -1,4 +1,4 @@
-/* TripTree V14 - 國家與地區二級分類、完美無縫連線與全彈窗美化 (V14 Master UI) */
+/* TripTree V15 - 純化靈感庫導入主軸、動態防卡片重疊與橫向標籤滑動修復 (V15 Master UI) */
 :root {
   --bg-main: #f8fafc;
   --bg-card-default: #ffffff;
@@ -293,7 +293,7 @@ main {
   top: 0;
   left: 0;
   min-width: 4500px;
-  min-height: 6000px;
+  min-height: 8000px;
   padding: 100px;
   transform-origin: 0 0;
   transition: transform 0.15s ease-out;
@@ -384,6 +384,7 @@ main {
   white-space: nowrap;
 }
 
+/* 1. 消除卡片重疊：精確設定基礎卡片高質感樣式 */
 .node-card {
   background: var(--bg-card-default);
   border: 2px solid #64748b;
@@ -824,12 +825,29 @@ main {
   font-weight: 800;
   font-size: 0.88rem;
   cursor: pointer;
-  align-self: flex-end;
 }
 
-/* ==========================================================================
-   🌐 3. 國家與地區二級階層分類面板 (Country & Region Hierarchy Panel)
-   ========================================================================== */
+/* 3. 3. 景點靈感庫中手動新增按鈕樣式 */
+.btn-manual-vault {
+  background: #ffffff;
+  color: #b45309;
+  border: 1.5px solid #f59e0b;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.86rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-manual-vault:hover {
+  background: #fef3c7;
+}
+
+/* 2. 修復國家與地區標籤群組滑動拖拉 (No truncation or overlap) */
 .vault-filter-bar {
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
@@ -838,6 +856,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 .country-tabs-row {
@@ -845,12 +864,22 @@ main {
   align-items: center;
   gap: 8px;
   overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 4px;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  touch-action: pan-x;
+  padding-bottom: 6px;
   border-bottom: 1.5px dashed #cbd5e1;
+  width: 100%;
 }
 
-.country-tabs-row::-webkit-scrollbar { display: none; }
+.country-tabs-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.country-tabs-row::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
 
 .country-chip {
   background: #ffffff;
@@ -862,6 +891,7 @@ main {
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .country-chip.active {
@@ -875,7 +905,11 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  white-space: nowrap;
+  touch-action: pan-x;
+  padding-bottom: 4px;
+  width: 100%;
 }
 
 .region-chip {
@@ -888,6 +922,7 @@ main {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .region-chip.active {
@@ -906,6 +941,7 @@ main {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vault-card-list {

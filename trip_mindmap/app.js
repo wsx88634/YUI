@@ -1,5 +1,5 @@
 /**
- * TripTree V14 - 國家與地區二級分類、完美無縫向量連線與全彈窗美化 (V14 Master Engine)
+ * TripTree V15 - 純化靈感庫導入主軸、動態防卡片重疊與橫向標籤滑動修復 (V15 Master Engine)
  */
 
 const TOKYO_DEMO_PROJECTS = [
@@ -189,7 +189,6 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-// 預設國家與地區二級階層 (Default Country Hierarchy)
 const DEFAULT_COUNTRY_HIERARCHY = {
   "所有": ["所有"],
   "日本": ["所有日本", "福岡", "東京", "大阪", "京都", "奈良"],
@@ -198,7 +197,6 @@ const DEFAULT_COUNTRY_HIERARCHY = {
   "泰國": ["所有泰國", "曼谷", "清邁"]
 };
 
-// 預設景點靈感庫 (Preset Spot Vault)
 const DEFAULT_SPOT_VAULT = [
   {
     id: "vault_fk_1",
@@ -281,7 +279,7 @@ const DEFAULT_SPOT_VAULT = [
   }
 ];
 
-class VerticalTimelineAppV14 {
+class VerticalTimelineAppV15 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -332,7 +330,6 @@ class VerticalTimelineAppV14 {
     this.btnCloseVault = document.getElementById('btnCloseVault');
     this.btnToggleFullVault = document.getElementById('btnToggleFullVault');
     
-    // 🌐 國家與地區二級分類元素
     this.countryTabsRow = document.getElementById('countryTabsRow');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
     this.regionFilterLabel = document.getElementById('regionFilterLabel');
@@ -342,6 +339,13 @@ class VerticalTimelineAppV14 {
     this.vaultTargetRegion = document.getElementById('vaultTargetRegion');
     this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
     this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
+
+    // ✨ 3. 手動新增至靈感庫 Modal 元素
+    this.btnOpenManualVaultModal = document.getElementById('btnOpenManualVaultModal');
+    this.manualVaultModal = document.getElementById('manualVaultModal');
+    this.manualVaultForm = document.getElementById('manualVaultForm');
+    this.btnCloseManualVaultModal = document.getElementById('btnCloseManualVaultModal');
+    this.btnCancelManualVault = document.getElementById('btnCancelManualVault');
 
     // ✨ Modals
     this.newTripModal = document.getElementById('newTripModal');
@@ -355,13 +359,11 @@ class VerticalTimelineAppV14 {
     this.placementSpotTargetName = document.getElementById('placementSpotTargetName');
     this.placementOptionsList = document.getElementById('placementOptionsList');
 
-    // ✨ Add Region Modal
     this.addRegionModal = document.getElementById('addRegionModal');
     this.addRegionForm = document.getElementById('addRegionForm');
     this.btnCloseAddRegionModal = document.getElementById('btnCloseAddRegionModal');
     this.btnCancelAddRegion = document.getElementById('btnCancelAddRegion');
 
-    // ✨ Confirm Delete Modal
     this.confirmDeleteModal = document.getElementById('confirmDeleteModal');
     this.confirmDeleteText = document.getElementById('confirmDeleteText');
     this.btnCloseConfirmDeleteModal = document.getElementById('btnCloseConfirmDeleteModal');
@@ -385,7 +387,7 @@ class VerticalTimelineAppV14 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v14_projects');
+    const saved = localStorage.getItem('triptree_tl_v15_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -393,13 +395,13 @@ class VerticalTimelineAppV14 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v14_active_id');
+    const saved = localStorage.getItem('triptree_tl_v15_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   loadVaultItems() {
-    const saved = localStorage.getItem('triptree_spot_vault_items_v14');
+    const saved = localStorage.getItem('triptree_spot_vault_items_v15');
     if (saved) {
       try { return JSON.parse(saved); } catch(e){}
     }
@@ -416,13 +418,13 @@ class VerticalTimelineAppV14 {
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v14_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v14_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v15_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v15_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
   saveVaultData() {
-    localStorage.setItem('triptree_spot_vault_items_v14', JSON.stringify(this.vaultItems));
+    localStorage.setItem('triptree_spot_vault_items_v15', JSON.stringify(this.vaultItems));
     localStorage.setItem('triptree_country_hierarchy', JSON.stringify(this.countryHierarchy));
   }
 
@@ -450,7 +452,48 @@ class VerticalTimelineAppV14 {
       this.btnToggleFullVault.textContent = isFull ? '📐 恢復側邊抽屜' : '📖 展開全螢幕';
     });
 
-    // ✨ 2. 開啟新增地區 Modal 視窗 (取代 Prompt)
+    // ✨ 3. 手動新增至靈感庫 Modal 綁定
+    this.btnOpenManualVaultModal.addEventListener('click', () => {
+      this.manualVaultForm.reset();
+      this.manualVaultModal.classList.add('active');
+    });
+    this.btnCloseManualVaultModal.addEventListener('click', () => this.manualVaultModal.classList.remove('active'));
+    this.btnCancelManualVault.addEventListener('click', () => this.manualVaultModal.classList.remove('active'));
+
+    this.manualVaultForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const country = document.getElementById('mvCountry').value;
+      const region = document.getElementById('mvRegion').value.trim();
+      const title = document.getElementById('mvTitle').value.trim();
+
+      const newSpot = {
+        id: 'vault_' + Date.now(),
+        country: country,
+        region: region,
+        title: title,
+        category: document.getElementById('mvCategory').value,
+        cost: document.getElementById('mvCost').value.trim(),
+        mapsUrl: document.getElementById('mvMapsUrl').value.trim(),
+        url: document.getElementById('mvUrl').value.trim(),
+        note: document.getElementById('mvNote').value.trim(),
+        bgColor: '#e0e7ff'
+      };
+
+      if (!this.countryHierarchy[country]) this.countryHierarchy[country] = [`所有${country}`];
+      if (!this.countryHierarchy[country].includes(region)) {
+        this.countryHierarchy[country].push(region);
+      }
+
+      this.vaultItems.unshift(newSpot);
+      this.selectedCountry = country;
+      this.selectedRegion = region;
+
+      this.saveVaultData();
+      this.manualVaultModal.classList.remove('active');
+      this.renderVault();
+      this.showToast(`✨ 已成功新增【${title}】至靈感庫！`);
+    });
+
     this.btnAddRegionTag.addEventListener('click', () => {
       this.addRegionModal.classList.add('active');
     });
@@ -478,7 +521,6 @@ class VerticalTimelineAppV14 {
       }
     });
 
-    // ✨ 2. 自訂刪除確認 Modal 綁定 (取代 Confirm)
     this.btnCloseConfirmDeleteModal.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
     this.btnCancelConfirmDelete.addEventListener('click', () => this.confirmDeleteModal.classList.remove('active'));
     this.btnExecuteConfirmDelete.addEventListener('click', () => {
@@ -516,7 +558,6 @@ class VerticalTimelineAppV14 {
       this.showToast(`✨ 成功將【${newSpot.title}】存入景點靈感庫！`);
     });
 
-    // ✨ 新增行程 Modal 綁定
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
       const today = new Date().toISOString().split('T')[0];
@@ -682,16 +723,13 @@ class VerticalTimelineAppV14 {
     });
   }
 
-  // ✨ 2. 自訂 Modal 確認視窗觸發器 (取代原生 confirm)
   triggerCustomConfirm(msgText, onConfirmCallback) {
     this.confirmDeleteText.textContent = msgText;
     this.pendingDeleteAction = onConfirmCallback;
     this.confirmDeleteModal.classList.add('active');
   }
 
-  // --- 🌐 3. 渲染國家與地區二級階層分類與景點庫 ---
   renderVault() {
-    // 1. 渲染國家標籤 (Country Chips)
     this.countryTabsRow.innerHTML = '';
     const countries = Object.keys(this.countryHierarchy);
     countries.forEach(country => {
@@ -712,7 +750,6 @@ class VerticalTimelineAppV14 {
       this.countryTabsRow.appendChild(chip);
     });
 
-    // 2. 渲染對應國家的地區標籤 (Region Chips)
     this.vaultRegionTabs.innerHTML = '';
     const regions = this.countryHierarchy[this.selectedCountry] || ["所有"];
     this.regionFilterLabel.textContent = `📍 【${this.selectedCountry}】地區選單：`;
@@ -728,7 +765,6 @@ class VerticalTimelineAppV14 {
       this.vaultRegionTabs.appendChild(chip);
     });
 
-    // 3. 篩選景點卡片 (支援國家與地區雙重過濾)
     this.vaultCardList.innerHTML = '';
     let filtered = this.vaultItems;
 
@@ -921,7 +957,7 @@ class VerticalTimelineAppV14 {
     });
   }
 
-  // --- 📐 1. 完美無縫向量連線引擎 (徹底修復箭頭分離與連線斷掉跑版問題) ---
+  // --- 📐 1. 動態智慧垂直排版引擎 (徹底解決卡片垂直重疊壓住問題) ---
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -955,8 +991,11 @@ class VerticalTimelineAppV14 {
         const childY = currentY;
         nodePositions.set(child.id, { x: childX, y: childY, category: child.category, node: child });
 
-        let deltaY = 145;
-        if (child.note && child.note.length > 20) deltaY = 175;
+        // 1. 依卡片內容計算動態垂直安全距離 (Dynamic Vertical Gap Calculation)
+        let deltaY = 165;
+        if (child.note) deltaY += 35;
+        if (child.imageUrl) deltaY += 90;
+        if (child.category === 'hotel') deltaY += 45;
         if (child.category === 'day') deltaY = 85;
 
         currentY += deltaY;
@@ -978,7 +1017,7 @@ class VerticalTimelineAppV14 {
       renderedNodesMap.set(id, { element: cardEl, pos: pos });
     });
 
-    // 2. 量測精準幾何座標並繪製完美的無縫向量連線
+    // 2. 兩階段量測實體 DOM 寬高，繪製絕不重疊與無縫咬合連線
     requestAnimationFrame(() => {
       setTimeout(() => {
         this.svgConnectors.innerHTML = '';
@@ -995,7 +1034,6 @@ class VerticalTimelineAppV14 {
                 const pEl = parentItem.element;
                 const cEl = childItem.element;
 
-                // 量測真正的物理寬度與高度
                 const parentW = pEl.offsetWidth || 260;
                 const parentH = pEl.offsetHeight || 50;
                 const childH = cEl.offsetHeight || 50;
@@ -1011,7 +1049,6 @@ class VerticalTimelineAppV14 {
                   startY = childItem.pos.y + (childH / 2);
                 }
 
-                // 目標點：節點卡片的正左邊緣 (No offset misalignment!)
                 const targetX = childItem.pos.x;
                 const targetY = childItem.pos.y + (childH / 2);
 
@@ -1020,7 +1057,7 @@ class VerticalTimelineAppV14 {
             }
           }
         });
-      }, 25);
+      }, 30);
     });
 
     setTimeout(() => {
@@ -1076,7 +1113,6 @@ class VerticalTimelineAppV14 {
           <span>🕒 ${this.escapeHtml(node.title)}</span>
           ${!this.isReadOnly ? `
             <div class="node-actions" style="margin-left:8px;">
-              <button class="btn-mini btn-add-child">+</button>
               <button class="btn-mini btn-edit-node">✏️</button>
             </div>
           ` : ''}
@@ -1089,6 +1125,7 @@ class VerticalTimelineAppV14 {
       if (node.category === 'transit') icon = '🚌';
       if (node.category === 'shop') icon = '🛍️';
 
+      // 4. 純化心智圖：移除景點卡片上的 + 按鈕 (btn-add-child 移除)
       cardHtml = `
         <div class="node-card" style="background-color:${cardBgColor};">
           <div class="node-header">
@@ -1119,7 +1156,6 @@ class VerticalTimelineAppV14 {
       if (!this.isReadOnly) {
         cardHtml += `
           <div class="node-actions">
-            <button class="btn-mini btn-add-child">+</button>
             <button class="btn-mini btn-edit-node">✏️</button>
             <button class="btn-mini btn-delete-node">🗑️</button>
           </div>
@@ -1188,7 +1224,6 @@ class VerticalTimelineAppV14 {
     this.svgConnectors.appendChild(line);
   }
 
-  // 📐 1. 完美無縫咬合向量折線繪製函式 (No Gap! No Arrow Misalignment!)
   drawCleanOrthogonalConnector(x1, y1, x2, y2, isDayToPeriod = false) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1200,7 +1235,6 @@ class VerticalTimelineAppV14 {
     if (isDayToPeriod) {
       d = `M ${x1} ${y1} V ${y2} H ${lineEndX}`;
     } else {
-      // 保證從父節點右側向右走 Channel (預設 35px)，再轉折
       const channelX = Math.min(x1 + 35, lineEndX - 20);
       d = `M ${x1} ${y1} H ${channelX} V ${y2} H ${lineEndX}`;
     }
@@ -1209,7 +1243,6 @@ class VerticalTimelineAppV14 {
     path.setAttribute('class', 'connector-path-timeline');
     group.appendChild(path);
 
-    // 終點實心箭頭點 (剛好與 lineEndX 咬合，終點尖端在 x2)
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     arrow.setAttribute('points', `${x2},${y2} ${lineEndX},${y2 - 6} ${lineEndX},${y2 + 6}`);
     arrow.setAttribute('fill', '#0d9488');
@@ -1245,7 +1278,6 @@ class VerticalTimelineAppV14 {
         let dayHeaderHtml = `
           <div class="mobile-day-header">
             <span>📅 ${this.escapeHtml(dayNode.title)}</span>
-            ${!this.isReadOnly ? `<button class="btn btn-mini btn-add-child-outline" style="background:rgba(255,255,255,0.2); color:#fff; border:none;">+</button>` : ''}
           </div>
         `;
 
@@ -1268,17 +1300,12 @@ class VerticalTimelineAppV14 {
             dayBodyHtml += `</div></div>`;
           });
         } else {
-          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:12px;">點擊 + 按鈕開始新增景點...</div>`;
+          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:12px;">使用景點靈感庫「📍 放至指定日期」把景點加入此處...</div>`;
         }
 
         dayBodyHtml += `</div>`;
         dayCard.innerHTML = dayHeaderHtml + dayBodyHtml;
         container.appendChild(dayCard);
-
-        const addDayChildBtn = dayCard.querySelector('.btn-add-child-outline');
-        if (addDayChildBtn) {
-          addDayChildBtn.addEventListener('click', () => this.openModalForAdd(dayNode.id));
-        }
 
         this.bindMobileSpotEvents(dayCard, root);
       });
@@ -1326,7 +1353,6 @@ class VerticalTimelineAppV14 {
 
       if (!this.isReadOnly) {
         itemHtml += `
-          <button class="mobile-action-btn btn-add-spot-sub" data-id="${spotNode.id}">+ 子景點</button>
           <button class="mobile-action-btn btn-edit-spot" data-id="${spotNode.id}">✏️</button>
           <button class="mobile-action-btn btn-del-spot" data-id="${spotNode.id}">🗑️</button>
         `;
@@ -1347,13 +1373,6 @@ class VerticalTimelineAppV14 {
   }
 
   bindMobileSpotEvents(cardEl, root) {
-    cardEl.querySelectorAll('.btn-add-spot-sub').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.openModalForAdd(btn.getAttribute('data-id'));
-      });
-    });
-
     cardEl.querySelectorAll('.btn-edit-spot').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1531,5 +1550,5 @@ class VerticalTimelineAppV14 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV14 = new VerticalTimelineAppV14();
+  window.appTimelineV15 = new VerticalTimelineAppV15();
 });
