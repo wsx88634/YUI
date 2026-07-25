@@ -1,8 +1,96 @@
 /**
- * TripTree V10 - 2026 最新 Mobile 精品行程卡片 UI (Executive Mobile Itinerary Stream)
+ * TripTree V10.1 - 支援 AI 自動導入網址景點 (Auto-Imported Spot Test)
  */
 
 const TOKYO_DEMO_PROJECTS = [
+  {
+    id: "proj_fukuoka_demo",
+    title: "🏮 福岡 3 天 2 夜 櫛田神社輕旅行",
+    rootNode: {
+      id: "root_fukuoka",
+      title: "🏮 福岡 3 天 2 夜 櫛田神社輕旅行",
+      category: "root",
+      expanded: true,
+      bgColor: "#ffffff",
+      children: [
+        {
+          id: "fk-day-1",
+          title: "Day 1: 博多車站 ➔ 櫛田神社 ➔ 中洲屋台",
+          category: "day",
+          expanded: true,
+          bgColor: "#ffffff",
+          children: [
+            {
+              id: "fk-d1-am",
+              title: "上午 / 中午",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "fk-act-flight",
+                  title: "福岡機場 (FUK) ➔ 搭地下鐵直達博多站",
+                  category: "transit",
+                  cost: "5 分鐘直達",
+                  bgColor: "#dcfce7",
+                  note: "福岡機場離市區超近，搭乘地下鐵僅需 5 分鐘！",
+                  children: []
+                }
+              ]
+            },
+            {
+              id: "fk-d1-pm",
+              title: "下午 (自動解析導入景點 ✨)",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "fk-act-kushida",
+                  title: "⛩️ 博多總鎮守「櫛田神社」",
+                  category: "spot",
+                  cost: "免費參拜",
+                  bgColor: "#e0e7ff",
+                  url: "https://www.crossroadfukuoka.jp/tw/spot/12510",
+                  mapsUrl: "https://maps.google.com/?q=櫛田神社",
+                  imageUrl: "https://www.crossroadfukuoka.jp/storage/tourism_attractions/12510/responsive_images/4jz3eLXD7vlsC5mkI0SE8kwFzjCjK6tgsbBcPQ1Y__1673_1115.jpg",
+                  note: "千年御神木銀杏樹，展示 13 公尺高超震撼「博多祇園山笠神轎」，祈求長壽與生意興隆！",
+                  children: [
+                    {
+                      id: "fk-act-ramen",
+                      title: "🍜 博多一双 拉麵（極濃豚骨湯頭）",
+                      category: "food",
+                      cost: "¥900",
+                      bgColor: "#fef08a",
+                      note: "被譽為「博多豚骨拉麵的泡沫系天花板」！",
+                      children: []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "fk-d1-night",
+              title: "晚上",
+              category: "period",
+              expanded: true,
+              bgColor: "#fef3c7",
+              children: [
+                {
+                  id: "fk-act-yatai",
+                  title: "中洲屋台街 🍢（體驗在地屋台攤販文化）",
+                  category: "food",
+                  bgColor: "#ffedd5",
+                  note: "河畔邊享受關東煮、明太子玉子燒與串燒！",
+                  children: []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
   {
     id: "proj_tokyo_demo",
     title: "🗼 東京 5 天 4 夜自由行 經典心智圖",
@@ -164,7 +252,7 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-class VerticalTimelineAppV10 {
+class VerticalTimelineAppV101 {
   constructor() {
     this.isReadOnly = this.checkReadOnlyMode();
     this.projects = this.loadProjects();
@@ -219,7 +307,7 @@ class VerticalTimelineAppV10 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v10_projects');
+    const saved = localStorage.getItem('triptree_tl_v101_projects');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
@@ -227,15 +315,15 @@ class VerticalTimelineAppV10 {
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v10_active_id');
+    const saved = localStorage.getItem('triptree_tl_v101_active_id');
     if (saved && this.projects.some(p => p.id === saved)) return saved;
-    return this.projects[0] ? this.projects[0].id : "proj_tokyo_demo";
+    return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v10_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v10_active_id', this.activeProjectId);
+    localStorage.setItem('triptree_tl_v101_projects', JSON.stringify(this.projects));
+    localStorage.setItem('triptree_tl_v101_active_id', this.activeProjectId);
     this.showToast('💾 行程已保存');
   }
 
@@ -277,7 +365,7 @@ class VerticalTimelineAppV10 {
 
     document.getElementById('btnAddTripTab').addEventListener('click', () => {
       if (this.isReadOnly) return;
-      const title = prompt('請輸入新行程名稱：', '東京 5 天 4 夜自由行');
+      const title = prompt('請輸入新行程名稱：', '福岡 3 天 2 夜輕旅行');
       if (title) {
         const newProjId = 'proj_tl_' + Date.now();
         const newProj = {
@@ -355,7 +443,7 @@ class VerticalTimelineAppV10 {
       this.activeProjectId = this.projects[0].id;
       this.saveProjects();
       this.render();
-      this.showToast('✨ 已重置為東京旅遊經典範例！');
+      this.showToast('✨ 已重置載入最新行程範例！');
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -405,7 +493,7 @@ class VerticalTimelineAppV10 {
     this.renderTabs();
     const proj = this.getActiveProject();
     if (proj) {
-      this.tripTitleInput.value = proj.title || "🗼 東京 5 天 4 夜自由行 經典心智圖";
+      this.tripTitleInput.value = proj.title || "🏮 福岡 3 天 2 夜 櫛田神社輕旅行";
       if (this.currentView === 'mindmap') this.renderMindmap();
       else this.renderOutline();
     }
@@ -715,7 +803,6 @@ class VerticalTimelineAppV10 {
     return null;
   }
 
-  // --- 📱 2026 最新 Mobile 精品行程卡片 UI (Executive Mobile Stream) ---
   renderOutline() {
     this.outlineTree.innerHTML = '';
     const proj = this.getActiveProject();
@@ -797,6 +884,10 @@ class VerticalTimelineAppV10 {
           ${spotNode.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(spotNode.hotelRoomType)}</div>` : ''}
         </div>
       `;
+    }
+
+    if (spotNode.imageUrl) {
+      itemHtml += `<img class="node-thumb" src="${this.escapeHtml(spotNode.imageUrl)}" alt="thumb" loading="lazy">`;
     }
 
     if (spotNode.note) {
@@ -1013,5 +1104,5 @@ class VerticalTimelineAppV10 {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.appTimelineV10 = new VerticalTimelineAppV10();
+  window.appTimelineV101 = new VerticalTimelineAppV101();
 });
