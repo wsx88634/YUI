@@ -1009,6 +1009,7 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  white-space: nowrap;
   transition: all 0.18s ease;
   box-shadow: none;
 }
