@@ -1017,6 +1017,11 @@ class VerticalTimelineAppV17 {
   // 📐 V17 終極實體 DOM 物理高度量測佈局引擎 (Physical Tree Layout Engine)
   // 徹底解決重疊，且 100% 保持心智圖「父子水平對齊」的優美樹狀結構！
   // ==========================================================================
+  // ==========================================================================
+  // 📐 V25 絕美 Markdown 階層式心智圖 (Hierarchical Markdown Tree Layout)
+  // 將原本難以在手機與電腦上瀏覽的 2D 畫布重構為「層層向下」的 Markdown 樹狀文檔
+  // 同時支援靈感庫拖放 (Drag & Drop) 及全部節點的編輯/刪除/新增功能
+  // ==========================================================================
   renderMindmap() {
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
@@ -1024,118 +1029,209 @@ class VerticalTimelineAppV17 {
     if (!proj || !proj.rootNode) return;
     const root = proj.rootNode;
 
-    // 1. 扁平化並掛載所有卡片到 DOM (Top=0)，以便讀取真實物理高度
-    const renderedNodesMap = new Map();
-    const flatNodeList = [];
-    
-    // 掛載 Root
-    const rootX = 60;
-    const rootCard = this.createNodeCard(root, rootX, 0);
-    this.nodesLayer.appendChild(rootCard);
-    renderedNodesMap.set(root.id, { element: rootCard, x: rootX, y: 0, node: root, parentId: null, level: 0 });
+    const container = document.createElement('div');
+    container.className = 'md-tree-container';
 
-    const mountTree = (node, level) => {
-      if (!node.children || node.children.length === 0 || node.expanded === false) return;
-      node.children.forEach(child => {
-        // 先給一個預設的暫時 X，等讀取完實體寬度後在 Pass 2 正式推擠排版
-        let tempX = rootX + (level * 200); 
+    // 1. Root Title Header Banner
+    const banner = document.createElement('div');
+    banner.className = 'md-root-banner';
+    banner.innerHTML = `
+      <h1 class="md-root-title">🏮 ${this.escapeHtml(root.title)}</h1>
+      ${!this.isReadOnly ? `<button class="md-add-btn" style="background:#ffffff; color:#0f766e; border:none; padding:6px 14px; font-weight:800;" data-action="add-day" data-parent="${root.id}">➕ 新增行程天數 (Day)</button>` : ''}
+    `;
+    container.appendChild(banner);
 
-        const cardEl = this.createNodeCard(child, tempX, 0);
-        this.nodesLayer.appendChild(cardEl);
-        renderedNodesMap.set(child.id, { element: cardEl, x: tempX, y: 0, node: child, parentId: node.id, level: level });
-        
-        flatNodeList.push({ id: child.id, node: child, parentId: node.id });
-        mountTree(child, level + 1);
-      });
-    };
-    mountTree(root, 1);
+    // 2. Render Day Nodes
+    if (root.children && root.children.length > 0) {
+      root.children.forEach((dayNode) => {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'md-tree-day';
+        dayEl.setAttribute('data-id', dayNode.id);
 
-    // 2. 核心：在 DOM 渲染完成後讀取真實高度，並套用 DFS 樹狀排版演算法
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        let currentY = 160;
-        const SAFETY_MARGIN = 28; // 卡片間距
+        let dayHeaderHtml = `
+          <div class="md-day-header">
+            <div class="md-day-title">
+              <span>📅</span>
+              <span>${this.escapeHtml(dayNode.title)}</span>
+            </div>
+            ${!this.isReadOnly ? `
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="md-add-btn" data-action="add-period" data-parent="${dayNode.id}">➕ 新增時段</button>
+                <button class="mobile-action-btn btn-edit-spot" data-id="${dayNode.id}" title="編輯天數標題">✏️</button>
+                <button class="mobile-action-btn btn-del-spot" data-id="${dayNode.id}" title="刪除整天">🗑️</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
 
-        // Root 節點固定位置
-        const rootData = renderedNodesMap.get(root.id);
-        if (rootData) {
-          rootData.y = 40;
-          rootData.element.style.top = '40px';
+        let dayBodyHtml = `<div class="md-period-list">`;
+
+        if (dayNode.children && dayNode.children.length > 0) {
+          dayNode.children.forEach(periodNode => {
+            dayBodyHtml += `
+              <div class="md-tree-period" data-id="${periodNode.id}">
+                <div class="md-period-header">
+                  <span class="md-period-title">🕒 ${this.escapeHtml(periodNode.title)}</span>
+                  ${!this.isReadOnly ? `
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <button class="md-add-btn" data-action="add-spot" data-parent="${periodNode.id}">➕ 新增景點</button>
+                      <button class="mobile-action-btn btn-edit-spot" data-id="${periodNode.id}" title="編輯時段名稱">✏️</button>
+                      <button class="mobile-action-btn btn-del-spot" data-id="${periodNode.id}" title="刪除時段">🗑️</button>
+                    </div>
+                  ` : ''}
+                </div>
+                <div class="md-spot-list">
+            `;
+
+            if (periodNode.children && periodNode.children.length > 0) {
+              periodNode.children.forEach(spotNode => {
+                dayBodyHtml += this.renderMarkdownSpotCard(spotNode);
+              });
+            } else {
+              dayBodyHtml += `<div style="color:#94a3b8; font-size:0.86rem; padding:8px 4px;">（目前無景點，可直接將右側靈感庫卡片拖拉至此處）</div>`;
+            }
+
+            dayBodyHtml += `</div></div>`;
+          });
+        } else {
+          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:16px;">可點擊上方「➕ 新增時段」或從右側景點靈感庫中將卡片拖拉放至此日期中...</div>`;
         }
 
-        // DFS 計算真實排版 (動態水平 X 軸 + 動態垂直 Y 軸)
-        const calculateTreePositions = (node) => {
-          if (!node.children || node.children.length === 0 || node.expanded === false) return;
-          const parentData = renderedNodesMap.get(node.id);
-          
-          node.children.forEach(child => {
-            const childData = renderedNodesMap.get(child.id);
-            if (childData && parentData) {
-              
-              // === 1. 計算完美的動態水平 X 座標 ===
-              const parentRealWidth = parentData.element.offsetWidth || 150;
-              let horizontalGap = 50; 
-              if (node.category === 'root') horizontalGap = 80;
-              
-              const newX = parentData.x + parentRealWidth + horizontalGap;
-              childData.x = newX;
-              childData.element.style.left = `${newX}px`;
+        dayBodyHtml += `</div>`;
+        dayEl.innerHTML = dayHeaderHtml + dayBodyHtml;
+        container.appendChild(dayEl);
 
-              // === 2. 計算完美的動態垂直 Y 座標 ===
-              childData.y = currentY;
-              childData.element.style.top = `${currentY}px`;
-              
-              const realHeight = childData.element.offsetHeight || 60;
-              
-              if (!child.children || child.children.length === 0 || child.expanded === false) {
-                currentY += realHeight + SAFETY_MARGIN;
-              } else {
-                calculateTreePositions(child);
-                
-                const minNextY = childData.y + realHeight + SAFETY_MARGIN;
-                if (currentY < minNextY) {
-                  currentY = minNextY;
-                }
-              }
-            }
-          });
-        };
+        // Bind Drag & Drop for Day Node
+        this.bindNodeDragDrop(dayEl, dayNode);
 
-        // 啟動排版運算
-        calculateTreePositions(root);
-
-        // 3. 依據計算出的精準座標，繪製連線
-        const maxY = Math.max(currentY + 180, 1400);
-        this.drawMainTrunkLine(350, 100, 350, maxY);
-
-        renderedNodesMap.forEach((childItem, id) => {
-          if (id !== root.id) {
-            const parentItem = renderedNodesMap.get(childItem.parentId);
-            if (parentItem) {
-              const pEl = parentItem.element;
-              const cEl = childItem.element;
-
-              const parentW = pEl.offsetWidth || 260;
-              const parentH = pEl.offsetHeight || 50;
-              const childH = cEl.offsetHeight || 50;
-
-              let startX = parentItem.x + parentW;
-              let startY = parentItem.y + (parentH / 2);
-
-              const targetX = childItem.x;
-              const targetY = childItem.y + (childH / 2);
-
-              this.drawCleanOrthogonalConnector(startX, startY, targetX, targetY, false);
-            }
-          }
+        // Bind Drag & Drop for Period Nodes inside this Day
+        dayEl.querySelectorAll('.md-tree-period').forEach(periodEl => {
+          const pid = periodEl.getAttribute('data-id');
+          const pNode = this.findNode(root, pid);
+          if (pNode) this.bindNodeDragDrop(periodEl, pNode);
         });
-      }, 50);
+      });
+    } else {
+      const emptyBox = document.createElement('div');
+      emptyBox.className = 'md-tree-day';
+      emptyBox.style.textAlign = 'center';
+      emptyBox.style.color = '#64748b';
+      emptyBox.innerHTML = `目前行程尚無任何天數，請點擊上方「➕ 新增行程天數 (Day)」開始安排行程！`;
+      container.appendChild(emptyBox);
+    }
+
+    this.nodesLayer.appendChild(container);
+    this.bindMarkdownTreeEvents(container, root);
+  }
+
+  renderMarkdownSpotCard(spotNode) {
+    let icon = '📍';
+    if (spotNode.category === 'food') icon = '🍜';
+    if (spotNode.category === 'hotel') icon = '🏨';
+    if (spotNode.category === 'transit') icon = '🚌';
+    if (spotNode.category === 'shop') icon = '🛍️';
+
+    let html = `
+      <div class="md-tree-spot" style="${spotNode.bgColor ? `background-color:${spotNode.bgColor};` : ''}" data-id="${spotNode.id}">
+        <div class="md-spot-header">
+          <span class="md-spot-title">${icon} ${this.escapeHtml(spotNode.title)}</span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            ${spotNode.cost ? `<span class="node-badge">${this.escapeHtml(spotNode.cost)}</span>` : ''}
+            ${!this.isReadOnly ? `
+              <button class="mobile-action-btn btn-edit-spot" data-id="${spotNode.id}" title="編輯景點">✏️</button>
+              <button class="mobile-action-btn btn-del-spot" data-id="${spotNode.id}" title="刪除景點">🗑️</button>
+            ` : ''}
+          </div>
+        </div>
+    `;
+
+    if (spotNode.category === 'hotel' && (spotNode.hotelCheckIn || spotNode.hotelRoomType)) {
+      html += `
+        <div class="mobile-hotel-box">
+          ${spotNode.hotelCheckIn ? `<div>🏨 ${this.escapeHtml(spotNode.hotelCheckIn)} | ${this.escapeHtml(spotNode.hotelCheckOut || '')}</div>` : ''}
+          ${spotNode.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(spotNode.hotelRoomType)}</div>` : ''}
+        </div>
+      `;
+    }
+
+    if (spotNode.imageUrl) {
+      html += `<img class="node-thumb" src="${this.escapeHtml(spotNode.imageUrl)}" alt="thumb" loading="lazy">`;
+    }
+
+    if (spotNode.note) {
+      html += `<div class="mobile-note-box">${this.escapeHtml(spotNode.note)}</div>`;
+    }
+
+    if (spotNode.mapsUrl || spotNode.url) {
+      html += `<div class="mobile-btn-group" style="margin-top:4px;">`;
+      if (spotNode.mapsUrl) html += `<a href="${this.escapeHtml(spotNode.mapsUrl)}" target="_blank" class="mobile-action-btn" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">🗺️ 開啟 Google 地圖</a>`;
+      if (spotNode.url) html += `<a href="${this.escapeHtml(spotNode.url)}" target="_blank" class="mobile-action-btn">🔗 官方網站</a>`;
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  bindNodeDragDrop(element, targetNode) {
+    if (this.isReadOnly) return;
+    element.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      element.classList.add('drag-over-target');
+    });
+    element.addEventListener('dragleave', (e) => {
+      e.stopPropagation();
+      element.classList.remove('drag-over-target');
+    });
+    element.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      element.classList.remove('drag-over-target');
+      if (this.draggedVaultItem) {
+        this.insertVaultItemIntoNode(this.draggedVaultItem, targetNode);
+        this.draggedVaultItem = null;
+      }
+    });
+  }
+
+  bindMarkdownTreeEvents(container, root) {
+    container.querySelectorAll('.btn-edit-spot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const node = this.findNode(root, id);
+        if (node) this.openModalForEdit(node);
+      });
     });
 
-    setTimeout(() => {
-      this.viewport.scrollLeft = 100;
-      this.viewport.scrollTop = 0;
-    }, 80);
+    container.querySelectorAll('.btn-del-spot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const node = this.findNode(root, id);
+        if (node) {
+          this.triggerCustomConfirm(`確定刪除「${node.title}」？`, () => {
+            this.deleteNode(root, id);
+            this.saveProjects();
+            this.render();
+          });
+        }
+      });
+    });
+
+    container.querySelectorAll('.md-add-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = btn.getAttribute('data-action');
+        const parentId = btn.getAttribute('data-parent');
+        if (action === 'add-day') {
+          this.openModalForAdd(root.id);
+        } else if (action === 'add-period' || action === 'add-spot') {
+          this.openModalForAdd(parentId);
+        }
+      });
+    });
   }
 
   createNodeCard(node, x, y) {
@@ -1357,7 +1453,7 @@ class VerticalTimelineAppV17 {
         if (dayNode.children && dayNode.children.length > 0) {
           dayNode.children.forEach(periodNode => {
             dayBodyHtml += `
-              <div class="mobile-period-block">
+              <div class="mobile-period-block" data-id="${periodNode.id}">
                 <div class="mobile-period-tag">🕒 ${this.escapeHtml(periodNode.title)}</div>
                 <div class="mobile-spot-list">
             `;
@@ -1371,7 +1467,7 @@ class VerticalTimelineAppV17 {
             dayBodyHtml += `</div></div>`;
           });
         } else {
-          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:12px;">使用景點靈感庫「📍 放至指定日期」把景點加入此處...</div>`;
+          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:12px;">使用景點靈感庫「📍 放至指定日期」或直接拖放把景點加入此處...</div>`;
         }
 
         dayBodyHtml += `</div>`;
@@ -1379,6 +1475,12 @@ class VerticalTimelineAppV17 {
         container.appendChild(dayCard);
 
         this.bindMobileSpotEvents(dayCard, root);
+        this.bindNodeDragDrop(dayCard, dayNode);
+        dayCard.querySelectorAll('.mobile-period-block').forEach(pEl => {
+          const pid = pEl.getAttribute('data-id');
+          const pNode = this.findNode(root, pid);
+          if (pNode) this.bindNodeDragDrop(pEl, pNode);
+        });
       });
     }
 
