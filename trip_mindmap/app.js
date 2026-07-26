@@ -191,13 +191,253 @@ const TOKYO_DEMO_PROJECTS = [
 
 const DEFAULT_COUNTRY_HIERARCHY = {
   "所有": ["所有"],
-  "日本": ["所有日本", "福岡", "東京", "大阪", "京都", "奈良"],
+  "日本": ["所有日本", "福岡", "天神", "博多", "六本松", "宗像", "久留米", "由布院", "東京", "大阪", "京都", "奈良"],
   "韓國": ["所有韓國", "首爾", "釜山"],
   "台灣": ["所有台灣", "台北", "台南"],
   "泰國": ["所有泰國", "曼谷", "清邁"]
 };
 
 const DEFAULT_SPOT_VAULT = [
+  {
+    id: "vault_ig_ringo",
+    country: "日本",
+    region: "天神",
+    title: "🍎 RINGO 天神地下街店（爆漿酥脆蘋果派）",
+    category: "food",
+    cost: "蘋果派 450円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/reel/Da1vwEvpD_M/",
+    mapsUrl: "https://maps.google.com/?q=RINGO+天神地下街店",
+    note: "天神地下街排隊名店！外層糖衣派皮層層酥脆，內餡吃得到蘋果果肉，開放式廚房香氣四溢。"
+  },
+  {
+    id: "vault_ig_robata",
+    country: "日本",
+    region: "六本松",
+    title: "🍳 六本松 爐端燒銀鮭朝食（全預約制炭火早餐）",
+    category: "food",
+    cost: "朝食套餐 ~1800円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DZZAmi3zagW/",
+    mapsUrl: "https://maps.google.com/?q=六本松+爐端燒",
+    note: "福岡最熱門炭火爐端燒早餐！全預約制，薄鹽厚切鮭魚與鹹甜醬汁鰻魚，附釜鍋白飯與高湯湯泡飯。"
+  },
+  {
+    id: "vault_ig_airport",
+    country: "日本",
+    region: "福岡",
+    title: "🛍️ 福岡機場必買伴手禮清單（免稅店大集合）",
+    category: "shop",
+    cost: "免稅伴手禮",
+    bgColor: "#e0e7ff",
+    url: "https://www.instagram.com/p/DZOoRRYB3ru/",
+    mapsUrl: "https://maps.google.com/?q=福岡機場免稅店",
+    note: "機場免稅店一次買齊：Butter Butler海鹽奶油費南雪、honey chocolate sand、花福堂草莓千層酥、Press butter sand、Amanberry草莓貓舌餅、博多通明月堂豆沙饅頭。"
+  },
+  {
+    id: "vault_ig_flight_guide",
+    country: "日本",
+    region: "福岡",
+    title: "✈️ 福岡 10 天自由行機票與精省行程攻略",
+    category: "spot",
+    cost: "機票 $9000起",
+    bgColor: "#dcfce7",
+    url: "https://www.instagram.com/p/DX6y-06P-m2/",
+    mapsUrl: "https://maps.google.com/?q=福岡機場",
+    note: "福岡 10 天自由行攻略與千元高 CP 值便宜機票推薦。"
+  },
+  {
+    id: "vault_ig_shimamoto",
+    country: "日本",
+    region: "博多",
+    title: "🥖 島本明太子（福岡必買香酥明太子麵包）",
+    category: "food",
+    cost: "明太子麵包 ~400円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DYwtbKgJ5yI/",
+    mapsUrl: "https://maps.google.com/?q=島本明太子",
+    note: "福岡在地極力推薦！鹹香濃郁明太子抹醬搭配香酥麵包，送禮自用皆讚。"
+  },
+  {
+    id: "vault_ig_kokuneko",
+    country: "日本",
+    region: "博多",
+    title: "🐈‍⬛ KOKUNEKO 博多デイトス店（黑貓造型黑糖奶油甜點）",
+    category: "shop",
+    cost: "黑貓餅乾 9枚入 ¥1,296",
+    bgColor: "#e0e7ff",
+    url: "https://www.instagram.com/p/DXl6j3Tk3kV/",
+    mapsUrl: "https://maps.google.com/?q=KOKUNEKO+博多デイトス店",
+    note: "博多車站直結限定！全國僅1門市的黑貓主題甜點店，黑糖×奶油貓舌餅與費南雪，造型超可愛。"
+  },
+  {
+    id: "vault_ig_ichimujin",
+    country: "日本",
+    region: "博多",
+    title: "🍜 いちむじん呉服町（濃郁明太豚骨拉麵+明太子吃到飽）",
+    category: "food",
+    cost: "明太豚骨叉燒 1240円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DaZ949MS6KE/",
+    mapsUrl: "https://maps.google.com/?q=いちむじん呉服町",
+    note: "博多超神拉麵！濃郁豚骨加上辛明太子，內用免費無限享用明太子、高菜與醬菜吃到飽！"
+  },
+  {
+    id: "vault_ig_bimi",
+    country: "日本",
+    region: "天神",
+    title: "☕ Cafe Bimi 珈琲美美（1977年老字號法蘭絨手沖咖啡）",
+    category: "food",
+    cost: "手沖咖啡/磅蛋糕 ~¥800",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/Da-iUcdBMpt/",
+    mapsUrl: "https://maps.google.com/?q=Cafe+Bimi+珈琲美美",
+    note: "福岡近 50 年老字號名店！堅持法蘭絨濾布手沖，咖啡醇厚溫潤，搭配自製磅蛋糕極度療癒。"
+  },
+  {
+    id: "vault_ig_mandai",
+    country: "日本",
+    region: "宗像",
+    title: "👾 アミューズメントパーク萬代 宗像店（280台夾娃娃機超大樂園）",
+    category: "spot",
+    cost: "10日圓起/次",
+    bgColor: "#dcfce7",
+    url: "https://www.instagram.com/p/DaxB1xiulec/",
+    mapsUrl: "https://maps.google.com/?q=萬代+宗像店",
+    note: "福岡超大型夾娃娃機樂園！280台機台、10日圓體驗區、台灣爪抓與萬代生鮮超市，適合全家同樂。"
+  },
+  {
+    id: "vault_ig_robata_general",
+    country: "日本",
+    region: "博多",
+    title: "🔥 福岡爆紅爐端燒名店巡禮",
+    category: "food",
+    cost: "爐端燒居酒屋",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DakjBxjSNmN/",
+    mapsUrl: "https://maps.google.com/?q=福岡+爐端燒",
+    note: "熱門 IG 推薦博多在地高評價炭火爐端燒居酒屋。"
+  },
+  {
+    id: "vault_ig_fujiuna",
+    country: "日本",
+    region: "博多",
+    title: "🍱 博多うなぎ屋 藤う那（Tabelog高分極鬆軟鰻魚飯）",
+    category: "food",
+    cost: "鰻魚飯 3000-5000円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DZSRrm9hhv6/",
+    mapsUrl: "https://maps.google.com/?q=博多うなぎ屋+藤う那",
+    note: "博多車站旁 Tabelog 高分鰻魚老店！白飯均勻裹附醬汁，鰻魚肉質極致鬆軟綿密。"
+  },
+  {
+    id: "vault_ig_marudai",
+    country: "日本",
+    region: "久留米",
+    title: "🦐 252マルダイラーメン（鮮蝦醬冷拉麵+鮮蝦炒飯+醬油蝦）",
+    category: "food",
+    cost: "海蝦冷拉麵 880円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DaNQzR_yUUO/",
+    mapsUrl: "https://maps.google.com/?q=252マルダイラーメン",
+    note: "鮮魚批發老店直營！濃郁海蝦冷拉麵、特製海蝦炒飯與醃漬醬油蝦(カンジャンセウ)，極致鮮甜。"
+  },
+  {
+    id: "vault_ig_ichimujin_detail",
+    country: "日本",
+    region: "博多",
+    title: "🌶️ 博多吳服町 いちむじん（明太豚骨拉麵二度精選）",
+    category: "food",
+    cost: "明太豚骨 1240円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DYt0ssASoRJ/",
+    mapsUrl: "https://maps.google.com/?q=いちむじん呉服町",
+    note: "微辣明太子結合濃郁豚骨湯頭，無限量供應明太子與高菜，中毒性極高。"
+  },
+  {
+    id: "vault_ig_marufuku",
+    country: "日本",
+    region: "天神",
+    title: "🧁 丸福バーム（大丸天神限定現烤焦糖布蕾年輪蛋糕）",
+    category: "food",
+    cost: "BAUM POT 540円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWrb_krq1/",
+    mapsUrl: "https://maps.google.com/?q=大丸福岡天神店",
+    note: "單日狂賣2400個爆紅甜點！外層現烤酥脆焦糖，內餡包裹爆漿卡士達醬與發酵奶油年輪蛋糕。"
+  },
+  {
+    id: "vault_ig_kushida",
+    country: "日本",
+    region: "博多",
+    title: "⛩️ 櫛田神社（爆紅木梳御守保佑美麗長壽）",
+    category: "spot",
+    cost: "木梳御守 ~800円",
+    bgColor: "#dcfce7",
+    url: "https://www.instagram.com/p/DYmMhUbxSUy/",
+    mapsUrl: "https://maps.google.com/?q=櫛田神社",
+    note: "博多總鎮守百年神社！超萌造型「梳子御守」象徵梳去煩惱雜念，保佑美麗與長壽，極易完售建議早前往。"
+  },
+  {
+    id: "vault_ig_bakery_tour",
+    country: "日本",
+    region: "天神",
+    title: "🥖 The Full Full Hakata（天神爆漿現烤明太子法國麵包）",
+    category: "food",
+    cost: "明太子法國麵包 450円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DY9ujKQKCg7/",
+    mapsUrl: "https://maps.google.com/?q=The+Full+Full+Hakata",
+    note: "福岡麵包巡禮必吃！現烤出爐外酥內軟滿滿明太子，同帖包含 Pain Stock 與 AMAM DACOTAN。"
+  },
+  {
+    id: "vault_ig_yufuin",
+    country: "日本",
+    region: "由布院",
+    title: "🏡 由布院湯之坪街道（龍貓/Snoopy/Miffy童話村小鎮）",
+    category: "spot",
+    cost: "免費逛街",
+    bgColor: "#dcfce7",
+    url: "https://www.instagram.com/p/DXl8HJrCQKG/",
+    mapsUrl: "https://maps.google.com/?q=由布院湯之坪街道",
+    note: "大人也會破產的卡通 IP 夢幻街道！包含吉卜力龍貓橡子共和國、Snoopy 茶屋、Miffy 麵包店，離福岡2小時。"
+  },
+  {
+    id: "vault_ig_gourmet7",
+    country: "日本",
+    region: "福岡",
+    title: "🍱 福岡在地人私房不踩雷寶藏美食 7 選",
+    category: "food",
+    cost: "美食名店",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=福岡美食",
+    note: "在地人私藏名單！涵蓋拉麵、燒肉、海鮮與炭火料理不踩雷精選。"
+  },
+  {
+    id: "vault_ig_yagura",
+    country: "日本",
+    region: "博多",
+    title: "🥩 Yagura（博多站前 80 歲爺爺高 CP 值豬排丼）",
+    category: "food",
+    cost: "豬排丼套餐 900円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DXQp1Kaxtzb/",
+    mapsUrl: "https://maps.google.com/?q=Yagura+博多駅前",
+    note: "博多站前辦公大樓內的在地隱藏版美食！80歲親切爺爺經營，900日圓附熱烏龍麵與茶，厚切豬排CP值極高。"
+  },
+  {
+    id: "vault_ig_dango",
+    country: "日本",
+    region: "天神",
+    title: "🍡 唐吉訶德天神本店門口（巨無霸烤醬油糰子）",
+    category: "food",
+    cost: "醬油糰子 ~400円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DZSYo8JyLL4/",
+    mapsUrl: "https://maps.google.com/?q=唐吉訶德+福岡天神本店",
+    note: "天神 Donki 門口排隊小吃！巨無霸顆粒烤糰子，搭配鹹甜濃郁日式醬油醬汁，逛街散步隨手吃。"
+  },
   {
     id: "vault_fk_1",
     country: "日本",
@@ -414,13 +654,21 @@ class VerticalTimelineAppV17 {
     if (!saved) {
       try { saved = sessionStorage.getItem('triptree_spot_vault_items_v17'); } catch(e){}
     }
+    let items = [];
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) items = parsed;
       } catch(e){}
     }
-    return JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
+    // 自動融入最新分析之 IG 景點卡片 (確保既有儲存也包含新分析資料)
+    DEFAULT_SPOT_VAULT.forEach(defaultItem => {
+      if (!items.some(it => it.id === defaultItem.id)) {
+        items.unshift(defaultItem);
+      }
+    });
+    if (items.length === 0) items = JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
+    return items;
   }
 
   loadCountryHierarchy() {
