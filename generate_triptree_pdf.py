@@ -56,7 +56,7 @@ class NumberedCanvas(canvas.Canvas):
         self.line(36, 45, 559, 45)
         page_text = f"頁碼 {self._pageNumber} / {page_count}"
         self.drawRightString(559, 32, page_text)
-        self.drawString(36, 32, "TripTree V27 官方操作手冊 — 專為旅遊規劃與靈感收納打造")
+        self.drawString(36, 32, "TripTree V29 官方操作手冊 — 專屬行程夾與靈感庫雙引擎")
         self.restoreState()
 
 def build_pdf():
@@ -163,8 +163,8 @@ def build_pdf():
 
     # --- 1. 頁首 Banner 表格 ---
     banner_data = [
-        [Paragraph("TripTree 旅遊階層樹狀心智圖", title_style)],
-        [Paragraph("輕鬆規劃行程、拖拉自如、靈感收納與好友同步分享的完全使用手冊", subtitle_style)]
+        [Paragraph("TripTree 旅遊階層樹狀心智圖 (V29 最新版)", title_style)],
+        [Paragraph("輕鬆規劃行程、拖拉自如、本行程專屬景點夾與好友同步分享完全使用手冊", subtitle_style)]
     ]
     banner_table = Table(banner_data, colWidths=[523])
     banner_table.setStyle(TableStyle([
@@ -173,31 +173,34 @@ def build_pdf():
         ('BOTTOMPADDING', (0,0), (-1,-1), 16),
         ('LEFTPADDING', (0,0), (-1,-1), 20),
         ('RIGHTPADDING', (0,0), (-1,-1), 20),
-        ('CORNERPAD', (0,0), (-1,-1), 0),
     ]))
     story.append(banner_table)
     story.append(Spacer(1, 14))
 
     # --- 2. 系統導覽與特色說明 ---
-    story.append(Paragraph("一、 關於 TripTree：現代化旅遊心智圖工具", h1_style))
-    story.append(Paragraph("TripTree 是一個專為自由行新手與自助旅行達人設計的<b>無限階層樹狀旅遊心智圖系統</b>。與傳統以「格子或時間表」為主的行程軟體不同，TripTree 結合了<b> Markdown 縮排階層</b>與<b>拖曳卡片式管理</b>，讓你可以像整理資料夾一樣，自由附屬與調換任意景點、美食與飯店資訊！", body_style))
+    story.append(Paragraph("一、 關於 TripTree：現代化旅遊心智圖系統", h1_style))
+    story.append(Paragraph("TripTree 是一個專為自由行新手與自助旅行達人設計的<b>無限階層樹狀旅遊心智圖系統</b>。結合了<b> Markdown 縮排階層</b>、<b>雙向拖曳卡片</b>與<b>本行程專屬景點夾</b>，讓你可以像整理資料夾一樣，自由附屬與調換任意景點、美食與飯店資訊！", body_style))
     
     features_data = [
         [
-            Paragraph("<b>特色優勢</b>", body_bold),
-            Paragraph("<b>功能說明</b>", body_bold)
+            Paragraph("<b>核心功能</b>", body_bold),
+            Paragraph("<b>最新 V29 特色說明</b>", body_bold)
         ],
         [
             Paragraph("<b>無限層級附屬嵌套</b>", body_style),
-            Paragraph("任何行程卡片都可以再往下新增子項目（例如：Day 1 ➔ 下午時段 ➔ 淺草寺 ➔ 買手信），層層有條理，左側附帶湖水綠導引線。", body_style)
+            Paragraph("任何行程卡片皆可往下新增附屬子項目（如：Day 1 ➔ 下午時段 ➔ 淺草寺），層層有條理，左側附帶湖水綠縮排導引線。", body_style)
         ],
         [
-            Paragraph("<b>雙向自由拖拉 (Drag & Drop)</b>", body_style),
-            Paragraph("支援滑鼠直接拖移卡片附屬到其他卡片底下，亦可將右側「景點靈感庫」的備份卡片拖入行程中。", body_style)
+            Paragraph("<b>本行程專屬景點夾</b>", body_style),
+            Paragraph("切換至「本行程專屬景點夾」，系統自動彙整該行程安排的所有景點，並自動過濾日期天數、時段膠囊與行程動作。刪除行程時該資料夾隨之銷毀，靈感庫主庫 100% 獨立安全！", body_style)
         ],
         [
-            Paragraph("<b>靈感庫 (Vault) 資料夾收納</b>", body_style),
-            Paragraph("可為景點加註地區標籤（如：福岡、東京、必吃美食），隨時全螢幕展開或側邊抽出查詢，行程不漏勾。", body_style)
+            Paragraph("<b>節點類型精準拆分</b>", body_style),
+            Paragraph("獨立區分「📍 景點/目的地」與「⚡ 行程動作/提醒」，行程動作（如：起飛抵達、 Check-in、買票）不會混入景點夾中。", body_style)
+        ],
+        [
+            Paragraph("<b>🎯 鏡頭一鍵定位</b>", body_style),
+            Paragraph("在專屬景點夾點擊「定位至心智圖」，畫面自動平移並發光聚焦該景點在行程心智圖中的位置。", body_style)
         ],
         [
             Paragraph("<b>一鍵分享旅伴唯讀網址</b>", body_style),
@@ -225,23 +228,23 @@ def build_pdf():
     story.append(Paragraph("1. 如何新增與管理行程？", h2_style))
     story.append(Paragraph("• <b>新增行程專案</b>：點擊頁面上方「<b>新增行程</b>」按鈕，可建立多個旅遊專案（如：東京5天4夜、福岡3天2夜），支援分頁快速切換。", bullet_style))
     story.append(Paragraph("• <b>新增行程天數 (Day)</b>：在最上方主標題卡片右側，點擊「<b>新增行程天數 (Day)</b>」，快速建立 Day 1、Day 2 等基礎大框架。", bullet_style))
-    story.append(Paragraph("• <b>附屬新增子景點/活動</b>：任何一張卡片的右上角都有「<b>附屬新增</b>」按鈕，點擊後即可在該卡片底下建立時段、景點、美食或飯店，並自動往右縮排。", bullet_style))
+    story.append(Paragraph("• <b>選擇節點類型</b>：新增或編輯卡片時，可精準選擇「📍 景點」、「⚡ 行程動作」、「🍜 美食」、「🏨 住宿」、「🛍️ 購物」與「🚌 交通」。", bullet_style))
 
     story.append(Spacer(1, 6))
-    story.append(Paragraph("2. 如何拖移或修改卡片的上層位置？ (兩種極速手法)", h2_style))
-    story.append(Paragraph("• <b>方法 A：滑鼠直接拖拉 (Drag & Drop)</b><br/>以滑鼠按住任何一張卡片不放，拖曳移動到行程樹中另一張卡片的上方放開，系統會立即將該卡片附屬成為目標卡片的子項目！", bullet_style))
-    story.append(Paragraph("• <b>方法 B：編輯選單指定附屬父節點</b><br/>點擊卡片上的「<b>編輯</b>」按鈕，在彈出視窗最上方可看見「<b>指定附屬在哪一個卡片/節點底下</b>」下拉選單。此選單會以縮排呈現完整結構，選擇想歸屬的對象後送出，立刻幫您把整串卡片搬移到新位置。", bullet_style))
+    story.append(Paragraph("2. 雙模式抽屜：全部靈感庫 vs 本行程專屬景點夾", h2_style))
+    story.append(Paragraph("• <b>📦 全部景點靈感庫 (主庫)</b>：存放所有備用與收集來的景點卡片，可隨時按地區（天神、博多、心齋橋等）進行過濾與卡片分類編輯。", bullet_style))
+    story.append(Paragraph("• <b>📁 本行程專屬景點夾 (行程純淨清單)</b>：切換至此模式，會自動顯示當前行程安排的所有景點。具備「🎯 定位至心智圖」與「從本行程移除」按鈕。", bullet_style))
+    story.append(Paragraph("• <b>資料刪除隔離與保護</b>：在行程景點夾點擊刪除，僅將景點從該行程中劃掉，靈感庫主庫資料完好無損；刪除整個行程分頁時，該行程專屬資料夾會隨之刪除，大靈感庫卡片依然 100% 安全。", bullet_style))
 
     story.append(Spacer(1, 6))
-    story.append(Paragraph("3. 右側「景點靈感庫」使用秘技", h2_style))
-    story.append(Paragraph("• <b>側邊抽屜 / 全螢幕展示</b>：點擊頂部列的「<b>景點庫</b>」按鈕可打開側邊抽屜；點擊視窗上的「<b>全螢幕顯示 / 隱藏</b>」按鈕，可切換至卡片網格並排模式，瀏覽再多靈感也不擠。", bullet_style))
-    story.append(Paragraph("• <b>極速拖入行程表</b>：在靈感庫看到想要的景點時，可直接用滑鼠將卡片拉入左側樹狀行程中；也可以點擊卡片上的「<b>加入</b>」將景點快速安插進指定的行程段落！", bullet_style))
+    story.append(Paragraph("3. 拖拉與編輯指定上層位置", h2_style))
+    story.append(Paragraph("• <b>滑鼠直接拖拉 (Drag & Drop)</b>：以滑鼠按住卡片不放，拖曳移動到另一個卡片上方放開，即可隨心更改附屬階層位置。", bullet_style))
+    story.append(Paragraph("• <b>編輯視窗指定父節點</b>：點擊「編輯」視窗，可在最上方選單直接選取想要歸屬的上層節點，自動重新排版移動。", bullet_style))
 
     story.append(Spacer(1, 6))
-    story.append(Paragraph("4. 行程備份、分享給旅伴與匯入", h2_style))
-    story.append(Paragraph("• <b>產生旅伴唯讀網址</b>：點擊上方藍色的連結圖示按鈕，會產生一串專為好朋友打造的唯讀網址。朋友點開後只能瀏覽無法修改，不再擔心行程誤操作。", bullet_style))
-    story.append(Paragraph("• <b>匯出 JSON 備份</b>：隨時點擊「匯出 JSON」將整個行程與靈感庫儲存到電腦中保存。", bullet_style))
-    story.append(Paragraph("• <b>匯入 JSON 檔案</b>：同伴傳送行程備份檔給您時，點擊「匯入 JSON」即可快速載入完整旅遊計畫！", bullet_style))
+    story.append(Paragraph("4. 備份、分享與 JSON 匯入匯出", h2_style))
+    story.append(Paragraph("• <b>產生旅伴唯讀網址</b>：點擊藍色分享連結，複製專為好友打造的唯讀網址，同行夥伴點開只能瀏覽無法修改，防誤刪更安心。", bullet_style))
+    story.append(Paragraph("• <b>匯出 / 匯入 JSON 檔案</b>：點擊「匯出 JSON」備份；獲得好友分享的 `[地點]_景點靈感庫.json` 時，點擊「匯入 JSON」即可秒級寫入本地端！", bullet_style))
 
     story.append(Spacer(1, 14))
 
@@ -255,37 +258,32 @@ def build_pdf():
             Paragraph("<b>操作對應說明</b>", body_bold)
         ],
         [
-            Paragraph("<b>頂部導覽列</b>", body_style),
-            Paragraph("景點庫 (Vault)", body_style),
-            Paragraph("滑出右側景點靈感抽屜，可分類管理所有口袋名單景點與餐廳。", body_style)
+            Paragraph("<b>靈感庫頁籤</b>", body_style),
+            Paragraph("📦 全部景點靈感庫", body_style),
+            Paragraph("瀏覽與編輯跨城市所有景點備份主庫，可隨時手動編輯分類與地區標籤。", body_style)
         ],
         [
-            Paragraph("<b>頂部導覽列</b>", body_style),
-            Paragraph("旅伴分享連結", body_style),
-            Paragraph("複製「唯讀版」專屬連結傳給同行夥伴，打開直接用手機閱讀行程。", body_style)
+            Paragraph("<b>靈感庫頁籤</b>", body_style),
+            Paragraph("📁 本行程專屬景點夾", body_style),
+            Paragraph("僅顯示當前行程已排入的純淨景點，自動排除日期天數、時段膠囊與行程動作。", body_style)
         ],
         [
-            Paragraph("<b>工具切換列</b>", body_style),
-            Paragraph("雙模式切換", body_style),
-            Paragraph("切換「Markdown 階層樹狀視圖」與「手機列表視圖」，隨場景選擇最佳觀看模式。", body_style)
-        ],
-        [
-            Paragraph("<b>卡片操作</b>", body_style),
-            Paragraph("附屬新增 (子節點)", body_style),
-            Paragraph("在目前選取的卡片下方建立新卡片，支援景點、美食、時段、交通與住宿分類。", body_style)
+            Paragraph("<b>景點夾功能</b>", body_style),
+            Paragraph("🎯 定位至心智圖", body_style),
+            Paragraph("點擊後畫面上卡片自動發光並流暢平移定位至心智圖中的對應卡片。", body_style)
         ],
         [
             Paragraph("<b>卡片操作</b>", body_style),
-            Paragraph("編輯與刪除", body_style),
-            Paragraph("開啟美化版無外框編輯彈窗（可調上層父卡片）；刪除卡片前會跳出二次提醒安全彈窗。", body_style)
+            Paragraph("節點類型切換", body_style),
+            Paragraph("精準區分📍景點、⚡行程動作、🍜美食、🏨住宿、🛍️購物與🚌交通。", body_style)
         ],
         [
             Paragraph("<b>檔案管理</b>", body_style),
             Paragraph("匯出 / 匯入 JSON", body_style),
-            Paragraph("支援隨時將整個行程專案儲存成 JSON 檔案備份，或載入夥伴分享的行程檔。", body_style)
+            Paragraph("支援將行程與景點庫導出為 JSON 備份檔，或將個人私房行程寫入本地端。", body_style)
         ]
     ]
-    t_icons = Table(icons_data, colWidths=[80, 110, 333])
+    t_icons = Table(icons_data, colWidths=[80, 120, 323])
     t_icons.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), BG_CARD),
         ('TEXTCOLOR', (0,0), (-1,0), PRIMARY),
@@ -305,16 +303,16 @@ def build_pdf():
     
     qa_data = [
         [
-            Paragraph("<b>Q1: 在國外手機打開看起來會不置中或排版跑掉嗎？</b>", body_bold)
+            Paragraph("<b>Q1: 為什麼「行程動作」（如：桃園起飛 ➔ 抵達）不會出現在「本行程專屬景點夾」裡？</b>", body_bold)
         ],
         [
-            Paragraph("完全不會！TripTree 採用 100% 自適應區塊排版，在手機瀏覽器打開無論橫放豎放皆會自動對齊畫面中央，且無須左右拉動捲軸，亦可隨時切換到「手機列表視圖」呈現純淨清爽的直列清單。", body_style)
+            Paragraph("因為專屬景點夾定位為「景點清單庫」，系統會自動幫您排除日期天數、時段膠囊、交通與行程動作，確保資料夾裡面只呈現真正需要觀光參觀的純淨景點與美食餐廳！", body_style)
         ],
         [
-            Paragraph("<b>Q2: 如果我不小心按到刪除，整個天數底下的行程會不見嗎？</b>", body_bold)
+            Paragraph("<b>Q2: 如果我從「本行程專屬景點夾」點擊「刪除」，靈感庫裡面的景點也會不見嗎？</b>", body_bold)
         ],
         [
-            Paragraph("為保護旅遊心血，刪除任何卡片時系統一定會跳出明確的防護確認彈窗。若選擇刪除父卡片，其附屬在其底下的所有子景點也將一併移除，因此修改結構時建議多利用「拖拉」或「指定附屬位置」進行調整。", body_style)
+            Paragraph("完全不會！在行程景點夾點擊刪除，只會將景點從該行程安排中拿掉，大靈感庫主庫中的卡片依然 100% 完整保留。當您刪除整個行程頁籤時，該專屬資料夾會隨行程銷毀，大靈感庫資料依然絕對安全。", body_style)
         ],
         [
             Paragraph("<b>Q3: 我可以把不同城市的景點同時放在一個系統裡嗎？</b>", body_bold)
