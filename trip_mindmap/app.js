@@ -967,12 +967,14 @@ class VerticalTimelineAppV17 {
       return;
     }
 
-    const isDayOrPeriod = (n) => {
-      if (!n) return false;
-      if (n.category === 'day' || n.category === 'period' || n.category === 'root') return true;
+    const isExcludedFromTripFolder = (n) => {
+      if (!n) return true;
+      const cat = n.category;
+      if (cat === 'day' || cat === 'period' || cat === 'root' || cat === 'action' || cat === 'transit') return true;
       const title = n.title || '';
       if (title.startsWith('Day ') || title.includes('Day')) return true;
       if (['上午', '下午', '晚上', '全天', '深夜'].some(t => title.includes(t)) && title.length <= 6) return true;
+      if (['起飛', '抵達', 'Check-in', 'check in', '辦理入住', '出關', '登機', '搭乘'].some(t => title.includes(t))) return true;
       return false;
     };
 
@@ -986,7 +988,7 @@ class VerticalTimelineAppV17 {
         p = node.title;
       }
       
-      if (!isDayOrPeriod(node)) {
+      if (!isExcludedFromTripFolder(node)) {
         spots.push({ node, dayTitle: d, periodTitle: p });
       }
 
@@ -1300,6 +1302,7 @@ class VerticalTimelineAppV17 {
     let icon = '📍';
     if (node.category === 'day') icon = '📅';
     if (node.category === 'period') icon = '🕒';
+    if (node.category === 'action') icon = '⚡';
     if (node.category === 'food') icon = '🍜';
     if (node.category === 'hotel') icon = '🏨';
     if (node.category === 'transit') icon = '🚌';
