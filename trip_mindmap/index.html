@@ -336,6 +336,11 @@
         <input type="hidden" id="nodeParentId">
 
         <div class="form-group">
+          <label class="form-label" for="nodeParentSelect" style="color:#0f766e; font-weight:800;">🔗 指定附屬在哪一個卡片/節點底下 (上層父節點)</label>
+          <select id="nodeParentSelect" class="form-select" required></select>
+        </div>
+
+        <div class="form-group">
           <label class="form-label" for="nodeCategory">節點類型</label>
           <select id="nodeCategory" class="form-select" required>
             <option value="day">📅 日期 / 天數 (Day 1: 10/20 成田機場)</option>
@@ -418,6 +423,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=25.0.0"></script>
+  <script src="app.js?v=26.0.0"></script>
 </body>
 </html>

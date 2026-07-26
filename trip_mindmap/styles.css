@@ -289,14 +289,14 @@ main {
 }
 
 .mindmap-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 4500px;
-  min-height: 8000px;
-  padding: 100px;
-  transform-origin: 0 0;
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  padding: 24px 16px;
+  transform-origin: top center;
   transition: transform 0.15s ease-out;
+  display: flex;
+  justify-content: center;
 }
 
 .svg-connectors {
@@ -1420,4 +1420,74 @@ main {
 
 .md-add-btn:hover {
   background: #f0fdf4;
+}
+
+/* ==========================================================================
+   V26 無限層級附屬卡片縮排佈局 (Recursive Indented Child Cards)
+   ========================================================================== */
+.md-children-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  margin-left: 20px;
+  padding-left: 14px;
+  border-left: 3px dashed #0d9488;
+  position: relative;
+}
+
+.md-tree-card {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.md-tree-card.drag-over-target {
+  border: 2px dashed #10b981 !important;
+  background: #ecfdf5 !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+}
+
+.md-tree-card:hover {
+  border-color: #0d9488;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.08);
+}
+
+.md-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.md-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.md-tree-card.level-day {
+  border: 2px solid #0f766e;
+  background: #ffffff;
+}
+
+.md-tree-card.level-period {
+  background: #f8fafc;
+  border-left: 5px solid #0d9488;
+}
+
+.md-tree-card.level-spot {
+  background: #ffffff;
+  border-color: #e2e8f0;
 }

@@ -1037,144 +1037,167 @@ class VerticalTimelineAppV17 {
     banner.className = 'md-root-banner';
     banner.innerHTML = `
       <h1 class="md-root-title">🏮 ${this.escapeHtml(root.title)}</h1>
-      ${!this.isReadOnly ? `<button class="md-add-btn" style="background:#ffffff; color:#0f766e; border:none; padding:6px 14px; font-weight:800;" data-action="add-day" data-parent="${root.id}">➕ 新增行程天數 (Day)</button>` : ''}
+      ${!this.isReadOnly ? `<button class="md-add-btn" style="background:#ffffff; color:#0f766e; border:none; padding:6px 14px; font-weight:800;" data-action="add-child" data-parent="${root.id}">➕ 新增行程天數 (Day)</button>` : ''}
     `;
     container.appendChild(banner);
 
-    // 2. Render Day Nodes
+    // 2. 遞迴渲染無限層級樹狀卡片
     if (root.children && root.children.length > 0) {
-      root.children.forEach((dayNode) => {
-        const dayEl = document.createElement('div');
-        dayEl.className = 'md-tree-day';
-        dayEl.setAttribute('data-id', dayNode.id);
-
-        let dayHeaderHtml = `
-          <div class="md-day-header">
-            <div class="md-day-title">
-              <span>📅</span>
-              <span>${this.escapeHtml(dayNode.title)}</span>
-            </div>
-            ${!this.isReadOnly ? `
-              <div style="display:flex; gap:6px; align-items:center;">
-                <button class="md-add-btn" data-action="add-period" data-parent="${dayNode.id}">➕ 新增時段</button>
-                <button class="mobile-action-btn btn-edit-spot" data-id="${dayNode.id}" title="編輯天數標題">✏️</button>
-                <button class="mobile-action-btn btn-del-spot" data-id="${dayNode.id}" title="刪除整天">🗑️</button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-
-        let dayBodyHtml = `<div class="md-period-list">`;
-
-        if (dayNode.children && dayNode.children.length > 0) {
-          dayNode.children.forEach(periodNode => {
-            dayBodyHtml += `
-              <div class="md-tree-period" data-id="${periodNode.id}">
-                <div class="md-period-header">
-                  <span class="md-period-title">🕒 ${this.escapeHtml(periodNode.title)}</span>
-                  ${!this.isReadOnly ? `
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <button class="md-add-btn" data-action="add-spot" data-parent="${periodNode.id}">➕ 新增景點</button>
-                      <button class="mobile-action-btn btn-edit-spot" data-id="${periodNode.id}" title="編輯時段名稱">✏️</button>
-                      <button class="mobile-action-btn btn-del-spot" data-id="${periodNode.id}" title="刪除時段">🗑️</button>
-                    </div>
-                  ` : ''}
-                </div>
-                <div class="md-spot-list">
-            `;
-
-            if (periodNode.children && periodNode.children.length > 0) {
-              periodNode.children.forEach(spotNode => {
-                dayBodyHtml += this.renderMarkdownSpotCard(spotNode);
-              });
-            } else {
-              dayBodyHtml += `<div style="color:#94a3b8; font-size:0.86rem; padding:8px 4px;">（目前無景點，可直接將右側靈感庫卡片拖拉至此處）</div>`;
-            }
-
-            dayBodyHtml += `</div></div>`;
-          });
-        } else {
-          dayBodyHtml += `<div style="color:#94a3b8; font-size:0.9rem; text-align:center; padding:16px;">可點擊上方「➕ 新增時段」或從右側景點靈感庫中將卡片拖拉放至此日期中...</div>`;
-        }
-
-        dayBodyHtml += `</div>`;
-        dayEl.innerHTML = dayHeaderHtml + dayBodyHtml;
-        container.appendChild(dayEl);
-
-        // Bind Drag & Drop for Day Node
-        this.bindNodeDragDrop(dayEl, dayNode);
-
-        // Bind Drag & Drop for Period Nodes inside this Day
-        dayEl.querySelectorAll('.md-tree-period').forEach(periodEl => {
-          const pid = periodEl.getAttribute('data-id');
-          const pNode = this.findNode(root, pid);
-          if (pNode) this.bindNodeDragDrop(periodEl, pNode);
-        });
+      root.children.forEach(childNode => {
+        const childEl = this.renderMarkdownTreeNode(childNode, 1, root);
+        container.appendChild(childEl);
       });
     } else {
       const emptyBox = document.createElement('div');
-      emptyBox.className = 'md-tree-day';
+      emptyBox.className = 'md-tree-card level-day';
       emptyBox.style.textAlign = 'center';
       emptyBox.style.color = '#64748b';
-      emptyBox.innerHTML = `目前行程尚無任何天數，請點擊上方「➕ 新增行程天數 (Day)」開始安排行程！`;
+      emptyBox.innerHTML = `目前行程尚無任何項目，請點擊上方「➕ 新增行程天數 (Day)」開始安排行程！`;
       container.appendChild(emptyBox);
     }
 
     this.nodesLayer.appendChild(container);
     this.bindMarkdownTreeEvents(container, root);
+
+    // viewport 重設於正中央最頂部，無須往右滾動
+    setTimeout(() => {
+      this.viewport.scrollLeft = 0;
+      this.viewport.scrollTop = 0;
+    }, 10);
   }
 
-  renderMarkdownSpotCard(spotNode) {
+  renderMarkdownTreeNode(node, level, root) {
     let icon = '📍';
-    if (spotNode.category === 'food') icon = '🍜';
-    if (spotNode.category === 'hotel') icon = '🏨';
-    if (spotNode.category === 'transit') icon = '🚌';
-    if (spotNode.category === 'shop') icon = '🛍️';
+    if (node.category === 'day') icon = '📅';
+    if (node.category === 'period') icon = '🕒';
+    if (node.category === 'food') icon = '🍜';
+    if (node.category === 'hotel') icon = '🏨';
+    if (node.category === 'transit') icon = '🚌';
+    if (node.category === 'shop') icon = '🛍️';
+
+    let cardClass = 'md-tree-card';
+    if (level === 1) cardClass += ' level-day';
+    else if (level === 2) cardClass += ' level-period';
+    else cardClass += ' level-spot';
+
+    const cardEl = document.createElement('div');
+    cardEl.className = cardClass;
+    cardEl.setAttribute('data-id', node.id);
+    if (!this.isReadOnly && node.category !== 'root') {
+      cardEl.setAttribute('draggable', 'true');
+    }
+    if (node.bgColor && level > 2) {
+      cardEl.style.backgroundColor = node.bgColor;
+    }
 
     let html = `
-      <div class="md-tree-spot" style="${spotNode.bgColor ? `background-color:${spotNode.bgColor};` : ''}" data-id="${spotNode.id}">
-        <div class="md-spot-header">
-          <span class="md-spot-title">${icon} ${this.escapeHtml(spotNode.title)}</span>
-          <div style="display:flex; gap:6px; align-items:center;">
-            ${spotNode.cost ? `<span class="node-badge">${this.escapeHtml(spotNode.cost)}</span>` : ''}
-            ${!this.isReadOnly ? `
-              <button class="mobile-action-btn btn-edit-spot" data-id="${spotNode.id}" title="編輯景點">✏️</button>
-              <button class="mobile-action-btn btn-del-spot" data-id="${spotNode.id}" title="刪除景點">🗑️</button>
-            ` : ''}
-          </div>
+      <div class="md-card-header">
+        <span class="md-card-title">${icon} ${this.escapeHtml(node.title)}</span>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          ${node.cost ? `<span class="node-badge">${this.escapeHtml(node.cost)}</span>` : ''}
+          ${!this.isReadOnly ? `
+            <button class="md-add-btn" data-action="add-child" data-parent="${node.id}" title="在此卡片底下附屬新增卡片">➕ 附屬新增</button>
+            <button class="mobile-action-btn btn-edit-spot" data-id="${node.id}" title="編輯或更動附屬位置">✏️</button>
+            <button class="mobile-action-btn btn-del-spot" data-id="${node.id}" title="刪除此項目">🗑️</button>
+          ` : ''}
         </div>
+      </div>
     `;
 
-    if (spotNode.category === 'hotel' && (spotNode.hotelCheckIn || spotNode.hotelRoomType)) {
+    if (node.category === 'hotel' && (node.hotelCheckIn || node.hotelRoomType)) {
       html += `
         <div class="mobile-hotel-box">
-          ${spotNode.hotelCheckIn ? `<div>🏨 ${this.escapeHtml(spotNode.hotelCheckIn)} | ${this.escapeHtml(spotNode.hotelCheckOut || '')}</div>` : ''}
-          ${spotNode.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(spotNode.hotelRoomType)}</div>` : ''}
+          ${node.hotelCheckIn ? `<div>🏨 ${this.escapeHtml(node.hotelCheckIn)} | ${this.escapeHtml(node.hotelCheckOut || '')}</div>` : ''}
+          ${node.hotelRoomType ? `<div>🛏️ ${this.escapeHtml(node.hotelRoomType)}</div>` : ''}
         </div>
       `;
     }
 
-    if (spotNode.imageUrl) {
-      html += `<img class="node-thumb" src="${this.escapeHtml(spotNode.imageUrl)}" alt="thumb" loading="lazy">`;
+    if (node.imageUrl) {
+      html += `<img class="node-thumb" src="${this.escapeHtml(node.imageUrl)}" alt="thumb" loading="lazy">`;
     }
 
-    if (spotNode.note) {
-      html += `<div class="mobile-note-box">${this.escapeHtml(spotNode.note)}</div>`;
+    if (node.note) {
+      html += `<div class="mobile-note-box">${this.escapeHtml(node.note)}</div>`;
     }
 
-    if (spotNode.mapsUrl || spotNode.url) {
+    if (node.mapsUrl || node.url) {
       html += `<div class="mobile-btn-group" style="margin-top:4px;">`;
-      if (spotNode.mapsUrl) html += `<a href="${this.escapeHtml(spotNode.mapsUrl)}" target="_blank" class="mobile-action-btn" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">🗺️ 開啟 Google 地圖</a>`;
-      if (spotNode.url) html += `<a href="${this.escapeHtml(spotNode.url)}" target="_blank" class="mobile-action-btn">🔗 官方網站</a>`;
+      if (node.mapsUrl) html += `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="mobile-action-btn" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">🗺️ Google 地圖</a>`;
+      if (node.url) html += `<a href="${this.escapeHtml(node.url)}" target="_blank" class="mobile-action-btn">🔗 官方網站</a>`;
       html += `</div>`;
     }
 
-    html += `</div>`;
-    return html;
+    cardEl.innerHTML = html;
+
+    // 綁定 Drag & Drop (支援從靈感庫拖入 & 樹狀卡片之間拖曳移動附屬位置)
+    this.bindNodeDragDrop(cardEl, node, root);
+
+    // 遞迴渲染子節點 (往後縮排顯示附屬關係)
+    if (node.children && node.children.length > 0) {
+      const childrenContainer = document.createElement('div');
+      childrenContainer.className = 'md-children-list';
+      node.children.forEach(child => {
+        const childEl = this.renderMarkdownTreeNode(child, level + 1, root);
+        childrenContainer.appendChild(childEl);
+      });
+      cardEl.appendChild(childrenContainer);
+    }
+
+    return cardEl;
   }
 
-  bindNodeDragDrop(element, targetNode) {
+  isNodeDescendant(parent, targetId) {
+    if (!parent || !parent.children) return false;
+    for (let child of parent.children) {
+      if (child.id === targetId) return true;
+      if (this.isNodeDescendant(child, targetId)) return true;
+    }
+    return false;
+  }
+
+  findParentNode(current, targetId) {
+    if (!current || !current.children) return null;
+    for (let child of current.children) {
+      if (child.id === targetId) return current;
+      const found = this.findParentNode(child, targetId);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  moveNodeToNewParent(root, nodeId, newParentId) {
+    const node = this.findNode(root, nodeId);
+    const oldParent = this.findParentNode(root, nodeId);
+    const newParent = this.findNode(root, newParentId);
+    if (!node || !oldParent || !newParent) return;
+    if (oldParent.id === newParentId) return;
+
+    oldParent.children = oldParent.children.filter(c => c.id !== nodeId);
+    if (!newParent.children) newParent.children = [];
+    newParent.children.push(node);
+    newParent.expanded = true;
+
+    this.saveProjects();
+    this.render();
+    this.showToast(`🎉 已將【${node.title}】移動附屬至【${newParent.title}】底下！`);
+  }
+
+  bindNodeDragDrop(element, targetNode, root) {
     if (this.isReadOnly) return;
+
+    if (element.getAttribute('draggable') === 'true') {
+      element.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        this.draggedTreeNode = targetNode;
+        this.draggedVaultItem = null;
+      });
+      element.addEventListener('dragend', (e) => {
+        e.stopPropagation();
+        this.draggedTreeNode = null;
+      });
+    }
+
     element.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1191,6 +1214,14 @@ class VerticalTimelineAppV17 {
       if (this.draggedVaultItem) {
         this.insertVaultItemIntoNode(this.draggedVaultItem, targetNode);
         this.draggedVaultItem = null;
+      } else if (this.draggedTreeNode) {
+        if (this.draggedTreeNode.id === targetNode.id) return;
+        if (this.isNodeDescendant(this.draggedTreeNode, targetNode.id)) {
+          this.showToast('⚠️ 不能將卡片移動附屬至其自己的子項目底下喔！');
+          return;
+        }
+        this.moveNodeToNewParent(root, this.draggedTreeNode.id, targetNode.id);
+        this.draggedTreeNode = null;
       }
     });
   }
@@ -1223,11 +1254,8 @@ class VerticalTimelineAppV17 {
     container.querySelectorAll('.md-add-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const action = btn.getAttribute('data-action');
         const parentId = btn.getAttribute('data-parent');
-        if (action === 'add-day') {
-          this.openModalForAdd(root.id);
-        } else if (action === 'add-period' || action === 'add-spot') {
+        if (parentId) {
           this.openModalForAdd(parentId);
         }
       });
@@ -1571,12 +1599,39 @@ class VerticalTimelineAppV17 {
     });
   }
 
+  populateParentSelect(selectedParentId, excludeNodeId = null) {
+    const select = document.getElementById('nodeParentSelect');
+    if (!select) return;
+    select.innerHTML = '';
+    const proj = this.getActiveProject();
+    if (!proj || !proj.rootNode) return;
+
+    const addOption = (node, indent, isRoot = false) => {
+      if (excludeNodeId && node.id === excludeNodeId) return;
+      const option = document.createElement('option');
+      option.value = node.id;
+      let icon = isRoot ? '🏮' : node.category === 'day' ? '📅' : node.category === 'period' ? '🕒' : '📍';
+      option.textContent = `${indent}${icon} ${node.title}`;
+      select.appendChild(option);
+
+      if (node.children && node.children.length > 0) {
+        node.children.forEach(child => {
+          addOption(child, indent + '　　', false);
+        });
+      }
+    };
+
+    addOption(proj.rootNode, '', true);
+    select.value = selectedParentId || proj.rootNode.id;
+  }
+
   openModalForAdd(parentId) {
     if (this.isReadOnly) return;
     this.modalTitle.textContent = '新增景點 / 節點';
     this.nodeForm.reset();
     document.getElementById('nodeId').value = '';
     document.getElementById('nodeParentId').value = parentId;
+    this.populateParentSelect(parentId, null);
     this.nodeColorInput.value = '#ffffff';
     this.nodeColorCustom.value = '#ffffff';
     this.hotelFieldsBox.style.display = 'none';
@@ -1585,9 +1640,12 @@ class VerticalTimelineAppV17 {
 
   openModalForEdit(node) {
     if (this.isReadOnly) return;
-    this.modalTitle.textContent = '編輯景點資訊';
+    this.modalTitle.textContent = '編輯景點資訊 / 更動附屬位置';
     document.getElementById('nodeId').value = node.id;
-    document.getElementById('nodeParentId').value = '';
+    const currentParent = this.findParentNode(this.getActiveProject().rootNode, node.id);
+    const pId = currentParent ? currentParent.id : '';
+    document.getElementById('nodeParentId').value = pId;
+    this.populateParentSelect(pId, node.id);
     document.getElementById('nodeCategory').value = node.category || 'spot';
     document.getElementById('nodeTitle').value = node.title || '';
     document.getElementById('nodeUrl').value = node.url || '';
@@ -1612,7 +1670,8 @@ class VerticalTimelineAppV17 {
   handleFormSubmit() {
     if (this.isReadOnly) return;
     const id = document.getElementById('nodeId').value;
-    const parentId = document.getElementById('nodeParentId').value;
+    const selectEl = document.getElementById('nodeParentSelect');
+    const selectedParentId = selectEl && selectEl.value ? selectEl.value : document.getElementById('nodeParentId').value;
     const proj = this.getActiveProject();
 
     const nodeData = {
@@ -1631,10 +1690,22 @@ class VerticalTimelineAppV17 {
 
     if (id) {
       const node = this.findNode(proj.rootNode, id);
-      if (node) Object.assign(node, nodeData);
+      if (node) {
+        Object.assign(node, nodeData);
+        const currentParent = this.findParentNode(proj.rootNode, id);
+        if (currentParent && currentParent.id !== selectedParentId) {
+          const targetParent = this.findNode(proj.rootNode, selectedParentId);
+          if (targetParent && !this.isNodeDescendant(node, targetParent.id)) {
+            currentParent.children = currentParent.children.filter(c => c.id !== id);
+            if (!targetParent.children) targetParent.children = [];
+            targetParent.children.push(node);
+            targetParent.expanded = true;
+          }
+        }
+      }
     } else {
       const newId = 'node_' + Date.now();
-      const parentNode = this.findNode(proj.rootNode, parentId) || proj.rootNode;
+      const parentNode = this.findNode(proj.rootNode, selectedParentId) || proj.rootNode;
       if (!parentNode.children) parentNode.children = [];
       parentNode.children.push({ id: newId, ...nodeData, expanded: true, children: [] });
       parentNode.expanded = true;
