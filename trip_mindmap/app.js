@@ -429,6 +429,11 @@ class VerticalTimelineAppV17 {
   }
 
   bindEvents() {
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768 && this.zoomLevel !== 1.0) {
+        this.setZoom(1.0);
+      }
+    });
     this.btnZoomIn.addEventListener('click', () => this.setZoom(this.zoomLevel + 0.15));
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
@@ -1023,6 +1028,10 @@ class VerticalTimelineAppV17 {
   // 同時支援靈感庫拖放 (Drag & Drop) 及全部節點的編輯/刪除/新增功能
   // ==========================================================================
   renderMindmap() {
+    if (window.innerWidth <= 768) {
+      this.setZoom(1.0);
+    }
+    this.nodesLayer.style = '';
     this.nodesLayer.innerHTML = '';
     this.svgConnectors.innerHTML = '';
     const proj = this.getActiveProject();
