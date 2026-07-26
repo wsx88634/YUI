@@ -199,6 +199,90 @@ const DEFAULT_COUNTRY_HIERARCHY = {
 
 const DEFAULT_SPOT_VAULT = [
   {
+    id: "vault_ig_issou",
+    country: "日本",
+    region: "博多",
+    title: "🍜 博多一双 中洲店（超濃郁泡系卡布奇諾豚骨拉麵）",
+    category: "food",
+    cost: "豚骨拉麵 ~800-1000円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=博多一双+中洲店",
+    note: "【寶藏美食 1/7】福岡爆紅泡系拉麵始祖！獨門卡布奇諾綿密豚骨湯頭，濃郁香醇，排隊名店。"
+  },
+  {
+    id: "vault_ig_nikuichi",
+    country: "日本",
+    region: "博多",
+    title: "🥩 肉屋 肉一 博多店（超高CP值A5黑毛和牛燒肉）",
+    category: "food",
+    cost: "和牛燒肉 ~4000-6000円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=肉屋+肉一+博多店",
+    note: "【寶藏美食 2/7】在地人私藏冠軍燒肉！頂級 A5 黑毛和牛拼盤品質極高、價格超親民，建議務必提前網路預約。"
+  },
+  {
+    id: "vault_ig_kawatoro",
+    country: "日本",
+    region: "博多",
+    title: "🦑 河太郎 中洲本店（透明現撈活槍烏賊生魚片）",
+    category: "food",
+    cost: "烏賊定食 ~3000-5000円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=河太郎+中洲本店",
+    note: "【寶藏美食 3/7】福岡活花枝生魚片創始老店！現撈透明槍烏賊脆彈甘甜，腳部位還能做成香酥天婦羅。"
+  },
+  {
+    id: "vault_ig_seafood_hakata",
+    country: "日本",
+    region: "博多",
+    title: "💎 海風土 博多店（超浮誇 500 日圓寶石盒生魚片）",
+    category: "food",
+    cost: "寶石盒生魚片 500円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=海風土+博多店",
+    note: "【寶藏美食 4/7】CP值爆表的博多海鮮居酒屋！只要 500 日圓就能吃到新鮮豐富的寶石盒生魚片盛合。"
+  },
+  {
+    id: "vault_ig_daidai",
+    country: "日本",
+    region: "天神",
+    title: "🍲 博多水炊鍋 橙（米其林必比登推薦極品雞湯鍋）",
+    category: "food",
+    cost: "水炊鍋 ~3500-5000円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=博多水たき+橙",
+    note: "【寶藏美食 5/7】米其林必比登推薦！清甜純淨雞高湯搭配鮮嫩雞肉與橙醋，雜炊粥更是一絕。"
+  },
+  {
+    id: "vault_ig_kanetora",
+    country: "日本",
+    region: "天神",
+    title: "🍜 麵屋兼虎 天神本店（福岡評選第一名魚介豚骨沾麵）",
+    category: "food",
+    cost: "濃郁沾麵 ~1050-1350円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=麵屋兼虎+天神本店",
+    note: "【寶藏美食 6/7】福岡最強濃郁系沾麵！超濃厚魚介豚骨湯頭，搭配彈牙太麵與魚粉，重口味饕客首選。"
+  },
+  {
+    id: "vault_ig_mentaiju",
+    country: "日本",
+    region: "天神",
+    title: "🍱 元祖博多明太重（奢華昆布明太子重飯）",
+    category: "food",
+    cost: "明太重 1850円",
+    bgColor: "#fef3c7",
+    url: "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    mapsUrl: "https://maps.google.com/?q=元祖博多明太重",
+    note: "【寶藏美食 7/7】日本首家明太子專賣店！原條昆布包覆明太子鋪在飯上，淋上獨門微辣醬汁，排隊超人氣！"
+  },
+  {
     id: "vault_ig_ringo",
     country: "日本",
     region: "天神",
@@ -1046,6 +1130,21 @@ class VerticalTimelineAppV17 {
   }
 
   renderVault() {
+    // 確保所有卡片中出現過的地區都自動動態加入地區選單按鈕中
+    if (this.vaultItems && Array.isArray(this.vaultItems)) {
+      this.vaultItems.forEach(item => {
+        const country = item.country || "日本";
+        const region = item.region;
+        if (region && region !== "所有" && !region.startsWith("所有")) {
+          if (!this.countryHierarchy[country]) {
+            this.countryHierarchy[country] = [`所有${country}`, region];
+          } else if (!this.countryHierarchy[country].includes(region)) {
+            this.countryHierarchy[country].push(region);
+          }
+        }
+      });
+    }
+
     this.countryTabsRow.innerHTML = '';
     const countries = Object.keys(this.countryHierarchy);
     countries.forEach(country => {
