@@ -293,6 +293,7 @@ class VerticalTimelineAppV17 {
     this.zoomLevel = 1.0;
     this.draggedVaultItem = null;
     this.pendingDeleteAction = null;
+    this.vaultMode = 'vault'; // 'vault' or 'trip_folder'
 
     this.isPanning = false;
     this.startX = 0;
@@ -333,6 +334,11 @@ class VerticalTimelineAppV17 {
     this.btnCloseVault = document.getElementById('btnCloseVault');
     this.btnToggleFullVault = document.getElementById('btnToggleFullVault');
     
+    this.btnModeVault = document.getElementById('btnModeVault');
+    this.btnModeTripFolder = document.getElementById('btnModeTripFolder');
+    this.vaultAiBox = document.querySelector('.vault-ai-box');
+    this.vaultFilterBar = document.querySelector('.vault-filter-bar');
+
     this.countryTabsRow = document.getElementById('countryTabsRow');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
     this.regionFilterLabel = document.getElementById('regionFilterLabel');
@@ -502,6 +508,21 @@ class VerticalTimelineAppV17 {
     this.btnCloseVault.addEventListener('click', () => {
       this.vaultDrawer.classList.remove('open', 'expanded-full');
     });
+
+    if (this.btnModeVault && this.btnModeTripFolder) {
+      this.btnModeVault.addEventListener('click', () => {
+        this.vaultMode = 'vault';
+        this.btnModeVault.classList.add('active');
+        this.btnModeTripFolder.classList.remove('active');
+        this.renderVault();
+      });
+      this.btnModeTripFolder.addEventListener('click', () => {
+        this.vaultMode = 'trip_folder';
+        this.btnModeTripFolder.classList.add('active');
+        this.btnModeVault.classList.remove('active');
+        this.renderVault();
+      });
+    }
 
     this.btnToggleFullVault.addEventListener('click', () => {
       this.vaultDrawer.classList.toggle('expanded-full');
@@ -806,6 +827,16 @@ class VerticalTimelineAppV17 {
   }
 
   renderVault() {
+    if (this.vaultMode === 'trip_folder') {
+      if (this.vaultAiBox) this.vaultAiBox.style.display = 'none';
+      if (this.vaultFilterBar) this.vaultFilterBar.style.display = 'none';
+      this.renderTripFolder();
+      return;
+    } else {
+      if (this.vaultAiBox) this.vaultAiBox.style.display = 'block';
+      if (this.vaultFilterBar) this.vaultFilterBar.style.display = 'flex';
+    }
+
     // 確保所有卡片中出現過的地區都自動動態加入地區選單按鈕中
     if (this.vaultItems && Array.isArray(this.vaultItems)) {
       this.vaultItems.forEach(item => {
@@ -921,6 +952,103 @@ class VerticalTimelineAppV17 {
           this.saveVaultData();
           this.renderVault();
           this.showToast(`🗑️ 已成功刪除【${item.title}】`);
+        });
+      });
+
+      this.vaultCardList.appendChild(card);
+    });
+  }
+
+  renderTripFolder() {
+    this.vaultCardList.innerHTML = '';
+    const proj = this.getActiveProject();
+    if (!proj || !proj.rootNode) {
+      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:24px;">目前尚未選擇任何行程項目。</div>`;
+      return;
+    }
+
+    const spots = [];
+    const traverse = (node, dayTitle = "", periodTitle = "") => {
+      let d = dayTitle;
+      let p = periodTitle;
+      if (node.category === 'day') d = node.title;
+      else if (node.category === 'period') p = node.title;
+      else if (node.category !== 'root') {
+        spots.push({ node, dayTitle: d, periodTitle: p });
+      }
+      if (node.children) {
+        node.children.forEach(child => traverse(child, d, p));
+      }
+    };
+    traverse(proj.rootNode);
+
+    const header = document.createElement('div');
+    header.className = 'trip-folder-header';
+    header.innerHTML = `
+      <div class="trip-folder-title">
+        <span>📁 【${this.escapeHtml(proj.title)}】專屬景點清單</span>
+        <span style="font-size:0.8rem; background:#bbf7d0; color:#14532d; padding:2px 8px; border-radius:10px; font-weight:800;">共 ${spots.length} 個安排</span>
+      </div>
+      <div style="font-size:0.8rem; color:#15803d; margin-top:6px; line-height:1.4;">
+        💡 這裡彙整本行程中安排的所有景點。刪除行程時本資料夾隨之刪除，完全不影響大景點靈感庫！
+      </div>
+    `;
+    this.vaultCardList.appendChild(header);
+
+    if (spots.length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.style.cssText = "text-align:center; color:#94a3b8; padding:24px; font-size:0.88rem;";
+      emptyMsg.textContent = "此行程目前尚未排入任何景點卡片！可以切換回「📦 全部景點靈感庫」將景點拖拉近來。";
+      this.vaultCardList.appendChild(emptyMsg);
+      return;
+    }
+
+    spots.forEach(({ node, dayTitle, periodTitle }) => {
+      const card = document.createElement('div');
+      card.className = 'vault-item-card';
+      card.style.borderLeft = '4px solid #0f766e';
+      if (node.bgColor) card.style.backgroundColor = node.bgColor;
+
+      let categoryIcon = '📍';
+      if (node.category === 'food') categoryIcon = '🍜';
+      if (node.category === 'shop') categoryIcon = '🛍️';
+      if (node.category === 'hotel') categoryIcon = '🏨';
+
+      card.innerHTML = `
+        <div class="vault-card-header">
+          <span class="vault-card-title">${categoryIcon} ${this.escapeHtml(node.title)}</span>
+          <span class="node-badge" style="font-size:0.75rem; background:#fef3c7; color:#92400e; font-weight:800;">📅 ${this.escapeHtml(dayTitle || '獨立節點')} ${periodTitle ? '➔ ' + this.escapeHtml(periodTitle) : ''}</span>
+        </div>
+        ${node.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700; margin-top:2px;">💰 ${this.escapeHtml(node.cost)}</div>` : ''}
+        ${node.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35; margin-top:4px;">${this.escapeHtml(node.note)}</div>` : ''}
+        <div class="vault-card-footer" style="margin-top:8px;">
+          <div style="display:flex; gap:6px;">
+            <button class="btn-locate-mindmap" data-id="${node.id}" style="font-size:0.78rem; padding:4px 8px; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; border-radius:6px; cursor:pointer; font-weight:700;">🎯 定位至心智圖</button>
+            ${node.mapsUrl ? `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
+          </div>
+          <button class="btn-remove-from-trip" data-id="${node.id}" style="font-size:0.78rem; padding:4px 8px; background:#fef2f2; color:#b91c1c; border:1px solid #fca5a5; border-radius:6px; cursor:pointer; font-weight:700;">🗑️ 從本行程移除</button>
+        </div>
+      `;
+
+      card.querySelector('.btn-locate-mindmap').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const targetEl = document.querySelector(`[data-id="${node.id}"]`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetEl.classList.add('mindmap-node-highlight');
+          setTimeout(() => targetEl.classList.remove('mindmap-node-highlight'), 2000);
+          this.showToast(`🎯 已將鏡頭定位至【${node.title}】！`);
+        }
+      });
+
+      card.querySelector('.btn-remove-from-trip').addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.triggerCustomConfirm(`確定要從行程「${proj.title}」中移除【${node.title}】嗎？（靈感庫中資料不受影響）`, () => {
+          this.deleteNode(proj.rootNode, node.id);
+          this.saveProjects();
+          this.render();
+          this.renderVault();
+          this.showToast(`🗑️ 已從本行程中移除【${node.title}】`);
         });
       });
 

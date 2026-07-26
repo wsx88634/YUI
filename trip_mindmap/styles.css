@@ -1548,3 +1548,67 @@ main {
   background: #ffffff;
   border-color: #e2e8f0;
 }
+
+/* 🔄 靈感庫與本行程專屬資料夾模式切換頁籤 */
+.vault-mode-switch-bar {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.vault-mode-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #64748b;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.vault-mode-tab.active {
+  background: #ffffff;
+  color: #0f766e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.trip-folder-header {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  color: #166534;
+}
+
+.trip-folder-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mindmap-node-highlight {
+  animation: pulseHighlight 2s ease-in-out;
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.6) !important;
+}
+
+@keyframes pulseHighlight {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(2, 132, 199, 0.8); }
+  50% { transform: scale(1.04); box-shadow: 0 0 30px rgba(2, 132, 199, 1); }
+  100% { transform: scale(1); }
+}
