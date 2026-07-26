@@ -967,15 +967,29 @@ class VerticalTimelineAppV17 {
       return;
     }
 
+    const isDayOrPeriod = (n) => {
+      if (!n) return false;
+      if (n.category === 'day' || n.category === 'period' || n.category === 'root') return true;
+      const title = n.title || '';
+      if (title.startsWith('Day ') || title.includes('Day')) return true;
+      if (['上午', '下午', '晚上', '全天', '深夜'].some(t => title.includes(t)) && title.length <= 6) return true;
+      return false;
+    };
+
     const spots = [];
     const traverse = (node, dayTitle = "", periodTitle = "") => {
       let d = dayTitle;
       let p = periodTitle;
-      if (node.category === 'day') d = node.title;
-      else if (node.category === 'period') p = node.title;
-      else if (node.category !== 'root') {
+      if (node.category === 'day' || (node.title && (node.title.startsWith('Day ') || node.title.includes('Day')))) {
+        d = node.title;
+      } else if (node.category === 'period' || (node.title && ['上午', '下午', '晚上', '全天', '深夜'].some(t => node.title.includes(t)) && node.title.length <= 6)) {
+        p = node.title;
+      }
+      
+      if (!isDayOrPeriod(node)) {
         spots.push({ node, dayTitle: d, periodTitle: p });
       }
+
       if (node.children) {
         node.children.forEach(child => traverse(child, d, p));
       }
@@ -990,14 +1004,14 @@ class VerticalTimelineAppV17 {
         <span style="font-size:0.8rem; background:#bbf7d0; color:#14532d; padding:2px 8px; border-radius:10px; font-weight:800;">共 ${spots.length} 個安排</span>
       </div>
       <div style="font-size:0.8rem; color:#15803d; margin-top:6px; line-height:1.4;">
-        💡 這裡彙整本行程中安排的所有景點。刪除行程時本資料夾隨之刪除，完全不影響大景點靈感庫！
+        💡 這裡彙整本行程中安排的所有景點（已自動排除日期與時段標籤）。刪除行程時本資料夾隨之刪除，完全不影響大景點靈感庫！
       </div>
     `;
     this.vaultCardList.appendChild(header);
 
     if (spots.length === 0) {
       const emptyMsg = document.createElement('div');
-      emptyMsg.style.cssText = "text-align:center; color:#94a3b8; padding:24px; font-size:0.88rem;";
+      emptyMsg.style.cssText = "text-align:center; color:#94a3b8; padding:24px; font-size:0.88rem; grid-column:1 / -1;";
       emptyMsg.textContent = "此行程目前尚未排入任何景點卡片！可以切換回「📦 全部景點靈感庫」將景點拖拉近來。";
       this.vaultCardList.appendChild(emptyMsg);
       return;
@@ -1013,20 +1027,27 @@ class VerticalTimelineAppV17 {
       if (node.category === 'food') categoryIcon = '🍜';
       if (node.category === 'shop') categoryIcon = '🛍️';
       if (node.category === 'hotel') categoryIcon = '🏨';
+      if (node.category === 'transit') categoryIcon = '🚌';
 
       card.innerHTML = `
-        <div class="vault-card-header">
-          <span class="vault-card-title">${categoryIcon} ${this.escapeHtml(node.title)}</span>
-          <span class="node-badge" style="font-size:0.75rem; background:#fef3c7; color:#92400e; font-weight:800;">📅 ${this.escapeHtml(dayTitle || '獨立節點')} ${periodTitle ? '➔ ' + this.escapeHtml(periodTitle) : ''}</span>
+        <div class="vault-card-header" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; width:100%;">
+          ${(dayTitle || periodTitle) ? `
+            <div style="font-size:0.75rem; background:#fef3c7; color:#92400e; font-weight:800; padding:3px 8px; border-radius:6px; width:100%; box-sizing:border-box; word-break:break-all;">
+              📅 ${this.escapeHtml(dayTitle || '')} ${periodTitle ? '➔ ' + this.escapeHtml(periodTitle) : ''}
+            </div>
+          ` : ''}
+          <div class="vault-card-title" style="font-size:0.98rem; font-weight:800; color:#1e293b; line-height:1.4; word-break:break-all; width:100%;">
+            ${categoryIcon} ${this.escapeHtml(node.title)}
+          </div>
         </div>
         ${node.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700; margin-top:2px;">💰 ${this.escapeHtml(node.cost)}</div>` : ''}
-        ${node.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35; margin-top:4px;">${this.escapeHtml(node.note)}</div>` : ''}
-        <div class="vault-card-footer" style="margin-top:8px;">
-          <div style="display:flex; gap:6px;">
-            <button class="btn-locate-mindmap" data-id="${node.id}" style="font-size:0.78rem; padding:4px 8px; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; border-radius:6px; cursor:pointer; font-weight:700;">🎯 定位至心智圖</button>
-            ${node.mapsUrl ? `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
+        ${node.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35; margin-top:4px; word-break:break-all;">${this.escapeHtml(node.note)}</div>` : ''}
+        <div class="vault-card-footer" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn-locate-mindmap" data-id="${node.id}" style="font-size:0.78rem; padding:5px 10px; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; border-radius:6px; cursor:pointer; font-weight:700;">🎯 定位至心智圖</button>
+            ${node.mapsUrl ? `<a href="${this.escapeHtml(node.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem; padding:5px 10px;">🗺️ 地圖</a>` : ''}
           </div>
-          <button class="btn-remove-from-trip" data-id="${node.id}" style="font-size:0.78rem; padding:4px 8px; background:#fef2f2; color:#b91c1c; border:1px solid #fca5a5; border-radius:6px; cursor:pointer; font-weight:700;">🗑️ 從本行程移除</button>
+          <button class="btn-remove-from-trip" data-id="${node.id}" style="font-size:0.78rem; padding:5px 10px; background:#fef2f2; color:#b91c1c; border:1px solid #fca5a5; border-radius:6px; cursor:pointer; font-weight:700;">🗑️ 從本行程移除</button>
         </div>
       `;
 
