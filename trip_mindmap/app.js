@@ -303,6 +303,10 @@ class VerticalTimelineAppV17 {
     this.initElements();
     this.bindEvents();
     this.render();
+    if (!this.isReadOnly) {
+      this.saveProjects();
+      this.saveVaultData();
+    }
   }
 
   checkReadOnlyMode() {
@@ -383,45 +387,82 @@ class VerticalTimelineAppV17 {
   }
 
   loadProjects() {
-    const saved = localStorage.getItem('triptree_tl_v17_projects');
+    let saved = localStorage.getItem('triptree_tl_v17_projects');
+    if (!saved) {
+      try { saved = sessionStorage.getItem('triptree_tl_v17_projects'); } catch(e){}
+    }
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
     }
     return JSON.parse(JSON.stringify(TOKYO_DEMO_PROJECTS));
   }
 
   loadActiveProjectId() {
-    const saved = localStorage.getItem('triptree_tl_v17_active_id');
+    let saved = localStorage.getItem('triptree_tl_v17_active_id');
+    if (!saved) {
+      try { saved = sessionStorage.getItem('triptree_tl_v17_active_id'); } catch(e){}
+    }
     if (saved && this.projects.some(p => p.id === saved)) return saved;
     return this.projects[0] ? this.projects[0].id : "proj_fukuoka_demo";
   }
 
   loadVaultItems() {
-    const saved = localStorage.getItem('triptree_spot_vault_items_v17');
+    let saved = localStorage.getItem('triptree_spot_vault_items_v17');
+    if (!saved) {
+      try { saved = sessionStorage.getItem('triptree_spot_vault_items_v17'); } catch(e){}
+    }
     if (saved) {
-      try { return JSON.parse(saved); } catch(e){}
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch(e){}
     }
     return JSON.parse(JSON.stringify(DEFAULT_SPOT_VAULT));
   }
 
   loadCountryHierarchy() {
-    const saved = localStorage.getItem('triptree_country_hierarchy');
+    let saved = localStorage.getItem('triptree_country_hierarchy');
+    if (!saved) {
+      try { saved = sessionStorage.getItem('triptree_country_hierarchy'); } catch(e){}
+    }
     if (saved) {
-      try { return JSON.parse(saved); } catch(e){}
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') return parsed;
+      } catch(e){}
     }
     return JSON.parse(JSON.stringify(DEFAULT_COUNTRY_HIERARCHY));
   }
 
   saveProjects() {
     if (this.isReadOnly) return;
-    localStorage.setItem('triptree_tl_v17_projects', JSON.stringify(this.projects));
-    localStorage.setItem('triptree_tl_v17_active_id', this.activeProjectId);
-    this.showToast('💾 行程已保存');
+    try {
+      const projectsJson = JSON.stringify(this.projects);
+      localStorage.setItem('triptree_tl_v17_projects', projectsJson);
+      localStorage.setItem('triptree_tl_v17_active_id', this.activeProjectId);
+      sessionStorage.setItem('triptree_tl_v17_projects', projectsJson);
+      sessionStorage.setItem('triptree_tl_v17_active_id', this.activeProjectId);
+      this.showToast('💾 行程已自動保存');
+    } catch(e) {
+      console.error('行程保存失敗：', e);
+    }
   }
 
   saveVaultData() {
-    localStorage.setItem('triptree_spot_vault_items_v17', JSON.stringify(this.vaultItems));
-    localStorage.setItem('triptree_country_hierarchy', JSON.stringify(this.countryHierarchy));
+    if (this.isReadOnly) return;
+    try {
+      const vaultJson = JSON.stringify(this.vaultItems);
+      const countryJson = JSON.stringify(this.countryHierarchy);
+      localStorage.setItem('triptree_spot_vault_items_v17', vaultJson);
+      localStorage.setItem('triptree_country_hierarchy', countryJson);
+      sessionStorage.setItem('triptree_spot_vault_items_v17', vaultJson);
+      sessionStorage.setItem('triptree_country_hierarchy', countryJson);
+    } catch(e) {
+      console.error('靈感庫保存失敗：', e);
+    }
   }
 
   getActiveProject() {
@@ -429,6 +470,14 @@ class VerticalTimelineAppV17 {
   }
 
   bindEvents() {
+    window.addEventListener('beforeunload', () => {
+      this.saveProjects();
+      this.saveVaultData();
+    });
+    window.addEventListener('pagehide', () => {
+      this.saveProjects();
+      this.saveVaultData();
+    });
     window.addEventListener('resize', () => {
       if (window.innerWidth <= 768 && this.zoomLevel !== 1.0) {
         this.setZoom(1.0);
