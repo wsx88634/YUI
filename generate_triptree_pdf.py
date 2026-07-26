@@ -11,7 +11,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-# 1. 註冊繁體中文微軟正黑體
+# 1. 註冊繁體中文微軟正黑體 (去除所有無法顯示的 Unicode Emoji emoji，純文字精緻排版)
 font_path = "C:/Windows/Fonts/msjh.ttc"
 font_bold_path = "C:/Windows/Fonts/msjhbd.ttc"
 
@@ -21,7 +21,7 @@ if os.path.exists(font_bold_path):
 else:
     pdfmetrics.registerFont(TTFont("MSJH-Bold", font_path, subfontIndex=0))
 
-output_pdf = r"g:\我的雲端硬碟\2026 Antigravity\小工具\TripTree_旅遊心智圖_操作使用指南.pdf"
+output_pdf = r"g:\我的雲端硬碟\2026 Antigravity\小工具\TripTree_操作使用手冊.pdf"
 
 # 自訂 NumberedCanvas 以顯示總頁碼與頁尾頁首
 class NumberedCanvas(canvas.Canvas):
@@ -163,7 +163,7 @@ def build_pdf():
 
     # --- 1. 頁首 Banner 表格 ---
     banner_data = [
-        [Paragraph("🌳 TripTree 旅遊階層樹狀心智圖", title_style)],
+        [Paragraph("TripTree 旅遊階層樹狀心智圖", title_style)],
         [Paragraph("輕鬆規劃行程、拖拉自如、靈感收納與好友同步分享的完全使用手冊", subtitle_style)]
     ]
     banner_table = Table(banner_data, colWidths=[523])
@@ -184,12 +184,12 @@ def build_pdf():
     
     features_data = [
         [
-            Paragraph("<b>🌟 特色優勢</b>", body_bold),
+            Paragraph("<b>特色優勢</b>", body_bold),
             Paragraph("<b>功能說明</b>", body_bold)
         ],
         [
             Paragraph("<b>無限層級附屬嵌套</b>", body_style),
-            Paragraph("任何行程卡片都可以再往下新增子項目（例如：Day 1 ➔ 下午時段 ➔ 淺草寺 ➔ 買人形燒手信），層層有條理，左側附帶湖水綠導引線。", body_style)
+            Paragraph("任何行程卡片都可以再往下新增子項目（例如：Day 1 ➔ 下午時段 ➔ 淺草寺 ➔ 買手信），層層有條理，左側附帶湖水綠導引線。", body_style)
         ],
         [
             Paragraph("<b>雙向自由拖拉 (Drag & Drop)</b>", body_style),
@@ -223,61 +223,66 @@ def build_pdf():
     story.append(Paragraph("二、 新手必學：四大核心操作攻略", h1_style))
     
     story.append(Paragraph("1. 如何新增與管理行程？", h2_style))
-    story.append(Paragraph("• <b>新增行程專案</b>：點擊頁面上方「<b>➕ 新增行程</b>」按鈕，可建立多個旅遊專案（如：東京5天4夜、福岡3天2夜），支援分頁快速切換。", bullet_style))
-    story.append(Paragraph("• <b>新增行程天數 (Day)</b>：在最上方主標題卡片右側，點擊「<b>➕ 新增行程天數 (Day)</b>」，快速建立 Day 1、Day 2 等基礎大框架。", bullet_style))
-    story.append(Paragraph("• <b>附屬新增子景點/活動</b>：任何一張卡片的右上角都有「<b>➕ 附屬新增</b>」按鈕，點擊後即可在該卡片底下建立時段、景點、美食或飯店，並自動往右縮排。", bullet_style))
+    story.append(Paragraph("• <b>新增行程專案</b>：點擊頁面上方「<b>新增行程</b>」按鈕，可建立多個旅遊專案（如：東京5天4夜、福岡3天2夜），支援分頁快速切換。", bullet_style))
+    story.append(Paragraph("• <b>新增行程天數 (Day)</b>：在最上方主標題卡片右側，點擊「<b>新增行程天數 (Day)</b>」，快速建立 Day 1、Day 2 等基礎大框架。", bullet_style))
+    story.append(Paragraph("• <b>附屬新增子景點/活動</b>：任何一張卡片的右上角都有「<b>附屬新增</b>」按鈕，點擊後即可在該卡片底下建立時段、景點、美食或飯店，並自動往右縮排。", bullet_style))
 
     story.append(Spacer(1, 6))
     story.append(Paragraph("2. 如何拖移或修改卡片的上層位置？ (兩種極速手法)", h2_style))
     story.append(Paragraph("• <b>方法 A：滑鼠直接拖拉 (Drag & Drop)</b><br/>以滑鼠按住任何一張卡片不放，拖曳移動到行程樹中另一張卡片的上方放開，系統會立即將該卡片附屬成為目標卡片的子項目！", bullet_style))
-    story.append(Paragraph("• <b>方法 B：編輯選單指定附屬父節點</b><br/>點擊卡片上的「<b>✏️ 編輯</b>」按鈕，在彈出視窗最上方可看見「<b>🔗 指定附屬在哪一個卡片/節點底下</b>」下拉選單。此選單會以縮排呈現完整結構，選擇想歸屬的對象後送出，立刻幫您把整串卡片搬移到新位置。", bullet_style))
+    story.append(Paragraph("• <b>方法 B：編輯選單指定附屬父節點</b><br/>點擊卡片上的「<b>編輯</b>」按鈕，在彈出視窗最上方可看見「<b>指定附屬在哪一個卡片/節點底下</b>」下拉選單。此選單會以縮排呈現完整結構，選擇想歸屬的對象後送出，立刻幫您把整串卡片搬移到新位置。", bullet_style))
 
     story.append(Spacer(1, 6))
-    story.append(Paragraph("3. 右側「📦 景點靈感庫」使用秘技", h2_style))
-    story.append(Paragraph("• <b>側邊抽屜 / 全螢幕展示</b>：點擊頂部列的「<b>📦 景點庫</b>」按鈕可打開側邊抽屜；點擊視窗上的「<b>🔲 全螢幕顯示 / 隱藏</b>」按鈕，可切換至卡片網格並排模式，瀏覽再多靈感也不擠。", bullet_style))
-    story.append(Paragraph("• <b>極速拖入行程表</b>：在靈感庫看到想要的景點時，可直接用滑鼠將卡片拉入左側樹狀行程中；也可以點擊卡片上的「<b>📌 加入</b>」將景點快速安插進指定的行程段落！", bullet_style))
+    story.append(Paragraph("3. 右側「景點靈感庫」使用秘技", h2_style))
+    story.append(Paragraph("• <b>側邊抽屜 / 全螢幕展示</b>：點擊頂部列的「<b>景點庫</b>」按鈕可打開側邊抽屜；點擊視窗上的「<b>全螢幕顯示 / 隱藏</b>」按鈕，可切換至卡片網格並排模式，瀏覽再多靈感也不擠。", bullet_style))
+    story.append(Paragraph("• <b>極速拖入行程表</b>：在靈感庫看到想要的景點時，可直接用滑鼠將卡片拉入左側樹狀行程中；也可以點擊卡片上的「<b>加入</b>」將景點快速安插進指定的行程段落！", bullet_style))
 
     story.append(Spacer(1, 6))
     story.append(Paragraph("4. 行程備份、分享給旅伴與匯入", h2_style))
-    story.append(Paragraph("• <b>🔗 產生旅伴唯讀網址</b>：點擊上方藍色的連結圖示，會產生一串專為好朋友打造的唯讀網址。朋友點開後只能瀏覽無法修改，不再擔心行程誤操作。", bullet_style))
-    story.append(Paragraph("• <b>📥 匯出 JSON 備份</b>：隨時點擊「匯出 JSON」將整個行程與靈感庫儲存到電腦中保存。", bullet_style))
-    story.append(Paragraph("• <b>📤 匯入 JSON 檔案</b>：同伴傳送行程備份檔給您時，點擊「匯入 JSON」即可快速載入完整旅遊計畫！", bullet_style))
+    story.append(Paragraph("• <b>產生旅伴唯讀網址</b>：點擊上方藍色的連結圖示按鈕，會產生一串專為好朋友打造的唯讀網址。朋友點開後只能瀏覽無法修改，不再擔心行程誤操作。", bullet_style))
+    story.append(Paragraph("• <b>匯出 JSON 備份</b>：隨時點擊「匯出 JSON」將整個行程與靈感庫儲存到電腦中保存。", bullet_style))
+    story.append(Paragraph("• <b>匯入 JSON 檔案</b>：同伴傳送行程備份檔給您時，點擊「匯入 JSON」即可快速載入完整旅遊計畫！", bullet_style))
 
     story.append(Spacer(1, 14))
 
     # --- 4. 介面操作速查表 ---
-    story.append(Paragraph("三、 常用按鈕與圖示速查表", h1_style))
+    story.append(Paragraph("三、 常用功能與對應說明表", h1_style))
     
     icons_data = [
         [
-            Paragraph("<b>圖示按鈕</b>", body_bold),
-            Paragraph("<b>名稱</b>", body_bold),
+            Paragraph("<b>功能區塊</b>", body_bold),
+            Paragraph("<b>按鈕 / 功能名稱</b>", body_bold),
             Paragraph("<b>操作對應說明</b>", body_bold)
         ],
         [
-            Paragraph("<b>📦 景點庫</b>", body_style),
-            Paragraph("開啟靈感庫", body_style),
-            Paragraph("滑出右側景點靈感抽屜，可管理所有口袋名單景點與餐廳。", body_style)
+            Paragraph("<b>頂部導覽列</b>", body_style),
+            Paragraph("景點庫 (Vault)", body_style),
+            Paragraph("滑出右側景點靈感抽屜，可分類管理所有口袋名單景點與餐廳。", body_style)
         ],
         [
-            Paragraph("<b>🔗</b>", body_style),
+            Paragraph("<b>頂部導覽列</b>", body_style),
             Paragraph("旅伴分享連結", body_style),
             Paragraph("複製「唯讀版」專屬連結傳給同行夥伴，打開直接用手機閱讀行程。", body_style)
         ],
         [
-            Paragraph("<b>🌳 / 📱</b>", body_style),
+            Paragraph("<b>工具切換列</b>", body_style),
             Paragraph("雙模式切換", body_style),
             Paragraph("切換「Markdown 階層樹狀視圖」與「手機列表視圖」，隨場景選擇最佳觀看模式。", body_style)
         ],
         [
-            Paragraph("<b>➕ 附屬新增</b>", body_style),
-            Paragraph("新增子節點", body_style),
+            Paragraph("<b>卡片操作</b>", body_style),
+            Paragraph("附屬新增 (子節點)", body_style),
             Paragraph("在目前選取的卡片下方建立新卡片，支援景點、美食、時段、交通與住宿分類。", body_style)
         ],
         [
-            Paragraph("<b>✏️ / 🗑️</b>", body_style),
+            Paragraph("<b>卡片操作</b>", body_style),
             Paragraph("編輯與刪除", body_style),
             Paragraph("開啟美化版無外框編輯彈窗（可調上層父卡片）；刪除卡片前會跳出二次提醒安全彈窗。", body_style)
+        ],
+        [
+            Paragraph("<b>檔案管理</b>", body_style),
+            Paragraph("匯出 / 匯入 JSON", body_style),
+            Paragraph("支援隨時將整個行程專案儲存成 JSON 檔案備份，或載入夥伴分享的行程檔。", body_style)
         ]
     ]
     t_icons = Table(icons_data, colWidths=[80, 110, 333])
@@ -303,7 +308,7 @@ def build_pdf():
             Paragraph("<b>Q1: 在國外手機打開看起來會不置中或排版跑掉嗎？</b>", body_bold)
         ],
         [
-            Paragraph("完全不會！TripTree 採用 100% Responsive 自適應區塊排版，在手機瀏覽器打開無論橫放豎放皆會自動對齊畫面中央，且無須左右拉動捲軸，亦可隨時切換到「📱 手機列表視圖」呈現純淨清爽的直列清單。", body_style)
+            Paragraph("完全不會！TripTree 採用 100% 自適應區塊排版，在手機瀏覽器打開無論橫放豎放皆會自動對齊畫面中央，且無須左右拉動捲軸，亦可隨時切換到「手機列表視圖」呈現純淨清爽的直列清單。", body_style)
         ],
         [
             Paragraph("<b>Q2: 如果我不小心按到刪除，整個天數底下的行程會不見嗎？</b>", body_bold)
@@ -336,7 +341,7 @@ def build_pdf():
 
     # --- 6. 頁腳溫馨提醒框 ---
     tip_data = [
-        [Paragraph("💡 <b>溫馨提醒旅伴：</b>在出發前，推薦大家可以將行程網址「加入手機瀏覽器書籤（我的最愛）」或「加到手機主畫面（HomeScreen）」，就像在使用專用 App 一樣快速流暢！出門前也可以點「匯出 JSON」保留一份檔案在手機裡隨時備份喔！", tip_style)]
+        [Paragraph("【溫馨提醒旅伴】：在出發前，推薦大家可以將行程網址「加入手機瀏覽器書籤（我的最愛）」或「加到手機主畫面（HomeScreen）」，就像在使用專用 App 一樣快速流暢！出門前也可以點「匯出 JSON」保留一份檔案在手機裡隨時備份喔！", tip_style)]
     ]
     t_tip = Table(tip_data, colWidths=[523])
     t_tip.setStyle(TableStyle([
