@@ -124,11 +124,18 @@ header {
   box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
 }
 
-.tab-close {
+.tab-edit, .tab-close {
   opacity: 0.7;
   font-size: 0.75rem;
   border-radius: 50%;
   padding: 2px 4px;
+  transition: all 0.2s ease;
+}
+
+.tab-edit:hover, .tab-close:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.15);
 }
 
 .btn-add-tab {
@@ -194,11 +201,124 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.85);
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.9);
   border-bottom: 1.5px solid #e2e8f0;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+}
+
+/* 🏷️ 主畫面類型標籤快速篩選列 */
+.main-category-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 260px;
+  overflow: hidden;
+}
+
+.main-category-filter .filter-label {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.main-category-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  touch-action: pan-x;
+  padding: 2px 0;
+}
+
+.main-category-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.main-cat-chip {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #475569;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-cat-chip:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.main-cat-chip.active {
+  background: #0f766e;
+  color: #ffffff;
+  border-color: #0f766e;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);
+}
+
+.main-cat-chip.active.chip-food {
+  background: #ea580c;
+  border-color: #ea580c;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+}
+
+.main-cat-chip.active.chip-hotel {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+}
+
+.main-cat-chip.active.chip-spot {
+  background: #16a34a;
+  border-color: #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.main-cat-chip.active.chip-shop {
+  background: #db2777;
+  border-color: #db2777;
+  box-shadow: 0 2px 6px rgba(219, 39, 119, 0.25);
+}
+
+.main-cat-chip.active.chip-transit {
+  background: #d97706;
+  border-color: #d97706;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+}
+
+.main-cat-chip.active.chip-action {
+  background: #9333ea;
+  border-color: #9333ea;
+  box-shadow: 0 2px 6px rgba(147, 51, 234, 0.25);
+}
+
+/* 篩選啟用時的節點高亮與淡化特效 */
+.md-tree-card.is-category-dimmed,
+.mobile-spot-item.is-category-dimmed {
+  opacity: 0.3 !important;
+  filter: grayscale(60%);
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+
+.md-tree-card.is-category-matched,
+.mobile-spot-item.is-category-matched {
+  opacity: 1 !important;
+  box-shadow: 0 0 0 2.5px #0f766e, var(--shadow-lg) !important;
+  transform: scale(1.02);
+  transition: all 0.3s ease;
 }
 
 .view-switcher {
@@ -434,6 +554,134 @@ main {
   white-space: nowrap;
 }
 
+/* 🏷️ 專屬固定類型標籤 (Dedicated Category Badges) */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* 🍜 美食 / 餐廳 (暖橙色系 - 濃郁溫暖) */
+.category-badge.cat-food {
+  background: #ffffff !important;
+  color: #9a3412 !important;
+  border: 1.5px solid #ea580c !important;
+}
+
+/* 🏨 住宿 / 飯店 (典雅靛藍色系 - 清爽放鬆) */
+.category-badge.cat-hotel {
+  background: #ffffff !important;
+  color: #312e81 !important;
+  border: 1.5px solid #4f46e5 !important;
+}
+
+/* 📍 景點 / 地標 (自然翡翠綠色系 - 鮮明活力) */
+.category-badge.cat-spot {
+  background: #ffffff !important;
+  color: #14532d !important;
+  border: 1.5px solid #16a34a !important;
+}
+
+/* 🛍️ 購物 / 超市 (時尚玫瑰粉色系 - 亮眼活潑) */
+.category-badge.cat-shop {
+  background: #ffffff !important;
+  color: #831843 !important;
+  border: 1.5px solid #db2777 !important;
+}
+
+/* 🚌 交通 / 車站 (亮眼檸檬琥珀色系 - 清晰醒目) */
+.category-badge.cat-transit {
+  background: #ffffff !important;
+  color: #78350f !important;
+  border: 1.5px solid #d97706 !important;
+}
+
+/* ⚡ 行程動作 / 提醒 (神秘紫羅蘭色系 - 質感優雅) */
+.category-badge.cat-action {
+  background: #ffffff !important;
+  color: #581c87 !important;
+  border: 1.5px solid #9333ea !important;
+}
+
+/* 📅 天數 / 日期 (沉穩石板灰色系) */
+.category-badge.cat-day {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1.5px solid #94a3b8 !important;
+}
+
+/* 🕒 時段膠囊 (清爽湖水藍色系) */
+.category-badge.cat-period {
+  background: #ffffff !important;
+  color: #0f766e !important;
+  border: 1.5px solid #0d9488 !important;
+}
+
+/* 📍 地區標籤 */
+.region-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #94a3b8;
+  white-space: nowrap;
+}
+
+/* 🎴 專屬類型卡片底色與邊框同步 (顯色度加深，更易辨識) */
+.vault-item-card.card-cat-food,
+.md-tree-card.card-cat-food,
+.mobile-spot-item.card-cat-food {
+  background: #ffedd5 !important;
+  border: 2px solid #fdba74 !important;
+}
+
+.vault-item-card.card-cat-hotel,
+.md-tree-card.card-cat-hotel,
+.mobile-spot-item.card-cat-hotel {
+  background: #e0e7ff !important;
+  border: 2px solid #a5b4fc !important;
+}
+
+.vault-item-card.card-cat-spot,
+.md-tree-card.card-cat-spot,
+.mobile-spot-item.card-cat-spot {
+  background: #dcfce7 !important;
+  border: 2px solid #86efac !important;
+}
+
+.vault-item-card.card-cat-shop,
+.md-tree-card.card-cat-shop,
+.mobile-spot-item.card-cat-shop {
+  background: #fce7f3 !important;
+  border: 2px solid #f472b6 !important;
+}
+
+.vault-item-card.card-cat-transit,
+.md-tree-card.card-cat-transit,
+.mobile-spot-item.card-cat-transit {
+  background: #fef3c7 !important;
+  border: 2px solid #fcd34d !important;
+}
+
+.vault-item-card.card-cat-action,
+.md-tree-card.card-cat-action,
+.mobile-spot-item.card-cat-action {
+  background: #f3e8ff !important;
+  border: 2px solid #d8b4fe !important;
+}
+
 .node-meta {
   display: flex;
   flex-direction: column;
@@ -562,6 +810,39 @@ main {
   align-items: center;
   flex-wrap: wrap;
   margin-top: 4px;
+}
+
+.recent-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+}
+
+.recent-color-swatch {
+  width: 100%;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.recent-color-swatch:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+.recent-color-swatch.active {
+  border-color: #0d9488 !important;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.3) !important;
+  transform: scale(1.08);
 }
 
 /* Mobile Itinerary Stream */
@@ -950,6 +1231,89 @@ main {
   flex-shrink: 0;
 }
 
+/* 🏷️ 靈感庫類型標籤篩選列 */
+.category-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  touch-action: pan-x;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.category-chip {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #475569;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.category-chip:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.category-chip.active {
+  background: #c2410c;
+  color: #ffffff;
+  border-color: #c2410c;
+  box-shadow: 0 2px 6px rgba(194, 65, 12, 0.25);
+}
+
+.category-chip.active.chip-all {
+  background: #0f766e;
+  border-color: #0f766e;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);
+}
+
+.category-chip.active.chip-food {
+  background: #ea580c;
+  border-color: #ea580c;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+}
+
+.category-chip.active.chip-hotel {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+}
+
+.category-chip.active.chip-spot {
+  background: #16a34a;
+  border-color: #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.category-chip.active.chip-shop {
+  background: #db2777;
+  border-color: #db2777;
+  box-shadow: 0 2px 6px rgba(219, 39, 119, 0.25);
+}
+
+.category-chip.active.chip-transit {
+  background: #d97706;
+  border-color: #d97706;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+}
+
+.category-chip.active.chip-action {
+  background: #9333ea;
+  border-color: #9333ea;
+  box-shadow: 0 2px 6px rgba(147, 51, 234, 0.25);
+}
+
 .vault-card-list {
   display: flex;
   flex-direction: column;
@@ -1260,6 +1624,14 @@ main {
     margin: 0 auto;
     box-sizing: border-box;
   }
+  .main-category-filter {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .main-category-chips {
+    width: 100%;
+    padding-bottom: 4px;
+  }
   .view-switcher {
     width: 100%;
     display: flex;
@@ -1524,6 +1896,80 @@ main {
   border: 2px dashed #10b981 !important;
   background: #ecfdf5 !important;
   box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+}
+
+.md-tree-card.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+}
+
+.md-tree-card.drop-target-before {
+  position: relative;
+  border-top: 3px solid #10b981 !important;
+  box-shadow: 0 -4px 14px rgba(16, 185, 129, 0.45) !important;
+}
+
+.md-tree-card.drop-target-before::before {
+  content: '⬇️ 插入至此位置 (上方)';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 24px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.md-tree-card.drop-target-after {
+  position: relative;
+  border-bottom: 3px solid #10b981 !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+}
+
+.md-tree-card.drop-target-after::after {
+  content: '⬆️ 插入至此位置 (下方)';
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 24px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.md-tree-card.drop-target-inside {
+  border: 2.5px dashed #0d9488 !important;
+  background-color: #f0fdf4 !important;
+  box-shadow: 0 0 0 5px rgba(13, 148, 136, 0.2) !important;
+  transform: scale(1.01);
+}
+
+.btn-move-up:hover, .btn-move-down:hover {
+  background: #e0f2fe !important;
+  color: #0284c7 !important;
+  border-color: #38bdf8 !important;
 }
 
 .md-tree-card:hover {

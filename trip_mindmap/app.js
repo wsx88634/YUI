@@ -199,85 +199,312 @@ const DEFAULT_COUNTRY_HIERARCHY = {
 
 const DEFAULT_SPOT_VAULT = [
   {
-    id: "vault_fk_1",
-    country: "日本",
-    region: "福岡",
-    title: "🛒 Aeon Shoppers 福岡店 (天神商圈超市)",
-    category: "shop",
-    cost: "09:00~22:00",
-    bgColor: "#bbf7d0",
-    url: "https://www.instagram.com/reel/DanBwFgqNkE/",
-    mapsUrl: "https://maps.google.com/?q=Aeon+Shoppers+福岡店",
-    note: "複合式購物中心！有 DAISO 大創、3COINS、無印良品、ABC MART。附近還有 24h 唐吉訶德天神本店，荷包補給站！"
+    "id": "v_fukuoka_1_66fb328d",
+    "country": "日本",
+    "region": "天神",
+    "title": "RINGO 天神地下街店 (蘋果派)",
+    "category": "food",
+    "cost": "蘋果派 450円",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/reel/Da1vwEvpD_M/",
+    "mapsUrl": "https://maps.google.com/?q=RINGO+天神地下街店",
+    "note": "📍福岡県福岡市中央区天神2丁目天神地下街西4番街\n⏰09:00–21:00\n🚇西鐵福岡(天神)站步行3分鐘\n✨派皮酥脆，現場開放式廚房現做奶油香。"
   },
   {
-    id: "vault_fk_2",
-    country: "日本",
-    region: "福岡",
-    title: "⛩️ 博多總鎮守 櫛田神社",
-    category: "spot",
-    cost: "免費參拜",
-    bgColor: "#e0e7ff",
-    url: "https://www.crossroadfukuoka.jp/tw/spot/12510",
-    mapsUrl: "https://maps.google.com/?q=櫛田神社",
-    note: "千年御神木銀杏樹，展示 13 公尺高超震撼「博多祇園山笠神轎」！"
+    "id": "v_fukuoka_2_ee34b1dc",
+    "country": "日本",
+    "region": "六本松",
+    "title": "六本松 爐端燒銀鮭朝食",
+    "category": "food",
+    "cost": "朝食",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DZZAmi3zagW/",
+    "mapsUrl": "https://maps.google.com/?q=福岡+六本松+爐端燒",
+    "note": "📍福岡六本松\n✨全預約制。薄鹽炭香厚切銀鮭、鰻魚釜鍋飯、高湯泡飯與滿滿熱情互動。"
   },
   {
-    id: "vault_osaka_1",
-    country: "日本",
-    region: "大阪",
-    title: "🏃‍♂️ 心齋橋 ➔ 道頓堀 固力果跑跑人看板",
-    category: "spot",
-    cost: "24 小時開放",
-    bgColor: "#fef3c7",
-    mapsUrl: "https://maps.google.com/?q=道頓堀固力果看板",
-    note: "大阪經典必拍地標！旁邊整條心齋橋筋商店街藥妝店與美食超豐富。"
+    "id": "v_fukuoka_3_7d6a3e7c",
+    "country": "日本",
+    "region": "福岡機場",
+    "title": "福岡機場免稅店必買伴手禮",
+    "category": "shop",
+    "cost": "依商品而定",
+    "bgColor": "#a29bfe",
+    "url": "https://www.instagram.com/p/DZOoRRYB3ru/",
+    "mapsUrl": "https://maps.google.com/?q=福岡機場免稅店",
+    "note": "📍福岡機場國際線免稅店\n✨Butter Butler海鹽奶油費南雪、Amanberry草莓貓舌餅、Press Butter Sand、茅乃舍高湯包一次購齊。"
   },
   {
-    id: "vault_osaka_2",
-    country: "日本",
-    region: "大阪",
-    title: "🐙 本家大たこ 道頓堀章魚燒",
-    category: "food",
-    cost: "¥600 / 6顆",
-    bgColor: "#fef08a",
-    mapsUrl: "https://maps.google.com/?q=本家大たこ",
-    note: "大塊章魚肉加上外酥內軟的章魚燒口感，老字號必吃！"
+    "id": "v_fukuoka_4_71f9d373",
+    "country": "日本",
+    "region": "福岡",
+    "title": "福岡10天自由行行程與機票攻略",
+    "category": "spot",
+    "cost": "機票約$9000",
+    "bgColor": "#45b7d1",
+    "url": "https://www.instagram.com/p/DX6y-06P-m2/",
+    "mapsUrl": "https://maps.google.com/?q=福岡",
+    "note": "✨10天九千廉航機票與自由行高CP值景點規劃攻略。"
   },
   {
-    id: "vault_kyoto_1",
-    country: "日本",
-    region: "京都",
-    title: "⛩️ 伏見稻荷大社（千本鳥居）",
-    category: "spot",
-    cost: "免費參拜",
-    bgColor: "#ffedd5",
-    mapsUrl: "https://maps.google.com/?q=伏見稻荷大社",
-    note: "延綿不絕的朱紅色千本鳥居，狐狸神雕像守護，清晨去拍照最唯美。"
+    "id": "v_fukuoka_5_326d26d2",
+    "country": "日本",
+    "region": "博多",
+    "title": "島本明太子 (明太子麵包)",
+    "category": "food",
+    "cost": "伴手禮",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DYwtbKgJ5yI/",
+    "mapsUrl": "https://maps.google.com/?q=島本明太子+福岡",
+    "note": "📍福岡\n✨福岡必買名產島本明太子，特色鮮美明太子與明太子法式麵包。"
   },
   {
-    id: "vault_kyoto_2",
-    country: "日本",
-    region: "京都",
-    title: "🏯 清水寺 ➔ 三年坂 / 二年坂 漫步",
-    category: "spot",
-    cost: "拜觀料 ¥400",
-    bgColor: "#bbf7d0",
-    mapsUrl: "https://maps.google.com/?q=清水寺",
-    note: "懸空清水舞台俯瞰京都市景，穿和服漫步傳統石板路古街。"
+    "id": "v_fukuoka_6_22023b1a",
+    "country": "日本",
+    "region": "博多",
+    "title": "KOKUNEKO 博多デイトス店 (黑貓甜點)",
+    "category": "food",
+    "cost": "1,080円~3,240円",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DXl6j3Tk3kV/",
+    "mapsUrl": "https://maps.google.com/?q=KOKUNEKO+博多デイトス店",
+    "note": "📍博多駅中央街1-1 博多デイトス みやげもん市場\n⏰08:00–21:00\n✨博多站直結黑貓主題甜點，黑糖奶油貓舌餅與費南雪。"
   },
   {
-    id: "vault_nara_1",
-    country: "日本",
-    region: "奈良",
-    title: "🦌 奈良公園（餵小鹿 🍪 仙貝）",
-    category: "spot",
-    cost: "鹿仙貝 ¥200",
-    bgColor: "#dcfce7",
-    mapsUrl: "https://maps.google.com/?q=奈良公園",
-    note: "買鹿仙貝和小鹿互動鞠躬！注意小鹿搶食時要放慢速度喔。"
+    "id": "v_fukuoka_7_514f2670",
+    "country": "日本",
+    "region": "博多",
+    "title": "博多らぁめん いちむじん 呉服町店",
+    "category": "food",
+    "cost": "拉麵 900円~1240円",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DaZ949MS6KE/",
+    "mapsUrl": "https://maps.google.com/?q=いちむじん+呉服町",
+    "note": "📍福岡県福岡市博多区上呉服町11-211\n⏰11:00〜15:00, 17:00〜20:50\n✨明太子、高菜、漬物無限量免費吃到飽！必點明太豚骨叉燒拉麵。"
+  },
+  {
+    "id": "v_fukuoka_8_e61d046c",
+    "country": "日本",
+    "region": "赤坂",
+    "title": "Cafe Bimi 珈琲美美",
+    "category": "food",
+    "cost": "咖啡甜點",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/Da-iUcdBMpt/",
+    "mapsUrl": "https://maps.google.com/?q=Cafe+Bimi+珈琲美美",
+    "note": "📍福岡県福岡市中央区赤坂２丁目６−27\n✨1977年創業老字號法蘭絨手沖咖啡，香濃醇厚與果乾磅蛋糕。"
+  },
+  {
+    "id": "v_fukuoka_9_458cba84",
+    "country": "日本",
+    "region": "宗像",
+    "title": "アミューズメントパーク万代 宗像店",
+    "category": "spot",
+    "cost": "10円起",
+    "bgColor": "#4ecdc4",
+    "url": "https://www.instagram.com/p/DaxB1xiulec/",
+    "mapsUrl": "https://maps.google.com/?q=アミューズメントパーク万代+宗像店",
+    "note": "📍福岡県宗像市徳重2丁目4-1\n⏰10:00〜23:00\n✨280台超大型夾娃娃遊樂中心，包含10圓娃娃機與台灣彈珠台。"
+  },
+  {
+    "id": "v_fukuoka_10_d04fe57d",
+    "country": "日本",
+    "region": "博多",
+    "title": "福岡熱門預約制爐端燒",
+    "category": "food",
+    "cost": "晚餐",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DakjBxjSNmN/",
+    "mapsUrl": "https://maps.google.com/?q=福岡+爐端燒",
+    "note": "📍福岡博多\n✨超人氣爆紅炭火爐端燒料理。"
+  },
+  {
+    "id": "v_fukuoka_11_c43ee18c",
+    "country": "日本",
+    "region": "博多",
+    "title": "藤う那 鰻魚飯 (Fujiuna)",
+    "category": "food",
+    "cost": "鰻魚飯",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DZSRrm9hhv6/",
+    "mapsUrl": "https://maps.google.com/?q=藤う那+鰻魚飯",
+    "note": "📍博多区博多駅東2-2-10\n✨Tabelog高分博多站前鰻魚老店，口感無敵鬆軟、特濃醬汁白飯。"
+  },
+  {
+    "id": "v_fukuoka_12_5b1e3334",
+    "country": "日本",
+    "region": "久留米",
+    "title": "252マルダイラーメン (濃郁海蝦冷麵)",
+    "category": "food",
+    "cost": "880円起",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DaNQzR_yUUO/",
+    "mapsUrl": "https://maps.google.com/?q=252マルダイラーメン+久留米",
+    "note": "📍久留米市通町107-7\n⏰11:00〜15:00, 18:00〜23:00 (木休)\n✨鮮魚批發直送，濃厚鮮蝦高湯冷麵、蝦醬炒飯與醃生蝦。"
+  },
+  {
+    "id": "v_fukuoka_13_9a725e04",
+    "country": "日本",
+    "region": "天神",
+    "title": "丸福バーム (焦糖布蕾年輪蛋糕)",
+    "category": "food",
+    "cost": "540円",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DWlWrb_krq1/",
+    "mapsUrl": "https://maps.google.com/?q=大丸福岡天神店",
+    "note": "📍大丸福岡天神店 本館8階\n⏰10:00〜19:00\n✨日售2400個現烤焦糖脆皮、濃郁卡士達年輪蛋糕。"
+  },
+  {
+    "id": "v_fukuoka_14_b1fe2531",
+    "country": "日本",
+    "region": "博多",
+    "title": "櫛田神社 (梳子御守)",
+    "category": "spot",
+    "cost": "參拜/御守",
+    "bgColor": "#45b7d1",
+    "url": "https://www.instagram.com/p/DYmMhUbxSUy/",
+    "mapsUrl": "https://maps.google.com/?q=櫛田神社+福岡",
+    "note": "📍福岡 櫛田神社\n✨博多總鎮守，必買限定木刻「梳子御守」（保佑消除煩惱與美麗），建議早上去衝。"
+  },
+  {
+    "id": "v_fukuoka_15_79996f1c",
+    "country": "日本",
+    "region": "西中洲",
+    "title": "Pain Stock 西中洲 (明太子法國麵包)",
+    "category": "food",
+    "cost": "麵包",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=Pain+Stock+西中洲",
+    "note": "📍福岡市中央区西中洲6-17\n✨福岡麵包界頂級代表，自養酵母與必買爆款明太子法國麵包。"
+  },
+  {
+    "id": "v_fukuoka_16_e6e14417",
+    "country": "日本",
+    "region": "博多",
+    "title": "il FORNO del Mignon 博多站小可頌",
+    "category": "food",
+    "cost": "可頌",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=il+FORNO+del+Mignon+博多",
+    "note": "📍博多車站站內\n✨超人氣排隊名店，現烤原味、巧克力、地瓜迷你小可頌。"
+  },
+  {
+    "id": "v_fukuoka_17_bbe21c25",
+    "country": "日本",
+    "region": "南區",
+    "title": "bouquca bakery (極厚法式吐司)",
+    "category": "food",
+    "cost": "麵包",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=bouquca+bakery+福岡",
+    "note": "📍福岡県福岡市南区塩原1-19-31\n✨超厚法式吐司，外脆內軟香濃美味。"
+  },
+  {
+    "id": "v_fukuoka_18_af84c7dc",
+    "country": "日本",
+    "region": "藥院",
+    "title": "THE ROOTS neighborhood bakery",
+    "category": "food",
+    "cost": "麵包",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=THE+ROOTS+neighborhood+bakery",
+    "note": "📍福岡市中央区薬院4-18-7\n✨隱藏在藥院大人系質感麵包店，適合搭配葡萄酒品嚐。"
+  },
+  {
+    "id": "v_fukuoka_19_02b5603c",
+    "country": "日本",
+    "region": "六本松",
+    "title": "AMAM DACOTAN 六本松本店",
+    "category": "food",
+    "cost": "麵包",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=AMAM+DACOTAN+六本松",
+    "note": "📍福岡県福岡市中央区六本松3丁目7-6\n✨童話童趣風造型麵包店，生厚泡芙與各類絕美餡料麵包。"
+  },
+  {
+    "id": "v_fukuoka_20_ab1104d4",
+    "country": "日本",
+    "region": "天神",
+    "title": "The Full Full Hakata (天神明太子麵包)",
+    "category": "food",
+    "cost": "麵包",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DY9ujKQKCg7/",
+    "mapsUrl": "https://maps.google.com/?q=The+Full+Full+Hakata",
+    "note": "📍福岡県福岡市中央区天神3丁目3-5\n✨天神排隊名店，每日限量的現烤明太子法國麵包。"
+  },
+  {
+    "id": "v_fukuoka_21_f85d0018",
+    "country": "日本",
+    "region": "由布院",
+    "title": "由布院湯之坪街道 (動漫IP天堂一日遊)",
+    "category": "spot",
+    "cost": "觀光一日遊",
+    "bgColor": "#4ecdc4",
+    "url": "https://www.instagram.com/p/DXl8HJrCQKG/",
+    "mapsUrl": "https://maps.google.com/?q=由布院湯之坪街道",
+    "note": "📍大分縣由布市湯布院町\n✨近郊療癒小鎮，集合龍貓吉卜力、史努比、米菲兔、哈利波特專賣店。"
+  },
+  {
+    "id": "v_fukuoka_22_fe0d0f37",
+    "country": "日本",
+    "region": "福岡",
+    "title": "福岡在地寶藏美食清單 (燒肉/拉麵/海鮮)",
+    "category": "food",
+    "cost": "美食行程",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DWlWl-vkv3Y/",
+    "mapsUrl": "https://maps.google.com/?q=福岡美食",
+    "note": "📍福岡市區\n✨在地人推薦不踩雷 7 家隱藏版拉麵、燒肉與居酒屋。"
+  },
+  {
+    "id": "v_fukuoka_23_19869db1",
+    "country": "日本",
+    "region": "博多",
+    "title": "Yagura 矢倉 (80歲爺爺豬排丼)",
+    "category": "food",
+    "cost": "900円",
+    "bgColor": "#ff6b6b",
+    "url": "https://www.instagram.com/p/DXQp1Kaxtzb/",
+    "mapsUrl": "https://maps.google.com/?q=福岡市博多区博多駅前2丁目9-28+Yagura",
+    "note": "📍福岡県福岡市博多区博多駅前2丁目9-28\n⏰11:30–18:30\n✨隱藏大樓內的高CP值古早味豬排丼，附茶與烏龍麵。"
+  },
+  {
+    "id": "v_fukuoka_24_7ff3a649",
+    "country": "日本",
+    "region": "天神",
+    "title": "Donki 福岡天神本店 巨無霸醬油糰子",
+    "category": "food",
+    "cost": "小吃",
+    "bgColor": "#fe9000",
+    "url": "https://www.instagram.com/p/DZSYo8JyLL4/",
+    "mapsUrl": "https://maps.google.com/?q=唐吉訶德+福岡天神本店",
   }
 ];
+
+// 🏷️ 全域專屬固定類型標籤與卡片底色色彩設定字典 (清晰濃郁版)
+const CATEGORY_CONFIG = {
+  all: { id: 'all', label: '全部類型', icon: '🌐', className: 'chip-all cat-all', bg: '#f1f5f9', cardBg: '#ffffff', color: '#334155', border: '#cbd5e1' },
+  food: { id: 'food', label: '美食', icon: '🍜', className: 'chip-food cat-food', bg: '#ffffff', cardBg: '#ffedd5', color: '#9a3412', border: '#fdba74' },
+  hotel: { id: 'hotel', label: '住宿', icon: '🏨', className: 'chip-hotel cat-hotel', bg: '#ffffff', cardBg: '#e0e7ff', color: '#312e81', border: '#a5b4fc' },
+  spot: { id: 'spot', label: '景點', icon: '📍', className: 'chip-spot cat-spot', bg: '#ffffff', cardBg: '#dcfce7', color: '#14532d', border: '#86efac' },
+  shop: { id: 'shop', label: '購物', icon: '🛍️', className: 'chip-shop cat-shop', bg: '#ffffff', cardBg: '#fce7f3', color: '#831843', border: '#f472b6' },
+  transit: { id: 'transit', label: '交通', icon: '🚌', className: 'chip-transit cat-transit', bg: '#ffffff', cardBg: '#fef3c7', color: '#78350f', border: '#fcd34d' },
+  action: { id: 'action', label: '動作', icon: '⚡', className: 'chip-action cat-action', bg: '#ffffff', cardBg: '#f3e8ff', color: '#581c87', border: '#d8b4fe' },
+  day: { id: 'day', label: '天數', icon: '📅', className: 'chip-day cat-day', bg: '#ffffff', cardBg: '#ffffff', color: '#334155', border: '#cbd5e1' },
+  period: { id: 'period', label: '時段', icon: '🕒', className: 'chip-period cat-period', bg: '#ffffff', cardBg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' }
+};
+
+function getCategoryMeta(cat) {
+  if (!cat) return CATEGORY_CONFIG['spot'];
+  const key = cat.toLowerCase().trim();
+  return CATEGORY_CONFIG[key] || CATEGORY_CONFIG['spot'];
+}
 
 class VerticalTimelineAppV17 {
   constructor() {
@@ -286,9 +513,12 @@ class VerticalTimelineAppV17 {
     this.activeProjectId = this.loadActiveProjectId();
     this.vaultItems = this.loadVaultItems();
     this.countryHierarchy = this.loadCountryHierarchy();
+    this.recentColors = this.loadRecentColors();
     
     this.selectedCountry = "所有";
     this.selectedRegion = "所有";
+    this.selectedCategory = "all";
+    this.selectedMainCategory = "all";
     this.currentView = 'mindmap';
     this.zoomLevel = 1.0;
     this.draggedVaultItem = null;
@@ -342,7 +572,9 @@ class VerticalTimelineAppV17 {
     this.countryTabsRow = document.getElementById('countryTabsRow');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
     this.regionFilterLabel = document.getElementById('regionFilterLabel');
+    this.vaultCategoryTabs = document.getElementById('vaultCategoryTabs');
     this.vaultCardList = document.getElementById('vaultCardList');
+    this.mainCategoryChips = document.getElementById('mainCategoryChips');
 
     this.vaultQuickInput = document.getElementById('vaultQuickInput');
     this.vaultTargetRegion = document.getElementById('vaultTargetRegion');
@@ -360,6 +592,13 @@ class VerticalTimelineAppV17 {
     this.btnCloseNewTripModal = document.getElementById('btnCloseNewTripModal');
     this.btnCancelNewTrip = document.getElementById('btnCancelNewTrip');
     this.newTripStartDateInput = document.getElementById('newTripStartDate');
+
+    this.renameTripModal = document.getElementById('renameTripModal');
+    this.renameTripForm = document.getElementById('renameTripForm');
+    this.renameTripTitleInput = document.getElementById('renameTripTitleInput');
+    this.renameTripIdInput = document.getElementById('renameTripId');
+    this.btnCloseRenameTripModal = document.getElementById('btnCloseRenameTripModal');
+    this.btnCancelRenameTrip = document.getElementById('btnCancelRenameTrip');
 
     this.placementModal = document.getElementById('placementModal');
     this.btnClosePlacementModal = document.getElementById('btnClosePlacementModal');
@@ -427,9 +666,27 @@ class VerticalTimelineAppV17 {
         if (Array.isArray(parsed)) items = parsed;
       } catch(e){}
     }
-    // 自動融入最新分析之 IG 景點卡片 (確保既有儲存也包含新分析資料)
+    // 清洗過濾完全無文字與無標題之損毀卡片
+    items = items.filter(it => {
+      if (!it) return false;
+      const hasTitle = it.title && it.title.trim().length > 0;
+      const hasNote = it.note && it.note.trim().length > 0;
+      const hasUrl = it.url && it.url.trim().length > 0;
+      if (!hasTitle && !hasNote && !hasUrl) return false;
+      if (!hasTitle && hasNote) {
+        it.title = it.note.trim().split('\n')[0].substring(0, 25);
+      }
+      return true;
+    });
+
+    // 自動融入並修復最新分析之 IG 景點卡片 (確保既有儲存中空的貼文卡片能自動被中文詳細內容覆蓋)
     DEFAULT_SPOT_VAULT.forEach(defaultItem => {
-      if (!items.some(it => it.id === defaultItem.id)) {
+      const existIdx = items.findIndex(it => it.id === defaultItem.id || (it.url && defaultItem.url && it.url.split('?')[0] === defaultItem.url.split('?')[0]));
+      if (existIdx >= 0) {
+        if (!items[existIdx].title || !items[existIdx].title.trim() || items[existIdx].title.startsWith('📍 貼文') || items[existIdx].title.startsWith('貼文')) {
+          items[existIdx] = defaultItem;
+        }
+      } else {
         items.unshift(defaultItem);
       }
     });
@@ -449,6 +706,73 @@ class VerticalTimelineAppV17 {
       } catch(e){}
     }
     return JSON.parse(JSON.stringify(DEFAULT_COUNTRY_HIERARCHY));
+  }
+
+  loadRecentColors() {
+    let saved = localStorage.getItem('triptree_recent_colors');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed.slice(0, 6);
+      } catch(e){}
+    }
+    return ['#ffffff', '#fef3c7', '#bbf7d0', '#dcfce7', '#e0e7ff', '#fecdd3'];
+  }
+
+  saveRecentColors() {
+    try {
+      localStorage.setItem('triptree_recent_colors', JSON.stringify(this.recentColors));
+    } catch(e){}
+  }
+
+  addRecentColor(color) {
+    if (!color || typeof color !== 'string') return;
+    color = color.trim().toLowerCase();
+    this.recentColors = this.recentColors.filter(c => c.toLowerCase() !== color);
+    this.recentColors.unshift(color);
+    if (this.recentColors.length > 6) {
+      this.recentColors = this.recentColors.slice(0, 6);
+    }
+    this.saveRecentColors();
+    this.renderRecentColors();
+  }
+
+  renderRecentColors() {
+    const grid = document.getElementById('recentColorsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const currentColor = (this.nodeColorInput ? this.nodeColorInput.value : '').toLowerCase();
+
+    for (let i = 0; i < 6; i++) {
+      const color = this.recentColors[i] || '#ffffff';
+      const swatch = document.createElement('div');
+      swatch.className = 'recent-color-swatch' + (color.toLowerCase() === currentColor ? ' active' : '');
+      swatch.setAttribute('data-color', color);
+      swatch.style.backgroundColor = color;
+      if (color.toLowerCase() === '#ffffff') swatch.style.borderColor = '#cbd5e1';
+      swatch.title = `使用此歷史顏色: ${color}`;
+      grid.appendChild(swatch);
+    }
+  }
+
+  updateActiveColorSwatches(selectedColor) {
+    if (!selectedColor) return;
+    const colorLower = selectedColor.toLowerCase();
+
+    if (this.colorPickerGrid) {
+      this.colorPickerGrid.querySelectorAll('.color-swatch').forEach(s => {
+        const sc = (s.getAttribute('data-color') || '').toLowerCase();
+        s.classList.toggle('active', sc === colorLower);
+      });
+    }
+
+    const recentGrid = document.getElementById('recentColorsGrid');
+    if (recentGrid) {
+      recentGrid.querySelectorAll('.recent-color-swatch').forEach(s => {
+        const sc = (s.getAttribute('data-color') || '').toLowerCase();
+        s.classList.toggle('active', sc === colorLower);
+      });
+    }
   }
 
   saveProjects() {
@@ -667,6 +991,34 @@ class VerticalTimelineAppV17 {
     this.btnCloseNewTripModal.addEventListener('click', () => this.newTripModal.classList.remove('active'));
     this.btnCancelNewTrip.addEventListener('click', () => this.newTripModal.classList.remove('active'));
 
+    if (this.btnCloseRenameTripModal) {
+      this.btnCloseRenameTripModal.addEventListener('click', () => this.renameTripModal.classList.remove('active'));
+    }
+    if (this.btnCancelRenameTrip) {
+      this.btnCancelRenameTrip.addEventListener('click', () => this.renameTripModal.classList.remove('active'));
+    }
+    if (this.renameTripForm) {
+      this.renameTripForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = this.renameTripIdInput.value;
+        const newTitle = this.renameTripTitleInput.value.trim();
+        if (!newTitle) return;
+
+        const proj = this.projects.find(p => p.id === id);
+        if (proj) {
+          proj.title = newTitle;
+          if (proj.rootNode) proj.rootNode.title = newTitle;
+          if (this.tripTitleInput && proj.id === this.activeProjectId) {
+            this.tripTitleInput.value = newTitle;
+          }
+          this.saveProjects();
+          this.render();
+          this.showToast(`✨ 行程名稱已修改為「${newTitle}」！`);
+        }
+        this.renameTripModal.classList.remove('active');
+      });
+    }
+
     this.newTripForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('newTripTitle').value.trim();
@@ -755,16 +1107,35 @@ class VerticalTimelineAppV17 {
     this.colorPickerGrid.addEventListener('click', (e) => {
       const swatch = e.target.closest('.color-swatch');
       if (swatch) {
-        this.colorPickerGrid.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
         const color = swatch.getAttribute('data-color');
         this.nodeColorInput.value = color;
         this.nodeColorCustom.value = color;
+        this.updateActiveColorSwatches(color);
       }
     });
 
+    const recentGrid = document.getElementById('recentColorsGrid');
+    if (recentGrid) {
+      recentGrid.addEventListener('click', (e) => {
+        const swatch = e.target.closest('.recent-color-swatch');
+        if (swatch) {
+          const color = swatch.getAttribute('data-color');
+          this.nodeColorInput.value = color;
+          this.nodeColorCustom.value = color;
+          this.updateActiveColorSwatches(color);
+        }
+      });
+    }
+
     this.nodeColorCustom.addEventListener('input', (e) => {
-      this.nodeColorInput.value = e.target.value;
+      const color = e.target.value;
+      this.nodeColorInput.value = color;
+      this.updateActiveColorSwatches(color);
+    });
+
+    this.nodeColorCustom.addEventListener('change', (e) => {
+      const color = e.target.value;
+      this.addRecentColor(color);
     });
 
     this.viewport.addEventListener('mousedown', (e) => {
@@ -810,6 +1181,17 @@ class VerticalTimelineAppV17 {
         this.render();
         this.showToast('✨ 已重置載入最新行程範例！');
       });
+    });
+
+    document.getElementById('nodeCategory').addEventListener('change', (e) => {
+      const cat = e.target.value;
+      this.hotelFieldsBox.style.display = (cat === 'hotel') ? 'flex' : 'none';
+      const meta = getCategoryMeta(cat);
+      if (meta && meta.cardBg) {
+        this.nodeColorInput.value = meta.cardBg;
+        this.nodeColorCustom.value = meta.cardBg;
+        this.updateActiveColorSwatches(meta.cardBg);
+      }
     });
 
     document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
@@ -887,6 +1269,23 @@ class VerticalTimelineAppV17 {
       this.vaultRegionTabs.appendChild(chip);
     });
 
+    // 🏷️ 渲染靈感庫類型標籤選單
+    if (this.vaultCategoryTabs) {
+      this.vaultCategoryTabs.innerHTML = '';
+      const filterCategories = ['all', 'food', 'hotel', 'spot', 'shop', 'transit', 'action'];
+      filterCategories.forEach(catKey => {
+        const meta = getCategoryMeta(catKey);
+        const chip = document.createElement('button');
+        chip.className = `category-chip ${meta.className} ${this.selectedCategory === catKey ? 'active' : ''}`;
+        chip.innerHTML = `${meta.icon} ${meta.label}`;
+        chip.addEventListener('click', () => {
+          this.selectedCategory = catKey;
+          this.renderVault();
+        });
+        this.vaultCategoryTabs.appendChild(chip);
+      });
+    }
+
     this.vaultCardList.innerHTML = '';
     let filtered = this.vaultItems;
 
@@ -898,22 +1297,33 @@ class VerticalTimelineAppV17 {
       filtered = filtered.filter(item => item.region === this.selectedRegion);
     }
 
+    if (this.selectedCategory && this.selectedCategory !== 'all' && this.selectedCategory !== '所有') {
+      filtered = filtered.filter(item => (item.category || 'spot') === this.selectedCategory);
+    }
+
     if (filtered.length === 0) {
-      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:24px; font-size:0.9rem;">【${this.selectedCountry} - ${this.selectedRegion}】目前無景點小卡，可在上方輸入框新增！</div>`;
+      const catMeta = getCategoryMeta(this.selectedCategory);
+      const catName = this.selectedCategory !== 'all' ? `【${catMeta.icon} ${catMeta.label}】` : '';
+      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:24px; font-size:0.9rem;">【${this.selectedCountry} - ${this.selectedRegion}】${catName} 目前無景點小卡，可在上方輸入框新增！</div>`;
       return;
     }
 
     filtered.forEach(item => {
+      const catMeta = getCategoryMeta(item.category || 'spot');
       const card = document.createElement('div');
-      card.className = 'vault-item-card';
+      card.className = `vault-item-card card-cat-${catMeta.id}`;
       card.setAttribute('draggable', 'true');
-      if (item.bgColor) card.style.backgroundColor = item.bgColor;
+      const rawTitle = item.title || item.name || item.spotName || '';
+      const displayTitle = rawTitle.trim() !== '' 
+        ? rawTitle.trim() 
+        : (item.note && item.note.trim() ? item.note.trim().split('\n')[0].substring(0, 25) : (item.url ? '📍 貼文 ' + item.url.split('?')[0].split('/').filter(Boolean).pop() : '📍 未命名景點'));
 
       card.innerHTML = `
         <div class="vault-card-header">
-          <span class="vault-card-title">${this.escapeHtml(item.title)}</span>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span class="node-badge" style="font-size:0.75rem;">📍 ${this.escapeHtml(item.region || '景點')}</span>
+          <span class="vault-card-title" style="color: #0f172a; font-weight: 800;">${this.escapeHtml(displayTitle)}</span>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span class="category-badge ${catMeta.className}">${catMeta.icon} ${catMeta.label}</span>
+            ${item.region ? `<span class="region-badge">📍 ${this.escapeHtml(item.region)}</span>` : ''}
             <div class="vault-action-group">
               <button class="vault-action-btn btn-edit-vault" data-id="${item.id}" title="編輯此景點小卡">✏️ 編輯</button>
               <button class="vault-action-btn btn-delete-vault" data-id="${item.id}" title="刪除此景點小卡">🗑️ 刪除</button>
@@ -921,7 +1331,7 @@ class VerticalTimelineAppV17 {
           </div>
         </div>
         ${item.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
-        ${item.note ? `<div style="font-size:0.82rem; color:#475569; font-weight:600; line-height:1.35;">${this.escapeHtml(item.note)}</div>` : ''}
+        ${item.note ? `<div style="font-size:0.82rem; color:#334155; font-weight:600; line-height:1.4; white-space:pre-line; word-break:break-word; margin-top:2px;">${this.escapeHtml(item.note)}</div>` : ''}
         <div class="vault-card-footer">
           <div style="display:flex; gap:8px;">
             ${item.mapsUrl ? `<a href="${this.escapeHtml(item.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
@@ -1020,16 +1430,10 @@ class VerticalTimelineAppV17 {
     }
 
     spots.forEach(({ node, dayTitle, periodTitle }) => {
+      const catMeta = getCategoryMeta(node.category || 'spot');
       const card = document.createElement('div');
-      card.className = 'vault-item-card';
-      card.style.borderLeft = '4px solid #0f766e';
-      if (node.bgColor) card.style.backgroundColor = node.bgColor;
-
-      let categoryIcon = '📍';
-      if (node.category === 'food') categoryIcon = '🍜';
-      if (node.category === 'shop') categoryIcon = '🛍️';
-      if (node.category === 'hotel') categoryIcon = '🏨';
-      if (node.category === 'transit') categoryIcon = '🚌';
+      card.className = `vault-item-card card-cat-${catMeta.id}`;
+      card.style.borderLeft = `5px solid ${catMeta.border}`;
 
       card.innerHTML = `
         <div class="vault-card-header" style="display:flex; flex-direction:column; align-items:flex-start; gap:6px; width:100%;">
@@ -1038,8 +1442,11 @@ class VerticalTimelineAppV17 {
               📅 ${this.escapeHtml(dayTitle || '')} ${periodTitle ? '➔ ' + this.escapeHtml(periodTitle) : ''}
             </div>
           ` : ''}
-          <div class="vault-card-title" style="font-size:0.98rem; font-weight:800; color:#1e293b; line-height:1.4; word-break:break-all; width:100%;">
-            ${categoryIcon} ${this.escapeHtml(node.title)}
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:6px; flex-wrap:wrap;">
+            <div class="vault-card-title" style="font-size:0.98rem; font-weight:800; color:#1e293b; line-height:1.4; word-break:break-all;">
+              ${catMeta.icon} ${this.escapeHtml(node.title)}
+            </div>
+            <span class="category-badge ${catMeta.className}">${catMeta.icon} ${catMeta.label}</span>
           </div>
         </div>
         ${node.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700; margin-top:2px;">💰 ${this.escapeHtml(node.cost)}</div>` : ''}
@@ -1201,15 +1608,98 @@ class VerticalTimelineAppV17 {
       this.outlineView.style.display = 'block';
       this.renderOutline();
     }
+    this.applyMainCategoryFilter();
+  }
+
+  renderMainCategoryFilter() {
+    if (!this.mainCategoryChips) return;
+    this.mainCategoryChips.innerHTML = '';
+
+    const categories = ['all', 'food', 'hotel', 'spot', 'shop', 'transit', 'action'];
+    categories.forEach(catKey => {
+      const meta = getCategoryMeta(catKey);
+      const chip = document.createElement('button');
+      chip.className = `main-cat-chip ${meta.className} ${this.selectedMainCategory === catKey ? 'active' : ''}`;
+      chip.innerHTML = `${meta.icon} ${meta.label}`;
+      chip.addEventListener('click', () => {
+        this.selectedMainCategory = catKey;
+        this.renderMainCategoryFilter();
+        this.applyMainCategoryFilter();
+      });
+      this.mainCategoryChips.appendChild(chip);
+    });
+  }
+
+  applyMainCategoryFilter() {
+    const cat = this.selectedMainCategory;
+    if (!cat || cat === 'all') {
+      document.querySelectorAll('.md-tree-card, .mobile-spot-item').forEach(el => {
+        el.classList.remove('is-category-dimmed', 'is-category-matched');
+      });
+      return;
+    }
+
+    // In Mindmap Tree
+    document.querySelectorAll('.md-tree-card').forEach(el => {
+      const id = el.getAttribute('data-id');
+      const proj = this.getActiveProject();
+      if (!proj || !proj.rootNode) return;
+      const node = this.findNode(proj.rootNode, id);
+      if (!node) return;
+
+      if (node.category === 'root') return;
+
+      if (node.category === 'day' || node.category === 'period') {
+        el.classList.remove('is-category-dimmed', 'is-category-matched');
+      } else if (node.category === cat) {
+        el.classList.remove('is-category-dimmed');
+        el.classList.add('is-category-matched');
+      } else {
+        el.classList.remove('is-category-matched');
+        el.classList.add('is-category-dimmed');
+      }
+    });
+
+    // In Mobile Outline
+    document.querySelectorAll('.mobile-spot-item').forEach(el => {
+      const id = el.getAttribute('data-id');
+      const proj = this.getActiveProject();
+      if (!proj || !proj.rootNode) return;
+      const node = this.findNode(proj.rootNode, id);
+      if (!node) return;
+
+      if (node.category === cat) {
+        el.classList.remove('is-category-dimmed');
+        el.classList.add('is-category-matched');
+      } else {
+        el.classList.remove('is-category-matched');
+        el.classList.add('is-category-dimmed');
+      }
+    });
   }
 
   render() {
     this.renderTabs();
+    this.renderMainCategoryFilter();
     const proj = this.getActiveProject();
     if (proj) {
       this.tripTitleInput.value = proj.title || "🏮 福岡 3 天 2 夜 櫛田神社輕旅行";
       if (this.currentView === 'mindmap') this.renderMindmap();
       else this.renderOutline();
+      this.applyMainCategoryFilter();
+    }
+  }
+
+  promptRenameTrip(proj) {
+    if (!proj || this.isReadOnly) return;
+    if (this.renameTripModal && this.renameTripTitleInput && this.renameTripIdInput) {
+      this.renameTripIdInput.value = proj.id;
+      this.renameTripTitleInput.value = proj.title || '';
+      this.renameTripModal.classList.add('active');
+      setTimeout(() => {
+        this.renameTripTitleInput.focus();
+        this.renameTripTitleInput.select();
+      }, 100);
     }
   }
 
@@ -1219,10 +1709,18 @@ class VerticalTimelineAppV17 {
       const tab = document.createElement('div');
       tab.className = `folder-tab ${proj.id === this.activeProjectId ? 'active' : ''}`;
       tab.innerHTML = `
-        <span>📁 ${this.escapeHtml(proj.title)}</span>
-        ${(!this.isReadOnly && this.projects.length > 1) ? `<span class="tab-close">✕</span>` : ''}
+        <span class="tab-title-text" title="雙擊可修改行程名稱">📁 ${this.escapeHtml(proj.title)}</span>
+        ${!this.isReadOnly ? `
+          <span class="tab-edit" title="修改行程名稱">✏️</span>
+          ${this.projects.length > 1 ? `<span class="tab-close" title="刪除行程">✕</span>` : ''}
+        ` : ''}
       `;
       tab.addEventListener('click', (e) => {
+        if (e.target.classList.contains('tab-edit')) {
+          e.stopPropagation();
+          this.promptRenameTrip(proj);
+          return;
+        }
         if (e.target.classList.contains('tab-close')) {
           e.stopPropagation();
           this.triggerCustomConfirm(`確定要刪除行程「${proj.title}」？`, () => {
@@ -1237,6 +1735,13 @@ class VerticalTimelineAppV17 {
         this.saveProjects();
         this.render();
       });
+
+      tab.addEventListener('dblclick', (e) => {
+        if (this.isReadOnly) return;
+        e.stopPropagation();
+        this.promptRenameTrip(proj);
+      });
+
       this.tripTabsBar.appendChild(tab);
     });
   }
@@ -1268,9 +1773,17 @@ class VerticalTimelineAppV17 {
     const banner = document.createElement('div');
     banner.className = 'md-root-banner';
     banner.innerHTML = `
-      <h1 class="md-root-title">🏮 ${this.escapeHtml(root.title)}</h1>
+      <h1 class="md-root-title" style="cursor:pointer;" title="點擊修改行程名稱">
+        🏮 ${this.escapeHtml(root.title)} ${!this.isReadOnly ? `<span style="font-size:1rem; opacity:0.85; margin-left:6px;">✏️</span>` : ''}
+      </h1>
       ${!this.isReadOnly ? `<button class="md-add-btn" style="background:#ffffff; color:#0f766e; border:none; padding:6px 14px; font-weight:800;" data-action="add-child" data-parent="${root.id}">➕ 新增行程天數 (Day)</button>` : ''}
     `;
+    if (!this.isReadOnly) {
+      const rootTitleEl = banner.querySelector('.md-root-title');
+      if (rootTitleEl) {
+        rootTitleEl.addEventListener('click', () => this.promptRenameTrip(proj));
+      }
+    }
     container.appendChild(banner);
 
     // 2. 遞迴渲染無限層級樹狀卡片
@@ -1299,19 +1812,13 @@ class VerticalTimelineAppV17 {
   }
 
   renderMarkdownTreeNode(node, level, root) {
-    let icon = '📍';
-    if (node.category === 'day') icon = '📅';
-    if (node.category === 'period') icon = '🕒';
-    if (node.category === 'action') icon = '⚡';
-    if (node.category === 'food') icon = '🍜';
-    if (node.category === 'hotel') icon = '🏨';
-    if (node.category === 'transit') icon = '🚌';
-    if (node.category === 'shop') icon = '🛍️';
+    const catMeta = getCategoryMeta(node.category || 'spot');
+    let icon = catMeta.icon;
 
     let cardClass = 'md-tree-card';
     if (level === 1) cardClass += ' level-day';
     else if (level === 2) cardClass += ' level-period';
-    else cardClass += ' level-spot';
+    else cardClass += ` level-spot card-cat-${catMeta.id}`;
 
     const cardEl = document.createElement('div');
     cardEl.className = cardClass;
@@ -1319,17 +1826,17 @@ class VerticalTimelineAppV17 {
     if (!this.isReadOnly && node.category !== 'root') {
       cardEl.setAttribute('draggable', 'true');
     }
-    if (node.bgColor && level > 2) {
-      cardEl.style.backgroundColor = node.bgColor;
-    }
 
     let html = `
       <div class="md-card-header">
         <span class="md-card-title">${icon} ${this.escapeHtml(node.title)}</span>
         <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-          ${node.cost ? `<span class="node-badge">${this.escapeHtml(node.cost)}</span>` : ''}
+          ${node.category !== 'day' && node.category !== 'period' && node.category !== 'root' ? `<span class="category-badge ${catMeta.className}">${catMeta.icon} ${catMeta.label}</span>` : ''}
+          ${node.cost ? `<span class="node-badge">💰 ${this.escapeHtml(node.cost)}</span>` : ''}
           ${!this.isReadOnly ? `
             <button class="md-add-btn" data-action="add-child" data-parent="${node.id}" title="在此卡片底下附屬新增卡片">➕ 附屬新增</button>
+            <button class="mobile-action-btn btn-move-up" data-id="${node.id}" title="向上調整同層排序">⬆️</button>
+            <button class="mobile-action-btn btn-move-down" data-id="${node.id}" title="向下調整同層排序">⬇️</button>
             <button class="mobile-action-btn btn-edit-spot" data-id="${node.id}" title="編輯或更動附屬位置">✏️</button>
             <button class="mobile-action-btn btn-del-spot" data-id="${node.id}" title="刪除此項目">🗑️</button>
           ` : ''}
@@ -1416,6 +1923,93 @@ class VerticalTimelineAppV17 {
     this.showToast(`🎉 已將【${node.title}】移動附屬至【${newParent.title}】底下！`);
   }
 
+  moveSiblingNode(root, nodeId, direction) {
+    const parent = this.findParentNode(root, nodeId);
+    if (!parent || !parent.children) return;
+
+    const idx = parent.children.findIndex(c => c.id === nodeId);
+    if (idx === -1) return;
+
+    if (direction === 'up' && idx > 0) {
+      const temp = parent.children[idx];
+      parent.children[idx] = parent.children[idx - 1];
+      parent.children[idx - 1] = temp;
+      this.saveProjects();
+      this.render();
+      this.showToast(`⬆️ 已將「${temp.title}」向上調整順序！`);
+    } else if (direction === 'down' && idx < parent.children.length - 1) {
+      const temp = parent.children[idx];
+      parent.children[idx] = parent.children[idx + 1];
+      parent.children[idx + 1] = temp;
+      this.saveProjects();
+      this.render();
+      this.showToast(`⬇️ 已將「${temp.title}」向下調整順序！`);
+    }
+  }
+
+  reorderNodeRelative(root, sourceId, targetId, position) {
+    const sourceNode = this.findNode(root, sourceId);
+    const oldParent = this.findParentNode(root, sourceId);
+    const targetNode = this.findNode(root, targetId);
+    const targetParent = this.findParentNode(root, targetId);
+
+    if (!sourceNode || !oldParent || !targetNode || !targetParent) return;
+
+    // Remove from old parent
+    oldParent.children = oldParent.children.filter(c => c.id !== sourceId);
+
+    // Find target index in targetParent
+    let targetIdx = targetParent.children.findIndex(c => c.id === targetId);
+    if (targetIdx === -1) {
+      targetParent.children.push(sourceNode);
+    } else {
+      if (position === 'after') {
+        targetIdx += 1;
+      }
+      targetParent.children.splice(targetIdx, 0, sourceNode);
+    }
+
+    this.saveProjects();
+    this.render();
+    const posText = position === 'before' ? '上方' : '下方';
+    this.showToast(`🎉 已將【${sourceNode.title}】移動至【${targetNode.title}】的${posText}！`);
+  }
+
+  insertVaultItemAsSibling(vaultItem, targetNode, position, root) {
+    const targetParent = this.findParentNode(root, targetNode.id);
+    if (!targetParent) {
+      this.insertVaultItemIntoNode(vaultItem, targetNode);
+      return;
+    }
+
+    const newNode = {
+      id: 'spot_' + Date.now(),
+      title: vaultItem.title,
+      category: vaultItem.category || 'spot',
+      cost: vaultItem.cost || '',
+      note: vaultItem.note || '',
+      imageUrl: vaultItem.imageUrl || '',
+      mapsUrl: vaultItem.mapsUrl || '',
+      url: vaultItem.url || '',
+      bgColor: vaultItem.bgColor || '#ffffff',
+      expanded: true,
+      children: []
+    };
+
+    let targetIdx = targetParent.children.findIndex(c => c.id === targetNode.id);
+    if (targetIdx === -1) {
+      targetParent.children.push(newNode);
+    } else {
+      if (position === 'after') targetIdx += 1;
+      targetParent.children.splice(targetIdx, 0, newNode);
+    }
+
+    this.saveProjects();
+    this.render();
+    const posText = position === 'before' ? '上方' : '下方';
+    this.showToast(`🎉 已將【${vaultItem.title}】加入至【${targetNode.title}】的${posText}！`);
+  }
+
   bindNodeDragDrop(element, targetNode, root) {
     if (this.isReadOnly) return;
 
@@ -1424,42 +2018,104 @@ class VerticalTimelineAppV17 {
         e.stopPropagation();
         this.draggedTreeNode = targetNode;
         this.draggedVaultItem = null;
+        element.classList.add('is-dragging');
       });
       element.addEventListener('dragend', (e) => {
         e.stopPropagation();
         this.draggedTreeNode = null;
+        element.classList.remove('is-dragging');
+        document.querySelectorAll('.drop-target-before, .drop-target-after, .drop-target-inside, .drag-over-target').forEach(el => {
+          el.classList.remove('drop-target-before', 'drop-target-after', 'drop-target-inside', 'drag-over-target');
+        });
       });
     }
+
+    const cleanClasses = (el) => {
+      el.classList.remove('drop-target-before', 'drop-target-after', 'drop-target-inside', 'drag-over-target');
+    };
 
     element.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      element.classList.add('drag-over-target');
+
+      cleanClasses(element);
+
+      const rect = element.getBoundingClientRect();
+      const offsetY = e.clientY - rect.top;
+      const height = rect.height;
+
+      if (offsetY < height * 0.35) {
+        element.classList.add('drop-target-before');
+      } else if (offsetY > height * 0.65) {
+        element.classList.add('drop-target-after');
+      } else {
+        element.classList.add('drop-target-inside');
+      }
     });
+
     element.addEventListener('dragleave', (e) => {
       e.stopPropagation();
-      element.classList.remove('drag-over-target');
+      cleanClasses(element);
     });
+
     element.addEventListener('drop', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      element.classList.remove('drag-over-target');
+
+      const rect = element.getBoundingClientRect();
+      const offsetY = e.clientY - rect.top;
+      const height = rect.height;
+
+      let position = 'inside';
+      if (offsetY < height * 0.35) position = 'before';
+      else if (offsetY > height * 0.65) position = 'after';
+
+      cleanClasses(element);
+
       if (this.draggedVaultItem) {
-        this.insertVaultItemIntoNode(this.draggedVaultItem, targetNode);
+        if (position === 'before' || position === 'after') {
+          this.insertVaultItemAsSibling(this.draggedVaultItem, targetNode, position, root);
+        } else {
+          this.insertVaultItemIntoNode(this.draggedVaultItem, targetNode);
+        }
         this.draggedVaultItem = null;
       } else if (this.draggedTreeNode) {
-        if (this.draggedTreeNode.id === targetNode.id) return;
-        if (this.isNodeDescendant(this.draggedTreeNode, targetNode.id)) {
+        const sourceId = this.draggedTreeNode.id;
+        const targetId = targetNode.id;
+        if (sourceId === targetId) return;
+
+        if (this.isNodeDescendant(this.draggedTreeNode, targetId)) {
           this.showToast('⚠️ 不能將卡片移動附屬至其自己的子項目底下喔！');
           return;
         }
-        this.moveNodeToNewParent(root, this.draggedTreeNode.id, targetNode.id);
+
+        if (position === 'before' || position === 'after') {
+          this.reorderNodeRelative(root, sourceId, targetId, position);
+        } else {
+          this.moveNodeToNewParent(root, sourceId, targetId);
+        }
         this.draggedTreeNode = null;
       }
     });
   }
 
   bindMarkdownTreeEvents(container, root) {
+    container.querySelectorAll('.btn-move-up').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        this.moveSiblingNode(root, id, 'up');
+      });
+    });
+
+    container.querySelectorAll('.btn-move-down').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        this.moveSiblingNode(root, id, 'down');
+      });
+    });
+
     container.querySelectorAll('.btn-edit-spot').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1749,17 +2405,17 @@ class VerticalTimelineAppV17 {
   }
 
   renderMobileSpotItem(spotNode) {
-    let icon = '📍';
-    if (spotNode.category === 'food') icon = '🍜';
-    if (spotNode.category === 'hotel') icon = '🏨';
-    if (spotNode.category === 'transit') icon = '🚌';
-    if (spotNode.category === 'shop') icon = '🛍️';
+    const catMeta = getCategoryMeta(spotNode.category || 'spot');
+    let icon = catMeta.icon;
 
     let itemHtml = `
-      <div class="mobile-spot-item" style="${spotNode.bgColor ? `background-color:${spotNode.bgColor};` : ''}" data-id="${spotNode.id}">
+      <div class="mobile-spot-item card-cat-${catMeta.id}" style="border-left: 4.5px solid ${catMeta.border};" data-id="${spotNode.id}">
         <div class="mobile-spot-top">
           <span class="mobile-spot-title">${icon} ${this.escapeHtml(spotNode.title)}</span>
-          ${spotNode.cost ? `<span class="node-badge">${this.escapeHtml(spotNode.cost)}</span>` : ''}
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="category-badge ${catMeta.className}">${catMeta.icon} ${catMeta.label}</span>
+            ${spotNode.cost ? `<span class="node-badge">💰 ${this.escapeHtml(spotNode.cost)}</span>` : ''}
+          </div>
         </div>
     `;
 
@@ -1865,8 +2521,13 @@ class VerticalTimelineAppV17 {
     document.getElementById('nodeId').value = '';
     document.getElementById('nodeParentId').value = parentId;
     this.populateParentSelect(parentId, null);
-    this.nodeColorInput.value = '#ffffff';
-    this.nodeColorCustom.value = '#ffffff';
+    document.getElementById('nodeCategory').value = 'spot';
+    const spotMeta = getCategoryMeta('spot');
+    const color = spotMeta.cardBg || '#f0fdf4';
+    this.nodeColorInput.value = color;
+    this.nodeColorCustom.value = color;
+    this.renderRecentColors();
+    this.updateActiveColorSwatches(color);
     this.hotelFieldsBox.style.display = 'none';
     this.modal.classList.add('active');
   }
@@ -1895,6 +2556,8 @@ class VerticalTimelineAppV17 {
     const color = node.bgColor || '#ffffff';
     this.nodeColorInput.value = color;
     this.nodeColorCustom.value = color;
+    this.renderRecentColors();
+    this.updateActiveColorSwatches(color);
     this.modal.classList.add('active');
   }
 
@@ -1920,6 +2583,10 @@ class VerticalTimelineAppV17 {
       hotelCheckOut: document.getElementById('hotelCheckOut').value,
       hotelRoomType: document.getElementById('hotelRoomType').value
     };
+
+    if (nodeData.bgColor) {
+      this.addRecentColor(nodeData.bgColor);
+    }
 
     if (id) {
       const node = this.findNode(proj.rootNode, id);
@@ -1993,20 +2660,88 @@ class VerticalTimelineAppV17 {
     reader.onload = (event) => {
       try {
         const imported = JSON.parse(event.target.result);
-        if (imported && (imported.rootNode || imported.title)) {
-          const newId = 'proj_tl_' + Date.now();
-          const newProj = {
-            id: newId,
+        let importedCount = 0;
+        let importedProjCount = 0;
+
+        // 1. 處理景點靈感庫匯入 (vaultItems 或 項目陣列)
+        let incomingVaultItems = [];
+        if (Array.isArray(imported)) {
+          incomingVaultItems = imported;
+        } else if (imported && Array.isArray(imported.vaultItems)) {
+          incomingVaultItems = imported.vaultItems;
+        }
+
+        if (incomingVaultItems.length > 0) {
+          if (!Array.isArray(this.vaultItems)) this.vaultItems = [];
+          incomingVaultItems.forEach(item => {
+            if (!item.title || !item.title.trim()) {
+              item.title = item.name || item.spotName || (item.note ? item.note.trim().split('\n')[0].substring(0, 25) : (item.url ? '📍 景點 ' + item.url.split('?')[0].split('/').filter(Boolean).pop() : '📍 景點卡片'));
+            }
+            if (!item.id) item.id = 'v_imp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const existIdx = this.vaultItems.findIndex(v => v.id === item.id);
+            if (existIdx >= 0) {
+              this.vaultItems[existIdx] = item;
+            } else {
+              this.vaultItems.unshift(item);
+            }
+            importedCount++;
+          });
+
+          if (imported.countryHierarchy && typeof imported.countryHierarchy === 'object') {
+            this.countryHierarchy = { ...this.countryHierarchy, ...imported.countryHierarchy };
+          }
+
+          this.saveVaultData();
+          this.renderVault();
+        }
+
+        // 2. 處理行程專案匯入 (projects 或 rootNode)
+        let incomingProjects = [];
+        if (imported && Array.isArray(imported.projects)) {
+          incomingProjects = imported.projects;
+        } else if (imported && imported.rootNode) {
+          incomingProjects = [{
+            id: 'proj_tl_' + Date.now(),
+            title: imported.title || '匯入行程',
+            rootNode: imported.rootNode
+          }];
+        } else if (imported && imported.title && !imported.vaultItems && !incomingVaultItems.length) {
+          incomingProjects = [{
+            id: 'proj_tl_' + Date.now(),
             title: imported.title || '匯入行程',
             rootNode: imported.rootNode || imported
-          };
-          this.projects.push(newProj);
-          this.activeProjectId = newId;
+          }];
+        }
+
+        if (incomingProjects.length > 0) {
+          incomingProjects.forEach(proj => {
+            const newId = proj.id || ('proj_tl_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5));
+            proj.id = newId;
+            this.projects.push(proj);
+            this.activeProjectId = newId;
+            importedProjCount++;
+          });
           this.saveProjects();
           this.render();
-          this.showToast('📥 成功匯入全新行程！');
         }
-      } catch (err) {}
+
+        // 重置 input 允許重複選取相同檔案
+        e.target.value = '';
+
+        if (importedCount > 0 && importedProjCount > 0) {
+          this.showToast(`📥 成功匯入 ${importedProjCount} 個行程與 ${importedCount} 個景點靈感庫卡片！`);
+        } else if (importedCount > 0) {
+          this.showToast(`📥 成功匯入 ${importedCount} 個景點靈感庫卡片！`);
+        } else if (importedProjCount > 0) {
+          this.showToast(`📥 成功匯入全新行程！`);
+        } else {
+          this.showToast('⚠️ 未辨識出有效的行程或景點靈感庫資料');
+        }
+      } catch (err) {
+        console.error('匯入 JSON 失敗：', err);
+        e.target.value = '';
+        this.showToast('❌ JSON 檔案格式錯誤，無法匯入');
+      }
     };
     reader.readAsText(file);
   }
