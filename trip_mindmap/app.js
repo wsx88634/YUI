@@ -500,9 +500,29 @@ const CATEGORY_CONFIG = {
   period: { id: 'period', label: '時段', icon: '🕒', className: 'chip-period cat-period', bg: '#ffffff', cardBg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' }
 };
 
-function getCategoryMeta(cat) {
-  if (!cat) return CATEGORY_CONFIG['spot'];
-  const key = cat.toLowerCase().trim();
+function inferCategory(item) {
+  if (typeof item === 'string') return item;
+  if (!item) return 'spot';
+  if (item.category && item.category !== 'undefined' && item.category !== '') return item.category;
+  
+  const text = ((item.title || '') + ' ' + (item.note || '') + ' ' + (item.cost || '') + ' ' + (item.region || '')).toLowerCase();
+  if (['拉麵', '麵', '朝食', '食', '咖啡', '甜點', '燒', '章魚', '鰻魚', '明太子', '派', '餅', '肉', '居酒屋', '料理', '丼', '牛排', '餐', '吃', '飯'].some(k => text.includes(k))) return 'food';
+  if (['飯店', '酒店', '民宿', '旅館', 'hotel', 'inn', 'resort', 'check-in', '入住', '退房'].some(k => text.includes(k))) return 'hotel';
+  if (['超市', 'shoppers', '免稅店', '唐吉訶德', 'donki', '伴手禮', '買', '商店街', '百貨', '市場', 'outlet', '商場'].some(k => text.includes(k))) return 'shop';
+  if (['機場', '車站', '地鐵', '西鐵', 'jr', '巴士', '航廈', '班次', '搭乘', '出關', '登機', '高鐵', '航線'].some(k => text.includes(k))) return 'transit';
+  if (['提醒', '注意事項', '領取', '換匯', '網卡', 'esim', '保險', '填寫', '集合', '集合點'].some(k => text.includes(k))) return 'action';
+  
+  return 'spot';
+}
+
+function getCategoryMeta(catOrItem) {
+  if (!catOrItem) return CATEGORY_CONFIG['spot'];
+  let key = 'spot';
+  if (typeof catOrItem === 'string') {
+    key = catOrItem.toLowerCase().trim();
+  } else if (typeof catOrItem === 'object') {
+    key = inferCategory(catOrItem);
+  }
   return CATEGORY_CONFIG[key] || CATEGORY_CONFIG['spot'];
 }
 
@@ -1298,7 +1318,7 @@ class VerticalTimelineAppV17 {
     }
 
     if (this.selectedCategory && this.selectedCategory !== 'all' && this.selectedCategory !== '所有') {
-      filtered = filtered.filter(item => (item.category || 'spot') === this.selectedCategory);
+      filtered = filtered.filter(item => inferCategory(item) === this.selectedCategory);
     }
 
     if (filtered.length === 0) {
@@ -1309,7 +1329,7 @@ class VerticalTimelineAppV17 {
     }
 
     filtered.forEach(item => {
-      const catMeta = getCategoryMeta(item.category || 'spot');
+      const catMeta = getCategoryMeta(item);
       const card = document.createElement('div');
       card.className = `vault-item-card card-cat-${catMeta.id}`;
       card.setAttribute('draggable', 'true');
@@ -1430,7 +1450,7 @@ class VerticalTimelineAppV17 {
     }
 
     spots.forEach(({ node, dayTitle, periodTitle }) => {
-      const catMeta = getCategoryMeta(node.category || 'spot');
+      const catMeta = getCategoryMeta(node);
       const card = document.createElement('div');
       card.className = `vault-item-card card-cat-${catMeta.id}`;
       card.style.borderLeft = `5px solid ${catMeta.border}`;
@@ -1812,7 +1832,7 @@ class VerticalTimelineAppV17 {
   }
 
   renderMarkdownTreeNode(node, level, root) {
-    const catMeta = getCategoryMeta(node.category || 'spot');
+    const catMeta = getCategoryMeta(node);
     let icon = catMeta.icon;
 
     let cardClass = 'md-tree-card';
@@ -2405,7 +2425,7 @@ class VerticalTimelineAppV17 {
   }
 
   renderMobileSpotItem(spotNode) {
-    const catMeta = getCategoryMeta(spotNode.category || 'spot');
+    const catMeta = getCategoryMeta(spotNode);
     let icon = catMeta.icon;
 
     let itemHtml = `
