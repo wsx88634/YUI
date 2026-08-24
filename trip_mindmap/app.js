@@ -191,7 +191,7 @@ const TOKYO_DEMO_PROJECTS = [
 
 const DEFAULT_COUNTRY_HIERARCHY = {
   "所有": ["所有"],
-  "日本": ["所有日本", "福岡", "天神", "博多", "六本松", "宗像", "久留米", "由布院", "東京", "大阪", "京都", "奈良"],
+  "日本": ["所有日本", "福岡", "天神", "博多", "祇園", "渡邊通", "六本松", "小倉", "宗像", "久留米", "由布院", "福岡機場", "東京", "大阪", "京都", "奈良"],
   "韓國": ["所有韓國", "首爾", "釜山"],
   "台灣": ["所有台灣", "台北", "台南"],
   "泰國": ["所有泰國", "曼谷", "清邁"]
@@ -484,6 +484,62 @@ const DEFAULT_SPOT_VAULT = [
     "bgColor": "#fe9000",
     "url": "https://www.instagram.com/p/DZSYo8JyLL4/",
     "mapsUrl": "https://maps.google.com/?q=唐吉訶德+福岡天神本店",
+    "note": "📍唐吉訶德福岡天神本店門口\n✨特大巨無霸現烤醬油日式燒糰子。"
+  },
+  {
+    "id": "v_fukuoka_25_tanga_kokura",
+    "country": "日本",
+    "region": "小倉",
+    "title": "小倉 旦過市場 (自選大學丼/昭和美食街)",
+    "category": "food",
+    "cost": "小吃 / 大學丼",
+    "url": "https://www.instagram.com/p/Db2pHGVjNnp/",
+    "mapsUrl": "https://maps.google.com/?q=旦過市場+小倉",
+    "note": "📍福岡縣北九州市小倉北區魚町4丁目\n⏰各攤位約10:00-18:00\n🚇JR小倉站步行10分鐘\n✨北九州的廚房！必玩「大學堂自選丼飯」：買碗白飯沿途挑生魚片、炸物鋪成專屬海鮮熟食丼，還有小倉魚板與肉烏龍麵。"
+  },
+  {
+    "id": "v_fukuoka_26_ichimujin_watanabe",
+    "country": "日本",
+    "region": "渡邊通",
+    "title": "いちむじん 渡邊通店 (明太子山藥冷麵/雞南蠻)",
+    "category": "food",
+    "cost": "950円~1200円",
+    "url": "https://www.instagram.com/reel/DcTLOXsJTNZ/",
+    "mapsUrl": "https://maps.google.com/?q=博多らぁめん+いちむじん+渡辺通",
+    "note": "📍福岡市中央區渡辺通\n⏰11:00–24:00 (營業至深夜0點)\n🚇地鐵渡邊通站步行3分鐘\n✨明太子、辛子高菜、漬物無限量免費吃到飽！夏天必點「明太山藥泥冷麵 (蘭王蛋黃)」與超巨汁多「明太塔塔醬炸雞南蠻」、一口餃子。"
+  },
+  {
+    "id": "v_fukuoka_27_kawaya_gion",
+    "country": "日本",
+    "region": "祇園",
+    "title": "かわ屋 祇園店 (博多名物捲雞皮居酒屋)",
+    "category": "food",
+    "cost": "串燒 150円起",
+    "url": "https://www.instagram.com/reel/DaP_px4ThVG/",
+    "mapsUrl": "https://maps.google.com/?q=かわ屋+祇園店",
+    "note": "📍福岡県福岡市博多区祇園町2-8 Liens祇園ビル\n⏰17:00–01:00\n🚇地鐵祇園站步行2分鐘\n✨博多排隊名店！反覆烤製去油六天的「名物招牌捲雞皮串」，外酥內嫩鹹甜多汁，店員氣氛熱情超有活力。"
+  },
+  {
+    "id": "v_fukuoka_28_imonne_hakata",
+    "country": "日本",
+    "region": "博多",
+    "title": "Imonne Hakata (現包Q彈麻糬冰淇淋)",
+    "category": "food",
+    "cost": "約 550円",
+    "url": "https://www.instagram.com/reel/DbapLR9yQio/",
+    "mapsUrl": "https://maps.google.com/?q=Imonne+Hakata+KITTE博多",
+    "note": "📍福岡市博多區博多站中央街9-1 (KITTE博多 1樓超市對面)\n⏰10:00–21:00\n🚇JR博多站直結\n✨超療癒現場手包現做！外皮極致軟Q拉絲麻糬包裹冰淇淋，推薦香草櫻花粉、開心果搭配巧克力粉。"
+  },
+  {
+    "id": "v_fukuoka_29_taiko_sushi",
+    "country": "日本",
+    "region": "福岡機場",
+    "title": "大河壽司 (福岡機場旁 超高CP值厚切鮪魚迴轉壽司)",
+    "category": "food",
+    "cost": "1,500円~3,000円",
+    "url": "https://www.instagram.com/reel/DY7HWyATWcK/",
+    "mapsUrl": "https://maps.google.com/?q=大河すし+福岡",
+    "note": "📍福岡市博多區 (近福岡機場)\n⏰11:00–21:30\n✨在地人激推超高CP值迴轉壽司！厚切鮪魚份量巨大又鮮甜，生魚片油脂豐富，出入機場前後順遊必吃。"
   }
 ];
 
