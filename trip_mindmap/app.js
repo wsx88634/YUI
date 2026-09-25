@@ -191,7 +191,7 @@ const TOKYO_DEMO_PROJECTS = [
 
 const DEFAULT_COUNTRY_HIERARCHY = {
   "所有": ["所有"],
-  "日本": ["所有日本", "福岡", "天神", "博多", "祇園", "渡邊通", "六本松", "小倉", "宗像", "久留米", "由布院", "福岡機場", "東京", "大阪", "京都", "奈良"],
+  "日本": ["所有日本", "福岡", "天神", "博多", "中洲", "太宰府", "門司港", "小倉", "大濠公園", "百道濱", "絲島", "柳川", "祇園", "渡邊通", "六本松", "宗像", "久留米", "由布院", "福岡機場", "東京", "大阪", "京都", "奈良"],
   "韓國": ["所有韓國", "首爾", "釜山"],
   "台灣": ["所有台灣", "台北", "台南"],
   "泰國": ["所有泰國", "曼谷", "清邁"]
@@ -540,6 +540,325 @@ const DEFAULT_SPOT_VAULT = [
     "url": "https://www.instagram.com/reel/DY7HWyATWcK/",
     "mapsUrl": "https://maps.google.com/?q=大河すし+福岡",
     "note": "📍福岡市博多區 (近福岡機場)\n⏰11:00–21:30\n✨在地人激推超高CP值迴轉壽司！厚切鮪魚份量巨大又鮮甜，生魚片油脂豐富，出入機場前後順遊必吃。"
+  },
+  {
+    "id": "v_fukuoka_30_mojiko_retro",
+    "country": "日本",
+    "region": "門司港",
+    "title": "門司港懷舊區 (大正浪漫洋樓群)",
+    "category": "spot",
+    "cost": "免費散策 (部分展館約300円)",
+    "url": "https://www.mojiko.info/",
+    "mapsUrl": "https://maps.google.com/?q=門司港懷舊",
+    "note": "📍福岡縣北九州市門司區港町\n🚇JR門司港站出站即達\n✨保留明治大正時期紅磚洋樓建築群。必訪景點：舊門司稅關、國際友好紀念圖書館、藍翼門司吊橋（會定時開啟閉合的戀人聖地吊橋）。"
+  },
+  {
+    "id": "v_fukuoka_31_curry_honpo",
+    "country": "日本",
+    "region": "門司港",
+    "title": "伽哩本舖 門司港懷舊店 (焗烤燒咖哩)",
+    "category": "food",
+    "cost": "約 1,100円 ~ 1,600円",
+    "url": "https://tabelog.com/fukuoka/A4004/A400501/40000030/",
+    "mapsUrl": "https://maps.google.com/?q=伽哩本舖+門司港",
+    "note": "📍福岡縣北九州市門司區港町9-2\n⏰11:00–20:00\n✨門司港發祥代表名物！熱鐵鍋烘烤的濃郁咖哩飯，表層鋪滿厚牽絲起司、中間敲入半熟生雞蛋，推薦海鮮燒咖哩與招牌牛絞肉燒咖哩。"
+  },
+  {
+    "id": "v_fukuoka_32_kokura_castle",
+    "country": "日本",
+    "region": "小倉",
+    "title": "小倉城 & 勝山公園 (天守閣與櫻花名所)",
+    "category": "spot",
+    "cost": "天守閣門票 350円",
+    "url": "https://www.kokura-castle.jp/",
+    "mapsUrl": "https://maps.google.com/?q=小倉城",
+    "note": "📍福岡縣北九州市小倉北區城內2-1\n⏰09:00–20:00\n🚇JR西小倉站步行10分鐘\n✨細川忠興建造之四層五階唐造式名城！天守閣頂樓可360度俯瞰小倉街景，春季勝山公園滿開數百株櫻花，夜晚有燈光秀點綴。"
+  },
+  {
+    "id": "v_fukuoka_33_sarakurayama",
+    "country": "日本",
+    "region": "小倉",
+    "title": "皿倉山夜景 (新日本三大夜景/纜車)",
+    "category": "spot",
+    "cost": "往返纜車約 1,230円",
+    "url": "http://www.sarakurayama-cablecar.co.jp/",
+    "mapsUrl": "https://maps.google.com/?q=皿倉山展望台",
+    "note": "📍福岡縣北九州市八幡東區大字尾倉1481-1\n🚇JR八幡站轉乘免費接駁巴士\n✨被評為「價值百億美金」的新日本三大夜景！搭乘登山斜坡纜車與單軌電車直達標高622公尺山頂，飽覽洞海灣與北九州工業繁華星海。"
+  },
+  {
+    "id": "v_fukuoka_34_sukesan_udon",
+    "country": "日本",
+    "region": "小倉",
+    "title": "資さんうどん 魚町店 (北九州靈魂烏龍麵)",
+    "category": "food",
+    "cost": "約 600円 ~ 900円",
+    "url": "https://www.sukesanudon.com/",
+    "mapsUrl": "https://maps.google.com/?q=資さんうどん+魚町店",
+    "note": "📍福岡縣北九州市小倉北區魚町2丁目6-1\n⏰24小時營業！\n🚇JR小倉站步行5分鐘\n✨北九州代表國民美食！招牌必點「肉＆牛蒡天婦羅烏龍麵（肉ごぼ天うどん）」，配上特製軟Q烏龍麵與高湯，還有外帶秒殺的甜糯牡丹餅 (ぼた餅)！"
+  },
+  {
+    "id": "v_fukuoka_35_karato_market",
+    "country": "日本",
+    "region": "門司港",
+    "title": "唐戶市場 (海鮮馬市/百円握壽司海膽丼)",
+    "category": "food",
+    "cost": "每貫握壽司 100円 ~ 500円",
+    "url": "https://www.karatoichiba.com/",
+    "mapsUrl": "https://maps.google.com/?q=唐戶市場",
+    "note": "📍山口縣下關市唐戶町5-50 (門司港搭渡輪5分鐘即達)\n⏰週五六日及假日限定馬市 (09:00–15:00)\n✨門司港順遊必訪！攤位現捏黑鮪魚大腹、新鮮海膽、甜蝦、炸河豚與河豚生魚片，買好端到海邊木棧道吹海風享受！"
+  },
+  {
+    "id": "v_fukuoka_36_dazaifu_tenmangu",
+    "country": "日本",
+    "region": "太宰府",
+    "title": "太宰府天滿宮 (學問之神與隈研吾御本殿)",
+    "category": "spot",
+    "cost": "境內免費參觀",
+    "url": "https://www.dazaifutenmangu.or.jp/",
+    "mapsUrl": "https://maps.google.com/?q=太宰府天滿宮",
+    "note": "📍福岡縣太宰府市宰府4丁目7-1\n🚇西鐵太宰府站步行5分鐘\n✨全日本天滿宮總本社，祭祀學問之神菅原道真。必走心字池三座太鼓橋洗滌心靈、摸御神牛開智慧，現正展出建築大師隈研吾設計的「漂浮森林仮殿」。"
+  },
+  {
+    "id": "v_fukuoka_37_kasanoya",
+    "country": "日本",
+    "region": "太宰府",
+    "title": "かさの家 傘之家 (太宰府現烤梅枝餅)",
+    "category": "food",
+    "cost": "每個約 150円",
+    "url": "http://www.kasanoya.com/",
+    "mapsUrl": "https://maps.google.com/?q=かさの家+太宰府",
+    "note": "📍福岡縣太宰府市宰府2-7-24 (表參道)\n⏰09:00–18:00\n✨表參道最具人氣排隊名店！剛烤出爐餅皮外脆內軟糯，表面烙印梅花圖騰，微甜紅豆餡入口溫潤不膩，每月17日與25日還有限定艾草梅枝餅。"
+  },
+  {
+    "id": "v_fukuoka_38_dazaifu_starbucks",
+    "country": "日本",
+    "region": "太宰府",
+    "title": "太宰府星巴克 (隈研吾自然木條建築藝術)",
+    "category": "spot",
+    "cost": "咖啡飲品約 500円",
+    "url": "https://store.starbucks.co.jp/detail-1058/",
+    "mapsUrl": "https://maps.google.com/?q=星巴克+太宰府天滿宮表參道店",
+    "note": "📍福岡縣太宰府市宰府3-2-43\n⏰08:00–20:00\n✨名列全球最美星巴克之一！由隈研吾操刀設計，運用2,000根純杉木條斜向交錯延伸，營造如森林鳥巢般的通透光影流動感。"
+  },
+  {
+    "id": "v_fukuoka_39_fukuoka_tower",
+    "country": "日本",
+    "region": "百道濱",
+    "title": "福岡塔 (日本最高海濱塔/360度展望台)",
+    "category": "spot",
+    "cost": "成人門票 800円",
+    "url": "https://www.fukuokatower.co.jp/",
+    "mapsUrl": "https://maps.google.com/?q=福岡塔",
+    "note": "📍福岡市早良區百道濱2丁目3-26\n⏰09:30–22:00\n🚇地鐵西新站轉公車或博多站公車直達\n✨高達234公尺的鏡面海濱塔！展望室俯瞰博多灣夕陽與海濱夜景，設有戀人聖地合掌點燈心型拱門，塔身每晚隨季節呈現櫻花、萬聖節與聖誕光雕秀。"
+  },
+  {
+    "id": "v_fukuoka_40_ohori_park",
+    "country": "日本",
+    "region": "大濠公園",
+    "title": "大濠公園 & 福岡市美術館 (水景天鵝船/草間彌生南瓜)",
+    "category": "spot",
+    "cost": "公園免費 (天鵝船約1,000円)",
+    "url": "https://www.ohorikouen.jp/",
+    "mapsUrl": "https://maps.google.com/?q=大濠公園",
+    "note": "📍福岡市中央區大濠公園\n🚇地鐵大濠公園站直通\n✨以杭州西湖為藍本的都會水景綠洲，環湖步道長2公里，可踩天鵝船漫遊。園內「福岡市美術館」戶外常設展出草間彌生黃底黑波點大南瓜！"
+  },
+  {
+    "id": "v_fukuoka_41_kushida_shrine",
+    "country": "日本",
+    "region": "博多",
+    "title": "櫛田神社 (博多總鎮守/常設巨型山笠神轎)",
+    "category": "spot",
+    "cost": "免費參觀",
+    "url": "https://www.crossroadfukuoka.jp/spot/10705",
+    "mapsUrl": "https://maps.google.com/?q=櫛田神社",
+    "note": "📍福岡市博多區上川端町1-41\n🚇地鐵祇園站或中洲川端站步行5分鐘\n✨博多居民的心靈寄託「御櫛田先生」！境內常設高達十餘公尺的華麗「博多祇園山笠飾山」，還有千年夫婦銀杏樹與力石挑戰區。"
+  },
+  {
+    "id": "v_fukuoka_42_nanzoin",
+    "country": "日本",
+    "region": "福岡",
+    "title": "南藏院 (世界最大青銅釋迦涅槃像/開運聖地)",
+    "category": "spot",
+    "cost": "免費參拜 (進入佛像體內參觀 500円)",
+    "url": "https://nanzoin.net/",
+    "mapsUrl": "https://maps.google.com/?q=南藏院",
+    "note": "📍福岡縣糟屋郡篠栗町大字篠栗839-1\n🚇JR福北豐線城戶南藏院前站步行3分鐘\n✨全長41公尺、高11公尺的世界最大青銅臥佛！住持曾多次中樂透頭獎而成為日本知名金運開運聖地，環境清幽古木參天。"
+  },
+  {
+    "id": "v_fukuoka_43_teamlab_forest",
+    "country": "日本",
+    "region": "百道濱",
+    "title": "teamLab Forest Fukuoka (光影互動數位森林)",
+    "category": "spot",
+    "cost": "成人門票約 2,200円",
+    "url": "https://www.teamlab.art/zh-hant/e/forest/",
+    "mapsUrl": "https://maps.google.com/?q=teamLab+Forest+Fukuoka",
+    "note": "📍福岡市中央區地行濱2-2-6 (BOSS E·ZO FUKUOKA 5樓)\n⏰11:00–20:00\n🚇地鐵唐人町站步行15分鐘 (福岡巨蛋旁)\n✨以「捕捉與收集的森林」及「運動森林」為主題的夢幻沉浸式數位藝術，可用手機App捕捉光影動物並建立專屬圖鑑。"
+  },
+  {
+    "id": "v_fukuoka_44_lalaport_gundam",
+    "country": "日本",
+    "region": "博多",
+    "title": "三井LaLaport福岡 (實物大RX-93ff牛鋼彈)",
+    "category": "spot",
+    "cost": "免費觀賞 (商場購物餐飲另計)",
+    "url": "https://mitsui-shopping-park.com/lalaport/fukuoka/",
+    "mapsUrl": "https://maps.google.com/?q=LaLaport+福岡",
+    "note": "📍福岡市博多區那珂6丁目23-1\n🚇JR竹下站步行9分鐘或博多站搭公車直達\n✨全高24.8公尺的實物大 ν(Nu)鋼彈立像！白天定時頭部手部動態展示，夜晚搭配背景大型巨幕聲光投影秀，館內有九州最大GUNDAM PARK。"
+  },
+  {
+    "id": "v_fukuoka_45_motsunabe_oishi",
+    "country": "日本",
+    "region": "博多",
+    "title": "牛腸鍋 大石 住吉店 (もつ鍋 おおいし)",
+    "category": "food",
+    "cost": "人均約 3,000円 ~ 4,500円",
+    "url": "http://www.motu-oishi.com/",
+    "mapsUrl": "https://maps.google.com/?q=もつ鍋+おおいし+住吉店",
+    "note": "📍福岡市博多區住吉4丁目8-21\n⏰17:00–23:00 (週二公休，需預約)\n✨在地人心目中的牛腸鍋殿堂！以四種秘傳味噌調製的甘醇湯底最受歡迎，嚴選頂級國產牛小腸彈牙無腥味，收尾必加強棒麵 (Champon) 煮吸飽精華高湯！"
+  },
+  {
+    "id": "v_fukuoka_46_motsunabe_maedaya",
+    "country": "日本",
+    "region": "博多",
+    "title": "博多牛腸鍋 前田屋 總本店 (博多もつ鍋 前田屋)",
+    "category": "food",
+    "cost": "人均約 2,500円 ~ 4,000円",
+    "url": "https://motsunabe-maedaya.com/",
+    "mapsUrl": "https://maps.google.com/?q=博多もつ鍋+前田屋+総本店",
+    "note": "📍福岡市博多區博多站前3-26-5\n⏰11:00–14:30, 17:00–24:00\n🚇JR博多站博多口步行5分鐘\n✨眾多日本職棒球星與藝人常訪名店！招牌「和牛牛腸鍋（醬油/味噌）」清爽回甘，必點小菜「胡麻鯖魚 (ゴマサバ)」與「炙燒明太子」。"
+  },
+  {
+    "id": "v_fukuoka_47_mizutaki_nagano",
+    "country": "日本",
+    "region": "中洲",
+    "title": "水炊雞肉鍋 長野 (百年老字號 水たき 長野)",
+    "category": "food",
+    "cost": "套餐約 3,300円起",
+    "url": "https://tabelog.com/fukuoka/A4001/A400102/40000010/",
+    "mapsUrl": "https://maps.google.com/?q=水たき+長野",
+    "note": "📍福岡市博多區店屋町3-27\n⏰12:00–22:00 (週日公休，強烈建議提前1個月電話預約)\n✨福岡最經典百年水炊鍋老舖！清澄濃郁的母雞高湯先喝一碗暖胃，特製特軟雞肉球佐特調柚子醋，最後高湯煮成蛋花雜炊粥令人難忘。"
+  },
+  {
+    "id": "v_fukuoka_48_hanamidori",
+    "country": "日本",
+    "region": "博多",
+    "title": "博多 華味鳥 博多站前店 (銘柄雞水炊鍋料理)",
+    "category": "food",
+    "cost": "午餐約 1,800円 / 晚餐約 4,500円",
+    "url": "https://www.hanamidori.net/",
+    "mapsUrl": "https://maps.google.com/?q=博多華味鳥+博多駅前店",
+    "note": "📍福岡市博多區博多站前3-23-17\n⏰11:30–14:00, 17:00–23:00\n🚇JR博多站步行3分鐘\n✨九州代表性連鎖名店，使用專屬養殖場「華味鳥」銘柄雞，肉質鮮嫩彈牙多汁，沾特製柑橘醋品嚐極度爽口，觀光客初訪水炊鍋首選。"
+  },
+  {
+    "id": "v_fukuoka_49_ichiran_honten",
+    "country": "日本",
+    "region": "中洲",
+    "title": "一蘭拉麵 總本社 (12層紅燈籠地標旗艦店)",
+    "category": "food",
+    "cost": "天然豚骨拉麵 980円起",
+    "url": "https://ichiran.com/shop/kyushu/sohonten/",
+    "mapsUrl": "https://maps.google.com/?q=一蘭+本社総本店",
+    "note": "📍福岡市博多區中洲5-3-2\n⏰24小時營業！\n🚇地鐵中洲川端站2號出口直達\n✨整棟樓掛滿紅燈籠的一蘭全球總部！1樓為全日本唯一的「一蘭屋台館」，2樓為招牌味集中座位，拍照打卡與深夜宵夜第一名點。"
+  },
+  {
+    "id": "v_fukuoka_50_hakata_issou",
+    "country": "日本",
+    "region": "博多",
+    "title": "博多一雙 博多站東本店 (豚骨卡布奇諾拉麵)",
+    "category": "food",
+    "cost": "拉麵 800円起",
+    "url": "http://www.hakata-issou.com/",
+    "mapsUrl": "https://maps.google.com/?q=博多一雙+博多駅東本店",
+    "note": "📍福岡市博多區博多站東3-1-6\n⏰11:00–24:00\n🚇JR博多站筑紫口步行6分鐘\n✨被譽為「拉麵界卡布奇諾」的超高人氣排隊王！三口高溫大鍋熬出濃厚脂泡（豚骨泡沫），湯頭濃醇甘甜，搭配極細直麵與炙燒叉燒令人回味。"
+  },
+  {
+    "id": "v_fukuoka_51_shin_shin_tenjin",
+    "country": "日本",
+    "region": "天神",
+    "title": "博多拉麵 Shin-Shin 天神本店 (清爽派豚骨排隊名店)",
+    "category": "food",
+    "cost": "博多Shin-Shin拉麵 760円",
+    "url": "http://www.hakata-shinshin.com/",
+    "mapsUrl": "https://maps.google.com/?q=博多らーめん+Shin-Shin+天神本店",
+    "note": "📍福岡市中央區天神3丁目2-19\n⏰11:00–03:00 (營業至凌晨3點！)\n🚇地鐵天神站步行4分鐘\n✨日本藝人天團爭相造訪！牆上滿滿簽名板。豚骨結合佐賀古產雞骨與大量鮮蔬熬煮，湯頭純郁且順口不油膩，招牌一口餃子與炒拉麵也是必點！"
+  },
+  {
+    "id": "v_fukuoka_52_mentaiju",
+    "country": "日本",
+    "region": "天神",
+    "title": "元祖博多明太子飯 (元祖博多めんたい重)",
+    "category": "food",
+    "cost": "明太子重約 1,880円起",
+    "url": "https://www.mentaiju.com/",
+    "mapsUrl": "https://maps.google.com/?q=元祖博多めんたい重",
+    "note": "📍福岡市中央區西中洲6-15\n⏰07:00–22:30 (早餐時段即開門！)\n🚇地鐵中洲川端站步行5分鐘\n✨日本第一間明太子料理專門店！高級漆器木盒盛裝熱白飯與海苔，鋪上昆布手工醃製的完整肥美明太子，淋上特製辣醬汁，早午餐排隊首選。"
+  },
+  {
+    "id": "v_fukuoka_53_nakasu_yatai",
+    "country": "日本",
+    "region": "中洲",
+    "title": "中洲屋台街 (那珂川河畔 昭和風居酒屋路邊攤)",
+    "category": "food",
+    "cost": "小吃每道約 600円 ~ 1,200円",
+    "url": "https://yokanavi.com/yatai/",
+    "mapsUrl": "https://maps.google.com/?q=中洲屋台街",
+    "note": "📍福岡市博多區中洲1丁目 (那珂川通)\n⏰18:00–01:00 (各攤位營業時間不同，雨天可能休息)\n✨福岡越夜越熱鬧的經典風景！紅色布簾下品嚐炭火烤雞串、明太子煎蛋捲、關東煮與豚骨拉麵，體驗跟在地人並肩小酌的濃厚人情味。"
+  },
+  {
+    "id": "v_fukuoka_54_yanagibashi",
+    "country": "日本",
+    "region": "渡邊通",
+    "title": "柳橋連合市場 (博多的廚房/海鮮熟食市場)",
+    "category": "food",
+    "cost": "熟食小吃 200円 ~ 1,000円",
+    "url": "https://yanagibashi-rengo.com/",
+    "mapsUrl": "https://maps.google.com/?q=柳橋連合市場",
+    "note": "📍福岡市中央區春吉1丁目5-1\n⏰08:00–17:00 (週日公休)\n🚇地鐵渡邊通站步行4分鐘\n✨昭和大正風情老市場！鮮魚店提供現切厚片刺身丼與海膽，必吃吉田鮮魚店、高木製菓的軟Q紅豆大福、以及現炸牛蒡魚板天婦羅。"
+  },
+  {
+    "id": "v_fukuoka_55_itoshima_futamigaura",
+    "country": "日本",
+    "region": "絲島",
+    "title": "櫻井二見之浦 夫婦岩 (海中純白鳥居/夕陽百選)",
+    "category": "spot",
+    "cost": "免費參觀",
+    "url": "https://kanko-itoshima.jp/spot/futamigaura/",
+    "mapsUrl": "https://maps.google.com/?q=櫻井二見之浦+夫婦岩",
+    "note": "📍福岡縣絲島市志摩櫻井4433-1\n🚇JR筑前前原站轉乘公車或自駕約30分鐘\n✨絲島最經典地標！蔚藍玄界灘中矗立著神聖的白色大鳥居，與注連繩緊繫的夫婦岩相映成趣，夏至傍晚夕陽沉入兩岩之間更名列日本夕日百選。"
+  },
+  {
+    "id": "v_fukuoka_56_itoshima_swing",
+    "country": "日本",
+    "region": "絲島",
+    "title": "絲島椰子樹鞦韆 (活魚茶屋ざうお海灘)",
+    "category": "spot",
+    "cost": "免費拍照",
+    "url": "https://kanko-itoshima.jp/",
+    "mapsUrl": "https://maps.google.com/?q=ヤシの木ブランコ+絲島",
+    "note": "📍福岡市西區小田79-6 (活魚茶屋ざうお本店前海灘)\n✨IG超火熱的無敵海景盪鞦韆！兩根高聳向海延伸的天然椰子樹架起鞦韆，背景是一望無際的蔚藍大海與白色沙灘，隨手一拍就是度假大片。"
+  },
+  {
+    "id": "v_fukuoka_57_yanagawa_punting",
+    "country": "日本",
+    "region": "柳川",
+    "title": "柳川觀光遊船 (水鄉人力擺渡扁舟巡禮)",
+    "category": "spot",
+    "cost": "乘船票約 1,600円 ~ 1,800円 (約70分鐘)",
+    "url": "https://www.yanagawakk.co.jp/",
+    "mapsUrl": "https://maps.google.com/?q=柳川遊船",
+    "note": "📍福岡縣柳川市三橋町下百町1-6\n⏰09:00–17:00\n🚇西鐵柳川站步行3分鐘\n✨日本著名水鄉威尼斯！船夫頭戴斗笠手撐長竹篙，邊吟唱北原白秋民謠、邊熟練彎腰穿越石橋與垂柳花徑，四季各有不同水鄉風貌。"
+  },
+  {
+    "id": "v_fukuoka_58_motoyoshiya_eel",
+    "country": "日本",
+    "region": "柳川",
+    "title": "元祖 本吉屋 (300年傳統蒸籠鰻魚飯)",
+    "category": "food",
+    "cost": "特蒸籠鰻魚飯約 4,500円",
+    "url": "https://www.motoyoshiya.jp/",
+    "mapsUrl": "https://maps.google.com/?q=本吉屋+柳川",
+    "note": "📍福岡縣柳川市旭町69\n⏰10:30–20:00 (週一公休)\n🚇西鐵柳川站步行10分鐘\n✨創立於天和元年(1681年)的蒸籠鰻魚飯創始鼻祖！白飯淋秘傳濃醇甜醬拌勻後鋪上香烤肥嫩蒲燒鰻與細蛋絲，置入杉木蒸籠再蒸透，香氣極致撲鼻！"
   }
 ];
 
