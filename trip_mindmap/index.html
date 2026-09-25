@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=30.0.0">
+  <link rel="stylesheet" href="styles.css?v=31.0.0">
 </head>
 <body>
 
@@ -72,8 +72,9 @@
     </div>
 
     <div class="view-switcher">
-      <button class="tab-btn active" id="tabMindmap">🌳 Markdown 階層樹狀視圖</button>
+      <button class="tab-btn active" id="tabMindmap">🌳 Markdown 樹狀圖</button>
       <button class="tab-btn" id="tabOutline">📱 手機列表視圖</button>
+      <button class="tab-btn" id="tabVault">📦 景點靈感庫</button>
     </div>
   </div>
 
@@ -91,79 +92,99 @@
     <div id="outlineView" class="outline-view" style="display: none;">
       <div id="outlineTree" class="outline-tree"></div>
     </div>
+
+    <!-- View 3: Spot Vault Full-Page Gallery View (全頁景點靈感庫工作台) -->
+    <div id="vaultView" class="vault-view" style="display: none;">
+      <div class="vault-container">
+        
+        <!-- 頂部控制面板 -->
+        <div class="vault-top-panel">
+          <!-- 第一行：模式切換 + 搜尋框 + 快捷新增 -->
+          <div class="vault-top-row">
+            <div class="vault-mode-switch-bar">
+              <button class="vault-mode-tab active" id="btnModeVault">📦 全部景點靈感庫</button>
+              <button class="vault-mode-tab" id="btnModeTripFolder">📁 本行程專屬景點夾</button>
+            </div>
+
+            <!-- 即時搜尋輸入框 -->
+            <div class="vault-search-box">
+              <span class="vault-search-icon">🔍</span>
+              <input type="text" id="vaultSearchInput" class="vault-search-input" placeholder="即時搜尋景點名稱、拉麵、小倉、必吃關鍵字...">
+              <button class="vault-search-clear" id="btnVaultSearchClear" title="清除搜尋" style="display:none;">✕</button>
+            </div>
+
+            <!-- 快捷操作按鈕 -->
+            <div class="vault-top-actions">
+              <button class="btn btn-add-spot-vault" id="btnOpenManualVaultModal">
+                <span>✍️</span> <span class="btn-text">手動新增景點</span>
+              </button>
+              <button class="btn btn-ai-toggle" id="btnToggleAiBox" title="展開/收合網址自動建卡盒">
+                <span>✨</span> <span class="btn-text">貼文智能建卡 ▾</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 折疊式 AI / 網址貼上快捷建卡盒 (預設折疊，需要時展開，完全不佔常態版面) -->
+          <div class="vault-ai-box" id="vaultAiBox" style="display: none;">
+            <div class="vault-ai-title"><span>✨</span> 貼上 IG 網址 / Google 地圖連結 / 景點名稱自動建卡</div>
+            <div class="vault-ai-controls">
+              <input type="text" id="vaultQuickInput" class="vault-input" placeholder="貼上 IG 網址 / Google 地圖連結 / 景點名稱...">
+              <div class="vault-ai-sub-row">
+                <select id="vaultTargetRegion" class="form-select">
+                  <option value="福岡">🇯🇵 福岡</option>
+                  <option value="東京">🇯🇵 東京</option>
+                  <option value="大阪">🇯🇵 大阪</option>
+                  <option value="京都">🇯🇵 京都</option>
+                  <option value="奈良">🇯🇵 奈良</option>
+                  <option value="首爾">🇰🇷 首爾</option>
+                  <option value="台北">🇹🇼 台北</option>
+                </select>
+                <button class="vault-gen-btn" id="btnGenVaultCard">+ 自動建卡</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🌐 國家與地區二級階層分類面板 -->
+          <div class="vault-filter-bar" id="vaultFilterBar">
+            <div class="vault-filter-group">
+              <span class="vault-filter-label">🌏 國家：</span>
+              <div class="country-tabs-row" id="countryTabsRow">
+                <!-- Country chips rendered via JS -->
+              </div>
+            </div>
+
+            <div class="vault-filter-group">
+              <div class="vault-filter-header-inline">
+                <span class="vault-filter-label" id="regionFilterLabel">📍 地區：</span>
+                <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
+              </div>
+              <div class="region-tabs-row" id="vaultRegionTabs">
+                <!-- Region chips rendered via JS -->
+              </div>
+            </div>
+
+            <div class="vault-filter-group">
+              <span class="vault-filter-label" id="categoryFilterLabel">🏷️ 類型：</span>
+              <div class="category-tabs-row" id="vaultCategoryTabs">
+                <!-- Category chips rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 景點統計與說明資訊列 -->
+        <div class="vault-stats-bar">
+          <div class="vault-count-badge" id="vaultItemsCount">共 0 個景點</div>
+          <div class="vault-tips">💡 點擊「📍 放至指定日期」可排入行程；點擊「🗺️ 地圖」秒開 Google Maps 導航！</div>
+        </div>
+
+        <!-- 景點卡片畫廊式網格清單 -->
+        <div class="vault-card-list vault-card-grid" id="vaultCardList">
+          <!-- Vault cards rendered via JS -->
+        </div>
+      </div>
+    </div>
   </main>
-
-  <!-- 📦 景點資料庫 / 靈感庫 側邊抽屜 Drawer -->
-  <div class="vault-drawer" id="vaultDrawer">
-    <div class="vault-header">
-      <div class="vault-title"><span>📦</span> 個人景點靈感庫</div>
-      <div class="vault-header-actions">
-        <button class="vault-icon-btn" id="btnToggleFullVault" title="全螢幕檢視 / 側邊抽屜">📖 展能全螢幕</button>
-        <button class="vault-close-btn" id="btnCloseVault">&times;</button>
-      </div>
-    </div>
-    <div class="vault-body">
-      <!-- 🔄 靈感庫與本行程專屬資料夾模式切換頁籤 -->
-      <div class="vault-mode-switch-bar">
-        <button class="vault-mode-tab active" id="btnModeVault">📦 全部景點靈感庫</button>
-        <button class="vault-mode-tab" id="btnModeTripFolder">📁 本行程專屬景點夾</button>
-      </div>
-
-      <!-- AI / 網址貼上快捷建卡盒 -->
-      <div class="vault-ai-box">
-        <div class="vault-ai-title"><span>✨</span> 貼上網址 / IG / 景點名稱自動建卡</div>
-        <input type="text" id="vaultQuickInput" class="vault-input" placeholder="貼上 IG 網址 / Google 地圖連結 / 景點名稱...">
-        <div style="display:flex; gap:6px; align-items:center; justify-content:space-between;">
-          <select id="vaultTargetRegion" class="form-select" style="font-size:0.8rem; padding:4px 8px;">
-            <option value="福岡">🇯🇵 福岡</option>
-            <option value="東京">🇯🇵 東京</option>
-            <option value="大阪">🇯🇵 大阪</option>
-            <option value="京都">🇯🇵 京都</option>
-            <option value="奈良">🇯🇵 奈良</option>
-            <option value="首爾">🇰🇷 首爾</option>
-            <option value="台北">🇹🇼 台北</option>
-          </select>
-          <button class="vault-gen-btn" id="btnGenVaultCard">+ 自動建卡</button>
-        </div>
-
-        <!-- 3. 手動輸入新增至景點靈感庫按鈕 -->
-        <button class="btn-manual-vault" id="btnOpenManualVaultModal">
-          <span>✍️</span> 手動詳細新增至靈感庫
-        </button>
-      </div>
-
-      <!-- 🌐 國家與地區二級階層分類面板 -->
-      <div class="vault-filter-bar">
-        <!-- 第一層：國家群組分類 (Country Chips) -->
-        <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">🌏 選擇國家 / 區域 (可向右滑動)：</div>
-        <div class="country-tabs-row" id="countryTabsRow">
-          <!-- Country chips rendered via JS -->
-        </div>
-
-        <!-- 第二層：該國家內的地區分類 (Region Chips) -->
-        <div class="vault-filter-header" style="margin-top:4px;">
-          <span style="font-size:0.85rem; font-weight:800; color:#0f766e;" id="regionFilterLabel">📍 選擇各地區：</span>
-          <button class="btn-add-region" id="btnAddRegionTag">+ 新增地區</button>
-        </div>
-        <div class="region-tabs-row" id="vaultRegionTabs">
-          <!-- Region chips rendered via JS -->
-        </div>
-
-        <!-- 第三層：類型標籤分類 (Category Chips) -->
-        <div class="vault-filter-header" style="margin-top:6px;">
-          <span style="font-size:0.85rem; font-weight:800; color:#c2410c;" id="categoryFilterLabel">🏷️ 篩選類型標籤：</span>
-        </div>
-        <div class="category-tabs-row" id="vaultCategoryTabs">
-          <!-- Category chips rendered via JS -->
-        </div>
-      </div>
-
-      <!-- 景點卡片清單 -->
-      <div class="vault-card-list" id="vaultCardList">
-        <!-- Vault cards rendered via JS -->
-      </div>
-    </div>
-  </div>
 
   <!-- ✨ 置中 Modal: 3. 手動詳細新增至景點靈感庫 Modal -->
   <div class="modal-overlay" id="manualVaultModal">
@@ -480,6 +501,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=30.0.0"></script>
+  <script src="app.js?v=31.0.0"></script>
 </body>
 </html>

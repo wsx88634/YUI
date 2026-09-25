@@ -635,15 +635,19 @@ class VerticalTimelineAppV17 {
     this.btnZoomOut = document.getElementById('btnZoomOut');
     this.zoomDisplay = document.getElementById('zoomDisplay');
 
-    this.vaultDrawer = document.getElementById('vaultDrawer');
+    this.vaultView = document.getElementById('vaultView');
+    this.tabVault = document.getElementById('tabVault');
     this.btnOpenVault = document.getElementById('btnOpenVault');
-    this.btnCloseVault = document.getElementById('btnCloseVault');
-    this.btnToggleFullVault = document.getElementById('btnToggleFullVault');
+    this.vaultSearchInput = document.getElementById('vaultSearchInput');
+    this.btnVaultSearchClear = document.getElementById('btnVaultSearchClear');
+    this.vaultItemsCount = document.getElementById('vaultItemsCount');
+    this.btnToggleAiBox = document.getElementById('btnToggleAiBox');
+    this.vaultSearchKeyword = '';
     
     this.btnModeVault = document.getElementById('btnModeVault');
     this.btnModeTripFolder = document.getElementById('btnModeTripFolder');
-    this.vaultAiBox = document.querySelector('.vault-ai-box');
-    this.vaultFilterBar = document.querySelector('.vault-filter-bar');
+    this.vaultAiBox = document.getElementById('vaultAiBox');
+    this.vaultFilterBar = document.getElementById('vaultFilterBar');
 
     this.countryTabsRow = document.getElementById('countryTabsRow');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
@@ -901,13 +905,45 @@ class VerticalTimelineAppV17 {
     this.btnZoomOut.addEventListener('click', () => this.setZoom(this.zoomLevel - 0.15));
     this.zoomDisplay.addEventListener('click', () => this.setZoom(1.0));
 
-    this.btnOpenVault.addEventListener('click', () => {
-      this.vaultDrawer.classList.add('open');
-      this.renderVault();
-    });
-    this.btnCloseVault.addEventListener('click', () => {
-      this.vaultDrawer.classList.remove('open', 'expanded-full');
-    });
+    if (this.btnOpenVault) {
+      this.btnOpenVault.addEventListener('click', () => {
+        this.switchView('vault');
+      });
+    }
+
+    if (this.tabVault) {
+      this.tabVault.addEventListener('click', () => {
+        this.switchView('vault');
+      });
+    }
+
+    if (this.vaultSearchInput) {
+      this.vaultSearchInput.addEventListener('input', (e) => {
+        this.vaultSearchKeyword = e.target.value;
+        if (this.btnVaultSearchClear) {
+          this.btnVaultSearchClear.style.display = this.vaultSearchKeyword ? 'flex' : 'none';
+        }
+        this.renderVault();
+      });
+    }
+
+    if (this.btnVaultSearchClear) {
+      this.btnVaultSearchClear.addEventListener('click', () => {
+        this.vaultSearchInput.value = '';
+        this.vaultSearchKeyword = '';
+        this.btnVaultSearchClear.style.display = 'none';
+        this.renderVault();
+      });
+    }
+
+    if (this.btnToggleAiBox && this.vaultAiBox) {
+      this.btnToggleAiBox.addEventListener('click', () => {
+        const isHidden = this.vaultAiBox.style.display === 'none';
+        this.vaultAiBox.style.display = isHidden ? 'block' : 'none';
+        const txt = this.btnToggleAiBox.querySelector('.btn-text');
+        if (txt) txt.textContent = isHidden ? '收合智能建卡 ▴' : '貼文智能建卡 ▾';
+      });
+    }
 
     if (this.btnModeVault && this.btnModeTripFolder) {
       this.btnModeVault.addEventListener('click', () => {
@@ -923,12 +959,6 @@ class VerticalTimelineAppV17 {
         this.renderVault();
       });
     }
-
-    this.btnToggleFullVault.addEventListener('click', () => {
-      this.vaultDrawer.classList.toggle('expanded-full');
-      const isFull = this.vaultDrawer.classList.contains('expanded-full');
-      this.btnToggleFullVault.textContent = isFull ? '📐 恢復側邊抽屜' : '📖 展開全螢幕';
-    });
 
     this.btnOpenManualVaultModal.addEventListener('click', () => {
       document.getElementById('mvEditingId').value = '';
@@ -1175,6 +1205,8 @@ class VerticalTimelineAppV17 {
 
     document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
     document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
+    const tabVault = document.getElementById('tabVault');
+    if (tabVault) tabVault.addEventListener('click', () => this.switchView('vault'));
 
     this.nodeCategorySelect.addEventListener('change', (e) => {
       this.hotelFieldsBox.style.display = e.target.value === 'hotel' ? 'flex' : 'none';
@@ -1377,10 +1409,23 @@ class VerticalTimelineAppV17 {
       filtered = filtered.filter(item => inferCategory(item) === this.selectedCategory);
     }
 
+    if (this.vaultSearchKeyword && this.vaultSearchKeyword.trim()) {
+      const kw = this.vaultSearchKeyword.trim().toLowerCase();
+      filtered = filtered.filter(item => {
+        const full = `${item.title || ''} ${item.note || ''} ${item.region || ''} ${item.cost || ''} ${item.category || ''}`.toLowerCase();
+        return full.includes(kw);
+      });
+    }
+
+    if (this.vaultItemsCount) {
+      this.vaultItemsCount.textContent = `共 ${filtered.length} 個景點`;
+    }
+
     if (filtered.length === 0) {
       const catMeta = getCategoryMeta(this.selectedCategory);
       const catName = this.selectedCategory !== 'all' ? `【${catMeta.icon} ${catMeta.label}】` : '';
-      this.vaultCardList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:24px; font-size:0.9rem;">【${this.selectedCountry} - ${this.selectedRegion}】${catName} 目前無景點小卡，可在上方輸入框新增！</div>`;
+      const kwNotice = this.vaultSearchKeyword ? `，且無符合「${this.vaultSearchKeyword}」之項目` : '';
+      this.vaultCardList.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:36px 16px; font-size:0.95rem; font-weight:600;">【${this.selectedCountry} - ${this.selectedRegion}】${catName}${kwNotice} 目前無景點小卡。可在上方搜尋其他關鍵字或手動新增！</div>`;
       return;
     }
 
@@ -1672,17 +1717,28 @@ class VerticalTimelineAppV17 {
 
   switchView(view) {
     this.currentView = view;
-    document.getElementById('tabMindmap').classList.toggle('active', view === 'mindmap');
-    document.getElementById('tabOutline').classList.toggle('active', view === 'outline');
+    const tabMindmap = document.getElementById('tabMindmap');
+    const tabOutline = document.getElementById('tabOutline');
+    const tabVault = document.getElementById('tabVault');
+    if (tabMindmap) tabMindmap.classList.toggle('active', view === 'mindmap');
+    if (tabOutline) tabOutline.classList.toggle('active', view === 'outline');
+    if (tabVault) tabVault.classList.toggle('active', view === 'vault');
 
     if (view === 'mindmap') {
       this.viewport.style.display = 'block';
       this.outlineView.style.display = 'none';
+      if (this.vaultView) this.vaultView.style.display = 'none';
       this.renderMindmap();
-    } else {
+    } else if (view === 'outline') {
       this.viewport.style.display = 'none';
       this.outlineView.style.display = 'block';
+      if (this.vaultView) this.vaultView.style.display = 'none';
       this.renderOutline();
+    } else if (view === 'vault') {
+      this.viewport.style.display = 'none';
+      this.outlineView.style.display = 'none';
+      if (this.vaultView) this.vaultView.style.display = 'block';
+      this.renderVault();
     }
     this.applyMainCategoryFilter();
   }
