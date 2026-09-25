@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=33.0.0">
+  <link rel="stylesheet" href="styles.css?v=33.1.0">
 </head>
 <body>
 
@@ -72,8 +72,8 @@
     </div>
 
     <div class="view-switcher">
-      <button class="tab-btn active" id="tabMindmap">🌳 Markdown 樹狀圖</button>
-      <button class="tab-btn" id="tabOutline">📱 手機列表視圖</button>
+      <button class="tab-btn active" id="tabMindmap">🌳 心智圖排行程</button>
+      <button class="tab-btn" id="tabOutline">📱 手機列表行程</button>
       <button class="tab-btn" id="tabVault">📦 景點靈感庫</button>
     </div>
   </div>
@@ -101,6 +101,11 @@
         <div class="vault-top-panel">
           <!-- 第一行：模式切換 + 搜尋框 + 快捷新增 -->
           <div class="vault-top-row">
+            <!-- ⬅️ 返回排行程按鈕 -->
+            <button class="btn btn-back-to-plan" id="btnBackToPlan" title="返回排行程頁面">
+              <span>⬅️</span> <span class="btn-text">返回排行程</span>
+            </button>
+
             <div class="vault-mode-switch-bar">
               <button class="vault-mode-tab active" id="btnModeVault">📦 全部景點靈感庫</button>
               <button class="vault-mode-tab" id="btnModeTripFolder">📁 本行程專屬景點夾</button>
@@ -197,6 +202,11 @@
           <!-- Vault cards rendered via JS -->
         </div>
       </div>
+
+      <!-- 懸浮返回排行程捷徑按鈕 (滾動至下方時隨手可按) -->
+      <button class="vault-floating-back-btn" id="btnFloatingBackToPlan" title="返回排行程頁面">
+        <span>⬅️</span> <span class="btn-text">返回排行程</span>
+      </button>
     </div>
   </main>
 
@@ -519,6 +529,6 @@
 
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="app.js?v=33.0.0"></script>
+  <script src="app.js?v=33.1.0"></script>
 </body>
 </html>

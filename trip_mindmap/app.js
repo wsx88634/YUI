@@ -965,6 +965,7 @@ class VerticalTimelineAppV17 {
     this.selectedCategory = "all";
     this.selectedMainCategory = "all";
     this.currentView = 'mindmap';
+    this.lastPlanView = 'mindmap';
     this.zoomLevel = 1.0;
     this.draggedVaultItem = null;
     this.pendingDeleteAction = null;
@@ -1007,6 +1008,8 @@ class VerticalTimelineAppV17 {
     this.vaultView = document.getElementById('vaultView');
     this.tabVault = document.getElementById('tabVault');
     this.btnOpenVault = document.getElementById('btnOpenVault');
+    this.btnBackToPlan = document.getElementById('btnBackToPlan');
+    this.btnFloatingBackToPlan = document.getElementById('btnFloatingBackToPlan');
     this.vaultSearchInput = document.getElementById('vaultSearchInput');
     this.btnVaultSearchClear = document.getElementById('btnVaultSearchClear');
     this.vaultItemsCount = document.getElementById('vaultItemsCount');
@@ -1283,13 +1286,33 @@ class VerticalTimelineAppV17 {
 
     if (this.btnOpenVault) {
       this.btnOpenVault.addEventListener('click', () => {
-        this.switchView('vault');
+        if (this.currentView === 'vault') {
+          this.switchView(this.lastPlanView || 'mindmap');
+        } else {
+          this.switchView('vault');
+        }
       });
     }
 
     if (this.tabVault) {
       this.tabVault.addEventListener('click', () => {
-        this.switchView('vault');
+        if (this.currentView === 'vault') {
+          this.switchView(this.lastPlanView || 'mindmap');
+        } else {
+          this.switchView('vault');
+        }
+      });
+    }
+
+    if (this.btnBackToPlan) {
+      this.btnBackToPlan.addEventListener('click', () => {
+        this.switchView(this.lastPlanView || 'mindmap');
+      });
+    }
+
+    if (this.btnFloatingBackToPlan) {
+      this.btnFloatingBackToPlan.addEventListener('click', () => {
+        this.switchView(this.lastPlanView || 'mindmap');
       });
     }
 
@@ -1581,8 +1604,6 @@ class VerticalTimelineAppV17 {
 
     document.getElementById('tabMindmap').addEventListener('click', () => this.switchView('mindmap'));
     document.getElementById('tabOutline').addEventListener('click', () => this.switchView('outline'));
-    const tabVault = document.getElementById('tabVault');
-    if (tabVault) tabVault.addEventListener('click', () => this.switchView('vault'));
 
     this.nodeCategorySelect.addEventListener('change', (e) => {
       this.hotelFieldsBox.style.display = e.target.value === 'hotel' ? 'flex' : 'none';
@@ -1897,7 +1918,7 @@ class VerticalTimelineAppV17 {
 
       card.querySelector('.btn-assign-day').addEventListener('click', (e) => {
         e.stopPropagation();
-        this.openAssignDayModal(item);
+        this.openPlacementModal(item);
       });
 
       card.querySelector('.btn-edit-vault').addEventListener('click', (e) => {
@@ -2054,6 +2075,10 @@ class VerticalTimelineAppV17 {
     this.manualVaultModal.classList.add('active');
   }
 
+  openAssignDayModal(item) {
+    this.openPlacementModal(item);
+  }
+
   openPlacementModal(item) {
     if (this.isReadOnly) return;
     const proj = this.getActiveProject();
@@ -2146,6 +2171,9 @@ class VerticalTimelineAppV17 {
   }
 
   switchView(view) {
+    if (view === 'mindmap' || view === 'outline') {
+      this.lastPlanView = view;
+    }
     this.currentView = view;
     const tabMindmap = document.getElementById('tabMindmap');
     const tabOutline = document.getElementById('tabOutline');
@@ -2153,6 +2181,19 @@ class VerticalTimelineAppV17 {
     if (tabMindmap) tabMindmap.classList.toggle('active', view === 'mindmap');
     if (tabOutline) tabOutline.classList.toggle('active', view === 'outline');
     if (tabVault) tabVault.classList.toggle('active', view === 'vault');
+
+    // 動態切換頂部導航列「景點靈感庫 / 返回排行程」按鈕外觀與文字
+    if (this.btnOpenVault) {
+      if (view === 'vault') {
+        this.btnOpenVault.innerHTML = `<span>🌲</span> <span class="btn-text">返回排行程</span>`;
+        this.btnOpenVault.title = "返回排行程頁面";
+        this.btnOpenVault.classList.add('is-back-mode');
+      } else {
+        this.btnOpenVault.innerHTML = `<span>📦</span> <span class="btn-text">景點靈感庫</span>`;
+        this.btnOpenVault.title = "開啟景點資料庫 / 靈感庫";
+        this.btnOpenVault.classList.remove('is-back-mode');
+      }
+    }
 
     if (view === 'mindmap') {
       this.viewport.style.display = 'block';
@@ -2247,7 +2288,8 @@ class VerticalTimelineAppV17 {
     if (proj) {
       this.tripTitleInput.value = proj.title || "🏮 福岡 3 天 2 夜 櫛田神社輕旅行";
       if (this.currentView === 'mindmap') this.renderMindmap();
-      else this.renderOutline();
+      else if (this.currentView === 'outline') this.renderOutline();
+      else if (this.currentView === 'vault') this.renderVault();
       this.applyMainCategoryFilter();
     }
   }
