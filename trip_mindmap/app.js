@@ -189,12 +189,33 @@ const TOKYO_DEMO_PROJECTS = [
   }
 ];
 
-const DEFAULT_COUNTRY_HIERARCHY = {
-  "所有": ["所有"],
-  "日本": ["所有日本", "福岡", "天神", "博多", "中洲", "太宰府", "門司港", "小倉", "大濠公園", "百道濱", "絲島", "柳川", "祇園", "渡邊通", "六本松", "宗像", "久留米", "由布院", "福岡機場", "東京", "大阪", "京都", "奈良"],
-  "韓國": ["所有韓國", "首爾", "釜山"],
-  "台灣": ["所有台灣", "台北", "台南"],
-  "泰國": ["所有泰國", "曼谷", "清邁"]
+const DEFAULT_LOCATION_HIERARCHY = {
+  "日本": {
+    "所有縣市": ["全部日本"],
+    "福岡縣": ["全部福岡縣", "博多", "天神", "中洲", "太宰府", "門司港", "小倉", "大濠公園", "百道濱", "絲島", "柳川", "渡邊通", "祇園", "六本松", "福岡機場", "久留米", "宗像"],
+    "大分縣": ["全部大分縣", "由布院", "別府"],
+    "熊本縣": ["全部熊本縣", "熊本市區", "阿蘇", "黑川溫泉"],
+    "佐賀縣": ["全部佐賀縣", "武雄", "嬉野", "鳥栖"],
+    "長崎縣": ["全部長崎縣", "長崎市區", "豪斯登堡", "佐世保"],
+    "東京都": ["全部東京都", "新宿", "澀谷", "銀座", "淺草", "秋葉原"],
+    "大阪府": ["全部大阪府", "心齋橋/難波", "梅田", "天王寺", "環球影城"],
+    "京都府": ["全部京都府", "祇園/清水寺", "嵐山", "伏見稻荷"]
+  },
+  "韓國": {
+    "所有區域": ["全部韓國"],
+    "首爾特別市": ["全部首爾", "弘大", "明洞", "聖水洞", "江南"],
+    "釜山廣域市": ["全部釜山", "海雲台", "西面", "南浦洞", "廣安里"]
+  },
+  "台灣": {
+    "所有縣市": ["全部台灣"],
+    "台北市": ["全部台北", "信義區", "西門町", "大稻埕", "士林"],
+    "台南市": ["全部台南", "中西區", "安平", "神農街"]
+  },
+  "泰國": {
+    "所有地區": ["全部泰國"],
+    "曼谷": ["全部曼谷", "暹羅", "素坤逸", "河濱"],
+    "清邁": ["全部清邁", "古城區", "寧曼路"]
+  }
 };
 
 const DEFAULT_SPOT_VAULT = [
@@ -875,6 +896,34 @@ const CATEGORY_CONFIG = {
   period: { id: 'period', label: '時段', icon: '🕒', className: 'chip-period cat-period', bg: '#ffffff', cardBg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' }
 };
 
+function inferPrefecture(item) {
+  if (!item) return '福岡縣';
+  if (item.prefecture && item.prefecture !== '所有' && item.prefecture !== '所有縣市' && item.prefecture !== '全部') {
+    return item.prefecture;
+  }
+  const reg = item.region || '';
+  const title = item.title || '';
+  const note = item.note || '';
+  const full = `${reg} ${title} ${note}`.toLowerCase();
+
+  if (full.includes('由布院') || full.includes('別府') || full.includes('大分')) return '大分縣';
+  if (full.includes('熊本') || full.includes('阿蘇') || full.includes('黑川')) return '熊本縣';
+  if (full.includes('佐賀') || full.includes('武雄') || full.includes('嬉野') || full.includes('鳥栖')) return '佐賀縣';
+  if (full.includes('長崎') || full.includes('豪斯登堡') || full.includes('佐世保')) return '長崎縣';
+  if (full.includes('東京') || full.includes('新宿') || full.includes('澀谷') || full.includes('銀座') || full.includes('淺草') || full.includes('秋葉原')) return '東京都';
+  if (full.includes('大阪') || full.includes('心齋橋') || full.includes('難波') || full.includes('梅田')) return '大阪府';
+  if (full.includes('京都') || full.includes('清水寺') || full.includes('嵐山')) return '京都府';
+  if (full.includes('首爾') || full.includes('弘大') || full.includes('明洞')) return '首爾特別市';
+  if (full.includes('釜山') || full.includes('海雲台')) return '釜山廣域市';
+  if (full.includes('台北') || full.includes('西門') || full.includes('信義')) return '台北市';
+  if (full.includes('台南') || full.includes('安平')) return '台南市';
+  if (full.includes('曼谷')) return '曼谷';
+  if (full.includes('清邁')) return '清邁';
+
+  // 預設為福岡縣 (包含博多、天神、中洲、太宰府、門司港、小倉、絲島、柳川等)
+  return '福岡縣';
+}
+
 function inferCategory(item) {
   if (typeof item === 'string') return item;
   if (!item) return 'spot';
@@ -907,10 +956,11 @@ class VerticalTimelineAppV17 {
     this.projects = this.loadProjects();
     this.activeProjectId = this.loadActiveProjectId();
     this.vaultItems = this.loadVaultItems();
-    this.countryHierarchy = this.loadCountryHierarchy();
+    this.locationHierarchy = this.loadLocationHierarchy();
     this.recentColors = this.loadRecentColors();
     
-    this.selectedCountry = "所有";
+    this.selectedCountry = "日本";
+    this.selectedPrefecture = "所有縣市";
     this.selectedRegion = "所有";
     this.selectedCategory = "all";
     this.selectedMainCategory = "all";
@@ -969,8 +1019,12 @@ class VerticalTimelineAppV17 {
     this.vaultFilterBar = document.getElementById('vaultFilterBar');
 
     this.countryTabsRow = document.getElementById('countryTabsRow');
+    this.vaultPrefectureTabs = document.getElementById('vaultPrefectureTabs');
+    this.prefectureFilterLabel = document.getElementById('prefectureFilterLabel');
+    this.btnAddPrefectureTag = document.getElementById('btnAddPrefectureTag');
     this.vaultRegionTabs = document.getElementById('vaultRegionTabs');
     this.regionFilterLabel = document.getElementById('regionFilterLabel');
+    this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
     this.vaultCategoryTabs = document.getElementById('vaultCategoryTabs');
     this.vaultCardList = document.getElementById('vaultCardList');
     this.mainCategoryChips = document.getElementById('mainCategoryChips');
@@ -978,8 +1032,8 @@ class VerticalTimelineAppV17 {
     this.vaultQuickInput = document.getElementById('vaultQuickInput');
     this.vaultTargetRegion = document.getElementById('vaultTargetRegion');
     this.btnGenVaultCard = document.getElementById('btnGenVaultCard');
-    this.btnAddRegionTag = document.getElementById('btnAddRegionTag');
 
+    this.mvPrefecture = document.getElementById('mvPrefecture');
     this.btnOpenManualVaultModal = document.getElementById('btnOpenManualVaultModal');
     this.manualVaultModal = document.getElementById('manualVaultModal');
     this.manualVaultForm = document.getElementById('manualVaultForm');
@@ -1093,18 +1147,21 @@ class VerticalTimelineAppV17 {
     return items;
   }
 
-  loadCountryHierarchy() {
-    let saved = localStorage.getItem('triptree_country_hierarchy');
+  loadLocationHierarchy() {
+    let saved = localStorage.getItem('triptree_location_hierarchy_v3');
     if (!saved) {
-      try { saved = sessionStorage.getItem('triptree_country_hierarchy'); } catch(e){}
+      try { saved = sessionStorage.getItem('triptree_location_hierarchy_v3'); } catch(e){}
     }
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object') return parsed;
+        // Ensure it's a 3-tier object structure
+        if (parsed && typeof parsed === 'object' && parsed['日本'] && !Array.isArray(parsed['日本'])) {
+          return parsed;
+        }
       } catch(e){}
     }
-    return JSON.parse(JSON.stringify(DEFAULT_COUNTRY_HIERARCHY));
+    return JSON.parse(JSON.stringify(DEFAULT_LOCATION_HIERARCHY));
   }
 
   loadRecentColors() {
@@ -1192,11 +1249,11 @@ class VerticalTimelineAppV17 {
     if (this.isReadOnly) return;
     try {
       const vaultJson = JSON.stringify(this.vaultItems);
-      const countryJson = JSON.stringify(this.countryHierarchy);
+      const locationJson = JSON.stringify(this.locationHierarchy);
       localStorage.setItem('triptree_spot_vault_items_v17', vaultJson);
-      localStorage.setItem('triptree_country_hierarchy', countryJson);
+      localStorage.setItem('triptree_location_hierarchy_v3', locationJson);
       sessionStorage.setItem('triptree_spot_vault_items_v17', vaultJson);
-      sessionStorage.setItem('triptree_country_hierarchy', countryJson);
+      sessionStorage.setItem('triptree_location_hierarchy_v3', locationJson);
     } catch(e) {
       console.error('靈感庫保存失敗：', e);
     }
@@ -1642,61 +1699,97 @@ class VerticalTimelineAppV17 {
       this.renderTripFolder();
       return;
     } else {
-      if (this.vaultAiBox) this.vaultAiBox.style.display = 'block';
+      if (this.vaultAiBox) this.vaultAiBox.style.display = 'none'; // keep collapsed by default
       if (this.vaultFilterBar) this.vaultFilterBar.style.display = 'flex';
     }
 
-    // 確保所有卡片中出現過的地區都自動動態加入地區選單按鈕中
-    if (this.vaultItems && Array.isArray(this.vaultItems)) {
-      this.vaultItems.forEach(item => {
-        const country = item.country || "日本";
-        const region = item.region;
-        if (region && region !== "所有" && !region.startsWith("所有")) {
-          if (!this.countryHierarchy[country]) {
-            this.countryHierarchy[country] = [`所有${country}`, region];
-          } else if (!this.countryHierarchy[country].includes(region)) {
-            this.countryHierarchy[country].push(region);
-          }
-        }
+    const country = this.selectedCountry || "日本";
+    const countryData = this.locationHierarchy[country] || { "所有縣市": ["全部"] };
+
+    // 1. 🌏 渲染國家清單
+    if (this.countryTabsRow) {
+      this.countryTabsRow.innerHTML = '';
+      const countries = Object.keys(this.locationHierarchy);
+      countries.forEach(c => {
+        const chip = document.createElement('button');
+        chip.className = `country-chip ${c === this.selectedCountry ? 'active' : ''}`;
+        let flag = '🌏';
+        if (c === '日本') flag = '🇯🇵';
+        if (c === '韓國') flag = '🇰🇷';
+        if (c === '台灣') flag = '🇹🇼';
+        if (c === '泰國') flag = '🇹🇭';
+        chip.textContent = `${flag} ${c}`;
+        
+        chip.addEventListener('click', () => {
+          this.selectedCountry = c;
+          this.selectedPrefecture = "所有縣市";
+          this.selectedRegion = "所有小區";
+          this.renderVault();
+        });
+        this.countryTabsRow.appendChild(chip);
       });
     }
 
-    this.countryTabsRow.innerHTML = '';
-    const countries = Object.keys(this.countryHierarchy);
-    countries.forEach(country => {
-      const chip = document.createElement('button');
-      chip.className = `country-chip ${country === this.selectedCountry ? 'active' : ''}`;
-      let flag = '🌏';
-      if (country === '日本') flag = '🇯🇵';
-      if (country === '韓國') flag = '🇰🇷';
-      if (country === '台灣') flag = '🇹🇼';
-      if (country === '泰國') flag = '🇹🇭';
-      chip.textContent = `${flag} ${country}`;
-      
-      chip.addEventListener('click', () => {
-        this.selectedCountry = country;
-        this.selectedRegion = "所有";
-        this.renderVault();
+    // 2. 🗺️ 渲染大區域 / 縣市清單 (主要地點)
+    if (this.vaultPrefectureTabs) {
+      this.vaultPrefectureTabs.innerHTML = '';
+      const prefectures = Object.keys(countryData);
+      if (this.prefectureFilterLabel) {
+        this.prefectureFilterLabel.textContent = `🗺️ 【${country}】大區域(縣市)：`;
+      }
+
+      prefectures.forEach(pref => {
+        const chip = document.createElement('button');
+        chip.className = `prefecture-chip ${pref === this.selectedPrefecture ? 'active' : ''}`;
+        
+        let icon = '📍';
+        if (pref.startsWith('所有')) icon = '🌐';
+        else if (pref.includes('福岡')) icon = '🗾';
+        else if (pref.includes('大分')) icon = '♨️';
+        else if (pref.includes('熊本')) icon = '🐻';
+        else if (pref.includes('佐賀')) icon = '🏯';
+        else if (pref.includes('長崎')) icon = '🌊';
+        else if (pref.includes('東京')) icon = '🗼';
+        else if (pref.includes('大阪')) icon = '🐙';
+        else if (pref.includes('京都')) icon = '⛩️';
+
+        chip.textContent = pref.startsWith('所有') ? `🌐 全部${country}` : `${icon} ${pref}`;
+        chip.addEventListener('click', () => {
+          this.selectedPrefecture = pref;
+          this.selectedRegion = "所有小區";
+          this.renderVault();
+        });
+        this.vaultPrefectureTabs.appendChild(chip);
       });
-      this.countryTabsRow.appendChild(chip);
-    });
+    }
 
-    this.vaultRegionTabs.innerHTML = '';
-    const regions = this.countryHierarchy[this.selectedCountry] || ["所有"];
-    this.regionFilterLabel.textContent = `📍 【${this.selectedCountry}】地區選單：`;
+    // 3. 📍 渲染小地區 / 街區商圈清單 (詳細地點)
+    if (this.vaultRegionTabs) {
+      this.vaultRegionTabs.innerHTML = '';
+      const currentPref = this.selectedPrefecture;
+      let subRegions = [];
 
-    regions.forEach(reg => {
-      const chip = document.createElement('button');
-      chip.className = `region-chip ${reg === this.selectedRegion ? 'active' : ''}`;
-      chip.textContent = reg.startsWith('所有') ? '🌐 全部地區' : `📍 ${reg}`;
-      chip.addEventListener('click', () => {
-        this.selectedRegion = reg;
-        this.renderVault();
+      if (!currentPref || currentPref.startsWith('所有')) {
+        if (this.regionFilterLabel) this.regionFilterLabel.textContent = `📍 街區 (小區)：`;
+        subRegions = ["所有小區"];
+      } else {
+        if (this.regionFilterLabel) this.regionFilterLabel.textContent = `📍 【${currentPref}】小街區：`;
+        subRegions = countryData[currentPref] || [`全部${currentPref}`];
+      }
+
+      subRegions.forEach(reg => {
+        const chip = document.createElement('button');
+        chip.className = `region-chip ${reg === this.selectedRegion ? 'active' : ''}`;
+        chip.textContent = (reg.startsWith('所有') || reg.startsWith('全部')) ? `🌐 全部小區` : `📍 ${reg}`;
+        chip.addEventListener('click', () => {
+          this.selectedRegion = reg;
+          this.renderVault();
+        });
+        this.vaultRegionTabs.appendChild(chip);
       });
-      this.vaultRegionTabs.appendChild(chip);
-    });
+    }
 
-    // 🏷️ 渲染靈感庫類型標籤選單
+    // 4. 🏷️ 渲染靈感庫類型標籤選單
     if (this.vaultCategoryTabs) {
       this.vaultCategoryTabs.innerHTML = '';
       const filterCategories = ['all', 'food', 'hotel', 'spot', 'shop', 'transit', 'action'];
@@ -1713,25 +1806,35 @@ class VerticalTimelineAppV17 {
       });
     }
 
+    // 5. 🔍 景點過濾邏輯 (國家 ➔ 大區域/縣市 ➔ 小地區/街區 ➔ 類型 ➔ 關鍵字)
     this.vaultCardList.innerHTML = '';
     let filtered = this.vaultItems;
 
+    // (1) 國家過濾
     if (this.selectedCountry !== '所有') {
       filtered = filtered.filter(item => (item.country === this.selectedCountry || (!item.country && this.selectedCountry === '日本')));
     }
 
-    if (this.selectedRegion !== '所有' && !this.selectedRegion.startsWith('所有')) {
+    // (2) 大區域/縣市過濾
+    if (this.selectedPrefecture && this.selectedPrefecture !== '所有' && !this.selectedPrefecture.startsWith('所有')) {
+      filtered = filtered.filter(item => inferPrefecture(item) === this.selectedPrefecture);
+    }
+
+    // (3) 小地區/街區過濾
+    if (this.selectedRegion && this.selectedRegion !== '所有' && !this.selectedRegion.startsWith('所有') && !this.selectedRegion.startsWith('全部')) {
       filtered = filtered.filter(item => item.region === this.selectedRegion);
     }
 
+    // (4) 類型過濾
     if (this.selectedCategory && this.selectedCategory !== 'all' && this.selectedCategory !== '所有') {
       filtered = filtered.filter(item => inferCategory(item) === this.selectedCategory);
     }
 
+    // (5) 搜尋關鍵字過濾
     if (this.vaultSearchKeyword && this.vaultSearchKeyword.trim()) {
       const kw = this.vaultSearchKeyword.trim().toLowerCase();
       filtered = filtered.filter(item => {
-        const full = `${item.title || ''} ${item.note || ''} ${item.region || ''} ${item.cost || ''} ${item.category || ''}`.toLowerCase();
+        const full = `${item.title || ''} ${item.note || ''} ${item.region || ''} ${inferPrefecture(item)} ${item.cost || ''} ${item.category || ''}`.toLowerCase();
         return full.includes(kw);
       });
     }
@@ -1743,13 +1846,17 @@ class VerticalTimelineAppV17 {
     if (filtered.length === 0) {
       const catMeta = getCategoryMeta(this.selectedCategory);
       const catName = this.selectedCategory !== 'all' ? `【${catMeta.icon} ${catMeta.label}】` : '';
+      const prefText = (!this.selectedPrefecture || this.selectedPrefecture.startsWith('所有')) ? '' : ` - ${this.selectedPrefecture}`;
+      const regText = (!this.selectedRegion || this.selectedRegion.startsWith('所有') || this.selectedRegion.startsWith('全部')) ? '' : ` - ${this.selectedRegion}`;
       const kwNotice = this.vaultSearchKeyword ? `，且無符合「${this.vaultSearchKeyword}」之項目` : '';
-      this.vaultCardList.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:36px 16px; font-size:0.95rem; font-weight:600;">【${this.selectedCountry} - ${this.selectedRegion}】${catName}${kwNotice} 目前無景點小卡。可在上方搜尋其他關鍵字或手動新增！</div>`;
+      this.vaultCardList.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:36px 16px; font-size:0.95rem; font-weight:600;">【${this.selectedCountry}${prefText}${regText}】${catName}${kwNotice} 目前無景點小卡。可在上方搜尋其他關鍵字或手動新增！</div>`;
       return;
     }
 
+    // 6. 渲染卡片畫廊
     filtered.forEach(item => {
       const catMeta = getCategoryMeta(item);
+      const prefName = inferPrefecture(item);
       const card = document.createElement('div');
       card.className = `vault-item-card card-cat-${catMeta.id}`;
       card.setAttribute('draggable', 'true');
@@ -1763,6 +1870,7 @@ class VerticalTimelineAppV17 {
           <span class="vault-card-title" style="color: #0f172a; font-weight: 800;">${this.escapeHtml(displayTitle)}</span>
           <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span class="category-badge ${catMeta.className}">${catMeta.icon} ${catMeta.label}</span>
+            <span class="prefecture-badge">🗺️ ${this.escapeHtml(prefName)}</span>
             ${item.region ? `<span class="region-badge">📍 ${this.escapeHtml(item.region)}</span>` : ''}
             <div class="vault-action-group">
               <button class="vault-action-btn btn-edit-vault" data-id="${item.id}" title="編輯此景點小卡">✏️ 編輯</button>
@@ -1770,24 +1878,26 @@ class VerticalTimelineAppV17 {
             </div>
           </div>
         </div>
-        ${item.cost ? `<div style="font-size:0.8rem; color:#0f766e; font-weight:700;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
-        ${item.note ? `<div style="font-size:0.82rem; color:#334155; font-weight:600; line-height:1.4; white-space:pre-line; word-break:break-word; margin-top:2px;">${this.escapeHtml(item.note)}</div>` : ''}
-        <div class="vault-card-footer">
-          <div style="display:flex; gap:8px;">
-            ${item.mapsUrl ? `<a href="${this.escapeHtml(item.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.78rem;">🗺️ 地圖</a>` : ''}
-            ${item.url ? `<a href="${this.escapeHtml(item.url)}" target="_blank" class="node-link" style="font-size:0.78rem;">🔗 連結</a>` : ''}
+        ${item.cost ? `<div style="font-size:0.84rem; color:#b45309; font-weight:800; margin-top:2px;">💰 ${this.escapeHtml(item.cost)}</div>` : ''}
+        ${item.note ? `<div style="font-size:0.84rem; color:#334155; font-weight:600; line-height:1.45; white-space:pre-wrap; word-break:break-all; margin-top:4px;">${this.escapeHtml(item.note)}</div>` : ''}
+        <div class="vault-card-footer" style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            ${item.mapsUrl ? `<a href="${this.escapeHtml(item.mapsUrl)}" target="_blank" class="node-link" style="font-size:0.8rem; padding:5px 12px; font-weight:700;">🗺️ 地圖</a>` : ''}
+            ${item.url ? `<a href="${this.escapeHtml(item.url)}" target="_blank" class="node-link" style="font-size:0.8rem; padding:5px 12px; font-weight:700;">🔗 連結</a>` : ''}
           </div>
-          <button class="vault-copy-btn" data-id="${item.id}">📍 放至指定日期</button>
+          <button class="vault-action-btn btn-assign-day" data-id="${item.id}" style="font-size:0.8rem; padding:6px 12px; background:#0284c7; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:700;">📍 放至指定日期</button>
         </div>
       `;
 
       card.addEventListener('dragstart', (e) => {
         this.draggedVaultItem = item;
-        e.dataTransfer.setData('text/plain', JSON.stringify(item));
+        e.dataTransfer.setData('application/json', JSON.stringify(item));
+        e.dataTransfer.effectAllowed = 'copy';
       });
 
-      card.querySelector('.vault-copy-btn').addEventListener('click', () => {
-        this.openPlacementModal(item);
+      card.querySelector('.btn-assign-day').addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openAssignDayModal(item);
       });
 
       card.querySelector('.btn-edit-vault').addEventListener('click', (e) => {
@@ -1932,7 +2042,8 @@ class VerticalTimelineAppV17 {
     document.getElementById('mvSubmitBtn').innerHTML = '💾 儲存修改';
     
     document.getElementById('mvCountry').value = item.country || '日本';
-    document.getElementById('mvRegion').value = item.region || '';
+    if (this.mvPrefecture) this.mvPrefecture.value = item.prefecture || inferPrefecture(item);
+      document.getElementById('mvRegion').value = item.region || '';
     document.getElementById('mvTitle').value = item.title || '';
     document.getElementById('mvCategory').value = item.category || 'spot';
     document.getElementById('mvCost').value = item.cost || '';

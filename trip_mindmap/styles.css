@@ -1341,6 +1341,55 @@ main {
   box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
 }
 
+.prefecture-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  touch-action: pan-x;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.prefecture-chip {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #1e293b;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.prefecture-chip:hover {
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+.prefecture-chip.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.prefecture-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 2px 7px;
+  display: inline-flex;
+  align-items: center;
+}
+
 .region-tabs-row {
   display: flex;
   align-items: center;
