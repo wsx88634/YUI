@@ -192,8 +192,8 @@ const TOKYO_DEMO_PROJECTS = [
 const DEFAULT_LOCATION_HIERARCHY = {
   "日本": {
     "所有縣市": ["全部日本"],
-    "福岡縣": ["全部福岡縣", "博多", "天神", "中洲", "太宰府", "門司港", "小倉", "大濠公園", "百道濱", "絲島", "柳川", "渡邊通", "祇園", "六本松", "福岡機場", "久留米", "宗像"],
-    "大分縣": ["全部大分縣", "由布院", "別府"],
+    "福岡縣": ["全部福岡縣", "博多", "天神", "中洲", "太宰府", "門司港", "小倉", "大濠公園", "百道濱", "絲島", "柳川", "渡邊通", "祇園", "六本松", "福岡機場", "久留米", "宗像", "西新"],
+    "大分縣": ["全部大分縣", "由布院", "別府", "大分市區", "日田", "豐後高田"],
     "熊本縣": ["全部熊本縣", "熊本市區", "阿蘇", "黑川溫泉"],
     "佐賀縣": ["全部佐賀縣", "武雄", "嬉野", "鳥栖"],
     "長崎縣": ["全部長崎縣", "長崎市區", "豪斯登堡", "佐世保"],
@@ -880,6 +880,240 @@ const DEFAULT_SPOT_VAULT = [
     "url": "https://www.motoyoshiya.jp/",
     "mapsUrl": "https://maps.google.com/?q=本吉屋+柳川",
     "note": "📍福岡縣柳川市旭町69\n⏰10:30–20:00 (週一公休)\n🚇西鐵柳川站步行10分鐘\n✨創立於天和元年(1681年)的蒸籠鰻魚飯創始鼻祖！白飯淋秘傳濃醇甜醬拌勻後鋪上香烤肥嫩蒲燒鰻與細蛋絲，置入杉木蒸籠再蒸透，香氣極致撲鼻！"
+  },
+  {
+    "id": "v_shop_kawabata_d382f1",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "中洲",
+    "category": "shop",
+    "title": "川端通商店街 (博多最古老拱廊商街)",
+    "cost": "自由逛街 / 小吃 300~1000円",
+    "bgColor": "#10b981",
+    "url": "https://www.hakata.or.jp/",
+    "mapsUrl": "https://maps.google.com/?q=川端通商店街",
+    "note": "📍福岡市博多区上川端町\n⏰約10:00–20:00 (依店家而定)\n🚇地鐵中洲川端站直結\n✨博多最古老的有頂拱廊商店街，全長超過400公尺，直接連通櫛田神社與博多座。常年展示壯觀的「博多祇園山笠」八番山笠神輿！必嚐老字號「川端善哉」烤麻糬紅豆湯圓、各式和菓子與平民居酒屋。"
+  },
+  {
+    "id": "v_shop_shintencho_a91c2b",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "天神",
+    "category": "shop",
+    "title": "新天町商店街 (天神大鐘琴老牌商街)",
+    "cost": "自由逛街 / 平價餐飲",
+    "bgColor": "#10b981",
+    "url": "https://www.shintencho.or.jp/",
+    "mapsUrl": "https://maps.google.com/?q=新天町商店街",
+    "note": "📍福岡市中央区天神2丁目9\n⏰10:00–20:00\n🚇西鐵福岡(天神)站步行1分鐘\n✨戰後福岡復興的代表性拱廊商街，中心廣場有全日本最大的機械大鐘琴塔「Merkur Tower」，整點會鳴鐘報時與人偶表演。聚集老牌書店、綠茶茶舖、博多烏龍麵、服飾精品與和食定食。"
+  },
+  {
+    "id": "v_shop_tenjinchikagai_e4510c",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "天神",
+    "category": "shop",
+    "title": "天神地下街 (九州最大歐風地下商街)",
+    "cost": "自由逛街 / 甜點 400~1500円",
+    "bgColor": "#10b981",
+    "url": "https://www.tenchika.com/",
+    "mapsUrl": "https://maps.google.com/?q=天神地下街",
+    "note": "📍福岡市中央区天神2丁目地下1-3号\n⏰10:00–20:00 (餐飲至21:00)\n🚇地鐵天神站 / 天神南站直接貫穿\n✨全九州規模最大的地下購物商街，全長590公尺，以19世紀南歐石板街道與鑄鐵藤蔓拱頂精心打造，氛圍極致優雅。串連所有天神各大百貨，聚集流行時裝、文具雜貨、BAKE/RINGO等超人氣甜點排隊名店。"
+  },
+  {
+    "id": "v_shop_nishijin_b87431",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "西新",
+    "category": "shop",
+    "title": "西新商店街 (傳統大八車庶民美食街)",
+    "cost": "平民小吃 100~800円",
+    "bgColor": "#10b981",
+    "url": "https://nishijin.fukuoka.jp/",
+    "mapsUrl": "https://maps.google.com/?q=西新商店街",
+    "note": "📍福岡市早良区西新\n⏰午後開始最熱鬧 (約13:00–18:00)\n🚇地鐵空港線西新站步行1分鐘\n✨福岡最富市井人情味的庶民廚房！最具特色的是午後街中央整排擺攤的「大八車小販 (リヤカー部隊)」，販售自家現摘蔬菜、手作醬菜、蒸地瓜與魚丸。沿途還有蜂樂饅頭、鯛魚燒、排隊炸雞與古早味生活雜貨。"
+  },
+  {
+    "id": "v_shop_tojinmachi_c198a2",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "大濠公園",
+    "category": "shop",
+    "title": "唐人町商店街 (大濠公園旁昭和人情街)",
+    "cost": "小吃 150~600円",
+    "bgColor": "#10b981",
+    "url": "https://www.tojinmachi.net/",
+    "mapsUrl": "https://maps.google.com/?q=唐人町商店街",
+    "note": "📍福岡市中央区唐人町1丁目\n⏰10:00–19:00\n🚇地鐵唐人町站出站即達\n✨緊鄰大濠公園與福岡巨蛋，擁有數百年歷史的下町傳統拱頂商街。黑門市集、老字號豆腐店、現炸牛肉可樂餅、手工黑糖饅頭與家庭式洋食。看球賽或散步大濠公園前後必訪的溫馨補給站。"
+  },
+  {
+    "id": "v_shop_yanagibashi_f72381",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "渡邊通",
+    "category": "shop",
+    "title": "柳橋連合市場 (昭和生鮮海鮮美食街)",
+    "cost": "海鮮丼 1000~2000円 / 炸物 150円",
+    "bgColor": "#10b981",
+    "url": "https://yanagibashi-rengo.com/",
+    "mapsUrl": "https://maps.google.com/?q=柳橋連合市場",
+    "note": "📍福岡市中央区春吉1丁目5-1\n⏰08:00–17:00 (週日公休)\n🚇地鐵渡邊通站步行約5分鐘\n✨被譽為「博多的廚房」！全長約100公尺的有頂商街，昭和風情濃厚，集結新鮮博多灣漁獲、現炸高湯天婦羅肉餅、明太子專門店與和菓子老店「原口商店」。市場內藏有多家平價海鮮丼與立吞生魚片小店。"
+  },
+  {
+    "id": "v_shop_minoshima_91e0a4",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "博多",
+    "category": "shop",
+    "title": "美野島商店街 (昭和懷舊深度老街)",
+    "cost": "百元熟食便當 / 炸物 100~500円",
+    "bgColor": "#10b981",
+    "url": "https://www.crossroadfukuoka.jp/spot/13217",
+    "mapsUrl": "https://maps.google.com/?q=美野島商店街",
+    "note": "📍福岡市博多区美野島2丁目\n⏰午後傍晚最熱鬧\n🚇從博多站搭巴士約8分鐘 (美野島一丁目站)\n✨遠離觀光喧囂、在地福岡人的寶藏老街！完整保留昭和年代的木造店舖與招牌，肉鋪現炸熱騰騰的可樂餅、古早味日式惣菜熟食、超平價百元便當、老派喫茶店，極具生活氣息與復古拍照氛圍。"
+  },
+  {
+    "id": "v_shop_uomachi_a3481f",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "小倉",
+    "category": "shop",
+    "title": "魚町銀天街 (日本第一座拱廊天幕商街)",
+    "cost": "自由逛街 / 美食 500~1500円",
+    "bgColor": "#10b981",
+    "url": "https://uomachi.or.jp/",
+    "mapsUrl": "https://maps.google.com/?q=魚町銀天街",
+    "note": "📍北九州市小倉北区魚町\n⏰10:00–20:00 (餐飲至深夜)\n🚇JR小倉站小倉城口步行3分鐘\n✨1951年誕生、全日本第一座「アーケード (有蓋天幕拱廊)」發祥地！商街綿延四通八達，直通旦過市場。必訪「辻利茶舖」宇治抹茶聖代冰品、「シロヤ (白頭鷲)」排隊煉乳法式小麵包，還有小倉發祥炒烏龍麵。"
+  },
+  {
+    "id": "v_shop_tanga_89d31c",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "小倉",
+    "category": "shop",
+    "title": "旦過市場 (小倉百年食之寶庫)",
+    "cost": "大學丼 / 小吃 500~1200円",
+    "bgColor": "#10b981",
+    "url": "https://tanga-ichiba.jp/",
+    "mapsUrl": "https://maps.google.com/?q=旦過市場",
+    "note": "📍北九州市小倉北区魚町4丁目\n⏰10:00–18:00 (週日休攤較多)\n🚇北九州單軌電車旦過站旁\n✨大正時代延續至今、被稱作「北九州的廚房」。最熱門體驗是在館內買一碗白飯，沿途挑選各攤新鮮生魚片、關東煮黑輪、炙燒牛肉組合成專屬「大學丼」！雖然經歷修復，但仍保留滿滿熱情活力。"
+  },
+  {
+    "id": "v_shop_mojiko_sakae_7718e2",
+    "country": "日本",
+    "prefecture": "福岡縣",
+    "region": "門司港",
+    "category": "shop",
+    "title": "門司港榮町銀天街 (大正大正昭和復古街)",
+    "cost": "逛街 / 咖啡小食 300~1000円",
+    "bgColor": "#10b981",
+    "url": "https://sakaemachi.info/",
+    "mapsUrl": "https://maps.google.com/?q=門司港栄町銀天街",
+    "note": "📍北九州市門司区栄町\n⏰10:00–18:00\n🚇JR門司港站步行約8分鐘\n✨門司港懷舊區旁充滿人情味的昭和拱廊老街。避開觀光人潮，這裡藏著在地人才知道的燒咖哩小店、純喫茶店「梅月」、手作工藝選物、老書店與章魚燒小攤，散發溫暖寧靜的大正海港日常風情。"
+  },
+  {
+    "id": "v_shop_yunotsubo_d91024",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "由布院",
+    "category": "shop",
+    "title": "由布院湯之坪街道 (九州第一名渡假散策街)",
+    "cost": "散策小吃 300~1500円",
+    "bgColor": "#10b981",
+    "url": "https://www.yufuin.gr.jp/",
+    "mapsUrl": "https://maps.google.com/?q=湯の坪街道",
+    "note": "📍大分県由布市湯布院町川上\n⏰約09:30–17:30 (傍晚店家較早打烊)\n🚇JR由布院站出站步行約5分鐘直通\n✨全九州超人氣童話風商店街！沿著潺潺清流直通金鱗湖，抬頭可見由布岳美景。必吃排隊「金賞可樂餅」、B-Speak 生乳捲、Snoopy 茶屋、Miffy 森林麵包店、由布院布丁銅鑼燒與手作木工陶藝店。"
+  },
+  {
+    "id": "v_shop_takegawara_41a89c",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "別府",
+    "category": "shop",
+    "title": "別府竹瓦小路商店街 (登錄文化財木造拱廊)",
+    "cost": "溫泉泡湯 300円 / 散策免費",
+    "bgColor": "#10b981",
+    "url": "https://www.city.beppu.oita.jp/sisetu/shougyou/takegawara.html",
+    "mapsUrl": "https://maps.google.com/?q=竹瓦小路アーケード",
+    "note": "📍大分県別府市元町\n⏰全天開放 (周邊店家至深夜)\n🚇JR別府站東口步行約8分鐘\n✨建於1921年、日本現存最古老的木造拱廊拱頂商店街！已被指定為日本登錄有形文化財。木造透光格子天棚充滿大正浪漫氛圍，穿過小路即可抵達百年地熱「竹瓦溫泉」，是造訪別府溫泉鄉必拍之經典古街道。"
+  },
+  {
+    "id": "v_shop_beppu_ginza_a0182f",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "別府",
+    "category": "shop",
+    "title": "別府 Sol Paseo 銀座 (天狗守護熱鬧拱廊街)",
+    "cost": "居酒屋 / 冷麵 800~2000円",
+    "bgColor": "#10b981",
+    "url": "https://www.beppu-navi.jp/",
+    "mapsUrl": "https://maps.google.com/?q=ソルパセオ銀座",
+    "note": "📍大分県別府市北浜1丁目\n⏰全天 (白天購物、傍晚居酒屋熱鬧)\n🚇JR別府站東口步行約5分鐘\n✨別府市區最繁華熱鬧的拱頂商店街，入口懸掛著巨大避邪「別府天狗神輿面具」！商街內聚集傳統大分鄉土料理、別府冷麵、關東煮酒場、居酒屋、溫泉饅頭與藥妝伴手禮，越夜越有活力。"
+  },
+  {
+    "id": "v_shop_beppu_ekimae_7781ca",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "別府",
+    "category": "shop",
+    "title": "べっぷ駅市場 (高架下昭和懷舊熟食街)",
+    "cost": "熟食炸雞小吃 100~600円",
+    "bgColor": "#10b981",
+    "url": "https://beppu-eki-ichiba.com/",
+    "mapsUrl": "https://maps.google.com/?q=べっぷ駅市場",
+    "note": "📍大分県別府市中央町6-22\n⏰08:00–18:00 (週日休攤較多)\n🚇JR別府站高架下直達步行2分鐘\n✨緊鄰鐵路高架下的昭和復古生活市集。名物「別府炸雞天婦羅 (とり天)」、現捏紅豆萩餅、剛出爐的魚板天婦羅、新鮮水果蔬菜。攤商親切熱情，最能感受別府庶民柴米油鹽與溫暖人情味。"
+  },
+  {
+    "id": "v_shop_galleria_takemachi_e3391b",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "大分市區",
+    "category": "shop",
+    "title": "大分ガレリア竹町 (西日本最寬穹頂商街)",
+    "cost": "自由逛街 / 餐飲 500~2000円",
+    "bgColor": "#10b981",
+    "url": "https://galleria-takemachi.com/",
+    "mapsUrl": "https://maps.google.com/?q=ガレリア竹町",
+    "note": "📍大分県大分市中央町1丁目\n⏰10:00–20:00 (餐飲至深夜)\n🚇JR大分站府內中央口步行約6分鐘\n✨西日本最寬敞的大型拱廊商街之一！開閉式玻璃圓頂長廊、巨大的葡萄牙帆船裝置藝術紀念中日交流史。商街寬達數十公尺，乾淨明亮，匯集特色咖啡館、大分縣產海鮮居酒屋、時裝雜貨與手工烘焙。"
+  },
+  {
+    "id": "v_shop_centporta_chuo_5518dc",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "大分市區",
+    "category": "shop",
+    "title": "セントポルタ中央町 (大分車站前核心繁華街)",
+    "cost": "自由逛街 / 特產伴手禮",
+    "bgColor": "#10b981",
+    "url": "https://centporta.jp/",
+    "mapsUrl": "https://maps.google.com/?q=セントポルタ中央町",
+    "note": "📍大分県大分市中央町2丁目\n⏰10:00–21:00\n🚇JR大分站正前方步行2分鐘\n✨從大分車站前延伸而出、大分市最主要的購物商街！明亮的綠意挑高天幕，免受日曬雨淋。聚集各大品牌藥妝、大分乾香菇/柑橘特產名物店、平價拉麵與連鎖餐飲，是暢遊大分市中心的必經樞紐。"
+  },
+  {
+    "id": "v_shop_hita_mameda_6619ef",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "日田",
+    "category": "shop",
+    "title": "日田豆田町商店街 (九州小京都江戶天領古街)",
+    "cost": "日田木屐 1000~3000円 / 鰻魚飯 2500円",
+    "bgColor": "#10b981",
+    "url": "https://oidehita.com/archives/mamedamachi",
+    "mapsUrl": "https://maps.google.com/?q=豆田町商店街",
+    "note": "📍大分県日田市豆田町\n⏰09:30–17:00\n🚇JR日田站步行約15分鐘\n✨江戶時代作為幕府直轄天領繁榮的古都商街，完整保存白壁土藏與黑瓦屋舍！沿街盛產手工日田杉木屐、百年味噌醬油「原次郎左衛門」、日田羊羹老店，以及著名的日田蒸籠鰻魚飯（戶山鰻魚）。"
+  },
+  {
+    "id": "v_shop_bungotakada_showa_b0021c",
+    "country": "日本",
+    "prefecture": "大分縣",
+    "region": "豐後高田",
+    "category": "shop",
+    "title": "豐後高田 昭和之町 (時光倒流昭和30年代老街)",
+    "cost": "柑仔店零食 50~300円 / 懷舊展館 600円",
+    "bgColor": "#10b981",
+    "url": "https://www.showanomachi.com/",
+    "mapsUrl": "https://maps.google.com/?q=豊後高田+昭和の町",
+    "note": "📍大分県豊後高田市高田\n⏰10:00–17:00\n🚇從JR宇佐站搭巴士約10分鐘\n✨完美重現日本昭和30年代黃金歲月的復古主題商街！由新町、中央通等數條老商店街組成。沿途有古早味柑仔店、老肉舖現炸可樂餅、昭和老爺巴士巡迴，以及珍貴的童玩博物館，拍照散策超有風味。"
   }
 ];
 
@@ -906,7 +1140,7 @@ function inferPrefecture(item) {
   const note = item.note || '';
   const full = `${reg} ${title} ${note}`.toLowerCase();
 
-  if (full.includes('由布院') || full.includes('別府') || full.includes('大分')) return '大分縣';
+  if (full.includes('由布院') || full.includes('別府') || full.includes('大分') || full.includes('日田') || full.includes('豐後高田')) return '大分縣';
   if (full.includes('熊本') || full.includes('阿蘇') || full.includes('黑川')) return '熊本縣';
   if (full.includes('佐賀') || full.includes('武雄') || full.includes('嬉野') || full.includes('鳥栖')) return '佐賀縣';
   if (full.includes('長崎') || full.includes('豪斯登堡') || full.includes('佐世保')) return '長崎縣';
@@ -1155,16 +1389,35 @@ class VerticalTimelineAppV17 {
     if (!saved) {
       try { saved = sessionStorage.getItem('triptree_location_hierarchy_v3'); } catch(e){}
     }
+    let hierarchy = JSON.parse(JSON.stringify(DEFAULT_LOCATION_HIERARCHY));
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Ensure it's a 3-tier object structure
         if (parsed && typeof parsed === 'object' && parsed['日本'] && !Array.isArray(parsed['日本'])) {
-          return parsed;
+          hierarchy = parsed;
+          // 自動補入新預設大區與小區，確保既有快取也能立即擁有新加入之區域
+          Object.keys(DEFAULT_LOCATION_HIERARCHY).forEach(country => {
+            if (!hierarchy[country]) {
+              hierarchy[country] = DEFAULT_LOCATION_HIERARCHY[country];
+            } else {
+              Object.keys(DEFAULT_LOCATION_HIERARCHY[country]).forEach(pref => {
+                if (!hierarchy[country][pref]) {
+                  hierarchy[country][pref] = DEFAULT_LOCATION_HIERARCHY[country][pref];
+                } else {
+                  DEFAULT_LOCATION_HIERARCHY[country][pref].forEach(reg => {
+                    if (!hierarchy[country][pref].includes(reg)) {
+                      hierarchy[country][pref].push(reg);
+                    }
+                  });
+                }
+              });
+            }
+          });
+          return hierarchy;
         }
       } catch(e){}
     }
-    return JSON.parse(JSON.stringify(DEFAULT_LOCATION_HIERARCHY));
+    return hierarchy;
   }
 
   loadRecentColors() {
